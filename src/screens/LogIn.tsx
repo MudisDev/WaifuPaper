@@ -95,7 +95,7 @@ export const LogIn = () => {
     return (
         <View style={[{ alignItems: 'center', flex: 1, paddingTop: 90 }, dynamicStyles.dynamicScrollViewStyle]}>
 
-            <Text style={[stylesAppTheme.title, dynamicStyles.dynamicText]}>NekoPaper</Text>
+            <Text style={[stylesAppTheme.title, dynamicStyles.dynamicText]}>WaifuPaper</Text>
 
             {/* <TextInput value={username ?? ''} onChangeText={setUsername} style={[stylesAppTheme.textinput, dynamicStyles.dynamicText, dynamicStyles.dynamicViewContainer]} placeholder='Username' placeholderTextColor={themeData.texto} />
             <Text></Text>

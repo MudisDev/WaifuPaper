@@ -68,7 +68,7 @@ export const Register = () => {
   return (
     <View style={[{ alignItems: 'center', flex: 1, paddingTop: 40 }, dynamicStyles.dynamicScrollViewStyle]}>
 
-      <Text style={[stylesAppTheme.title, dynamicStyles.dynamicText]}>NekoPaper</Text>
+      <Text style={[stylesAppTheme.title, dynamicStyles.dynamicText]}>WaifuPaper</Text>
 
       {/* <TextInput value={name ?? ''} onChangeText={setName} style={[stylesAppTheme.textinput, dynamicStyles.dynamicViewContainer, dynamicStyles.dynamicText]} placeholderTextColor={themeData.texto} placeholder='Nombre' />
       <Text></Text>
