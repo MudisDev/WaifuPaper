@@ -39,9 +39,8 @@ class Lista
 
     public function Consultar_Etiquetas()
     {
-        $condiciones = "lista_negra = 0";
         $conexion = new Conexion();
-        $resultado = $conexion->SetSelect("Etiqueta", ["*"], $condiciones);
+        $resultado = $conexion->SetSelect("Etiqueta", ["*"]);
         $this->Set_Lista($resultado);
     }
 

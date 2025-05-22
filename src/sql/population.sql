@@ -157,3 +157,56 @@ INSERT INTO Usa_Modelo_Lora (id_imagen, id_modelo_lora, prompt, fuerza) VALUES
 INSERT INTO Aparece_En (id_imagen, id_personaje) VALUES
 (3, 3), (4, 4), (5, 5), (6, 6), (7, 7),
 (8, 8), (9, 9), (10, 10), (11, 11), (12, 12);
+
+INSERT INTO Etiqueta (nombre) VALUES
+('Felina'),
+('Dragón'),
+('Cibernética'),
+('Espiritual'),
+('Fuego'),
+('Hielo'),
+('Tormenta'),
+('Reina'),
+('Espía'),
+('Guerrera'),
+('Cantante'),
+('Hacktivista'),
+('Híbrida'),
+('Sueños'),
+('Tecnología');
+
+-- Aiyana (NekoQueen)
+INSERT INTO Tiene_Etiqueta (id_personaje, id_etiqueta) VALUES (1, 1), (1, 8);
+
+-- Lunaris (DragonFlare)
+INSERT INTO Tiene_Etiqueta (id_personaje, id_etiqueta) VALUES (2, 2), (2, 6), (2, 10);
+
+-- Mira (CyberNeko)
+INSERT INTO Tiene_Etiqueta (id_personaje, id_etiqueta) VALUES (3, 1), (3, 3), (3, 9), (3, 15);
+
+-- Zaphyra (SkyDragon)
+INSERT INTO Tiene_Etiqueta (id_personaje, id_etiqueta) VALUES (4, 2), (4, 7), (4, 10);
+
+-- Kira (SteelHeart)
+INSERT INTO Tiene_Etiqueta (id_personaje, id_etiqueta) VALUES (5, 3), (5, 10), (5, 15);
+
+-- Neriah (SoulBloom)
+INSERT INTO Tiene_Etiqueta (id_personaje, id_etiqueta) VALUES (6, 4), (6, 14);
+
+-- Kaelynn (HybridFury)
+INSERT INTO Tiene_Etiqueta (id_personaje, id_etiqueta) VALUES (7, 1), (7, 2), (7, 13);
+
+-- Selene (NightByte)
+INSERT INTO Tiene_Etiqueta (id_personaje, id_etiqueta) VALUES (8, 3), (8, 12), (8, 15);
+
+-- Rin (EmberTail)
+INSERT INTO Tiene_Etiqueta (id_personaje, id_etiqueta) VALUES (9, 1), (9, 5);
+
+-- Naomi (CrystalSong)
+INSERT INTO Tiene_Etiqueta (id_personaje, id_etiqueta) VALUES (10, 2), (10, 6), (10, 11);
+
+-- Lira (EchoSpark)
+INSERT INTO Tiene_Etiqueta (id_personaje, id_etiqueta) VALUES (11, 4), (11, 15);
+
+-- Freya (NeoDancer)
+INSERT INTO Tiene_Etiqueta (id_personaje, id_etiqueta) VALUES (12, 3), (12, 10), (12, 15);

@@ -24,8 +24,7 @@ ALTER TABLE Usuario DROP INDEX telefono; */
 
 CREATE TABLE Etiqueta (
     id_etiqueta INT AUTO_INCREMENT PRIMARY KEY,
-    nombre VARCHAR(50) NOT NULL,
-    api_origen VARCHAR(20) NOT NULL
+    nombre VARCHAR(50) NOT NULL
 );
 
 CREATE TABLE Autor (
@@ -145,6 +144,8 @@ SHOW TABLES;
 DROP DATABASE WaifuPaper;
 
 SELECT * FROM personaje;
+SELECT * FROM etiqueta;
+SELECT * FROM imagen;
 
 /* DROP TABLE usuario;
 
