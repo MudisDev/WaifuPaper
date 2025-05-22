@@ -142,6 +142,8 @@ CREATE TABLE Usa_Modelo_Lora (
 SHOW TABLES;
 
 DROP DATABASE WaifuPaper;
+SELECT * FROM favorito;
+
 /* 
 SELECT * FROM personaje;
 SELECT * FROM etiqueta;
@@ -190,7 +192,7 @@ FROM tiene_etiqueta te
     JOIN imagen i ON te.id_imagen = i.id_imagen;
 
 CREATE VIEW Vista_Favorito AS
-SELECT f.id_favorito, f.id_usuario, f.id_imagen, f.fecha_favorito, i.url AS url, i.clasificacion
+SELECT f.id_favorito, f.id_usuario, f.id_imagen, f.fecha_favorito, i.url AS url 
 FROM favorito f
     JOIN imagen i ON f.id_imagen = i.id_imagen;
 
