@@ -144,6 +144,8 @@ SHOW TABLES;
 
 DROP DATABASE WaifuPaper;
 
+SELECT * FROM personaje;
+
 /* DROP TABLE usuario;
 
 DROP TABLE etiqueta;

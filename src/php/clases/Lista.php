@@ -12,9 +12,8 @@ class Lista
 
     public function Consultar_Imagenes()
     {
-        $condiciones = "clasificacion = 'safe'";
         $conexion = new Conexion();
-        $resultado = $conexion->SetSelect("Imagen", ["*"], $condiciones);
+        $resultado = $conexion->SetSelect("Imagen", ["*"]);
         //$resultado = $conexion->SetSelect("Vista_Imagenes_Sin_Negativas", ["*"], $condiciones);
         //$resultado = $conexion->SetSelect("Vista_Imagenes_Sin_Negativas", ["*"]);
         $this->Set_Lista($resultado);
