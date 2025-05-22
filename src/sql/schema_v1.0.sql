@@ -142,6 +142,8 @@ CREATE TABLE Usa_Modelo_Lora (
 
 SHOW TABLES;
 
+DROP DATABASE WaifuPaper;
+
 /* DROP TABLE usuario;
 
 DROP TABLE etiqueta;
