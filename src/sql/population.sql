@@ -92,3 +92,68 @@ INSERT INTO Tiene_Personalidad (id_personaje, id_personalidad) VALUES
 (10, 3), -- Naomi: Dulce
 (11, 5), -- Lira: Energética
 (12, 6); -- Freya: Misteriosa
+
+
+-- Mira (CyberNeko)
+INSERT INTO Imagen (url, semilla, imagen_listada, id_modelo_base) VALUES
+('mira_city.png', '99887711', true, 1);
+INSERT INTO Usa_Modelo_Lora (id_imagen, id_modelo_lora, prompt, fuerza) VALUES
+(3, 1, 'cyber neko girl with cat ears and glowing eyes, urban night background', 1.1);
+
+-- Zaphyra (SkyDragon)
+INSERT INTO Imagen (url, semilla, imagen_listada, id_modelo_base) VALUES
+('zaphyra_skyfire.png', '10293847', true, 2);
+INSERT INTO Usa_Modelo_Lora (id_imagen, id_modelo_lora, prompt, fuerza) VALUES
+(4, 2, 'dragon girl flying through storm clouds, glowing wings and armor', 1.0);
+
+-- Kira (SteelHeart)
+INSERT INTO Imagen (url, semilla, imagen_listada, id_modelo_base) VALUES
+('kira_neon.png', '56473829', true, 2);
+INSERT INTO Usa_Modelo_Lora (id_imagen, id_modelo_lora, prompt, fuerza) VALUES
+(5, 2, 'cyberpunk female warrior with robotic limbs and glowing tattoos', 1.2);
+
+-- Neriah (SoulBloom)
+INSERT INTO Imagen (url, semilla, imagen_listada, id_modelo_base) VALUES
+('neriah_dream.png', '00112233', true, 1);
+INSERT INTO Usa_Modelo_Lora (id_imagen, id_modelo_lora, prompt, fuerza) VALUES
+(6, 1, 'spiritual girl in a field of glowing flowers under the moon', 0.9);
+
+-- Kaelynn (HybridFury)
+INSERT INTO Imagen (url, semilla, imagen_listada, id_modelo_base) VALUES
+('kaelynn_battle.png', '22334455', true, 1);
+INSERT INTO Usa_Modelo_Lora (id_imagen, id_modelo_lora, prompt, fuerza) VALUES
+(7, 1, 'hybrid dragon neko girl in armor, intense stare, magical flames', 1.3);
+
+-- Selene (NightByte)
+INSERT INTO Imagen (url, semilla, imagen_listada, id_modelo_base) VALUES
+('selene_code.png', '33445566', true, 2);
+INSERT INTO Usa_Modelo_Lora (id_imagen, id_modelo_lora, prompt, fuerza) VALUES
+(8, 2, 'hacker girl in dark room, surrounded by glowing code and screens', 1.1);
+
+-- Rin (EmberTail)
+INSERT INTO Imagen (url, semilla, imagen_listada, id_modelo_base) VALUES
+('rin_lava.png', '44556677', true, 1);
+INSERT INTO Usa_Modelo_Lora (id_imagen, id_modelo_lora, prompt, fuerza) VALUES
+(9, 1, 'fire neko girl near lava pool, glowing tail and volcanic outfit', 1.2);
+
+-- Naomi (CrystalSong)
+INSERT INTO Imagen (url, semilla, imagen_listada, id_modelo_base) VALUES
+('naomi_ice.png', '55667788', true, 2);
+INSERT INTO Usa_Modelo_Lora (id_imagen, id_modelo_lora, prompt, fuerza) VALUES
+(10, 2, 'ice dragon girl singing in a crystal cave, sparkles and snowflakes', 1.0);
+
+-- Lira (EchoSpark)
+INSERT INTO Imagen (url, semilla, imagen_listada, id_modelo_base) VALUES
+('lira_digital.png', '66778899', true, 2);
+INSERT INTO Usa_Modelo_Lora (id_imagen, id_modelo_lora, prompt, fuerza) VALUES
+(11, 2, 'digital spirit girl glowing with pixel particles, ethereal look', 0.8);
+
+-- Freya (NeoDancer)
+INSERT INTO Imagen (url, semilla, imagen_listada, id_modelo_base) VALUES
+('freya_dance.png', '77889900', true, 2);
+INSERT INTO Usa_Modelo_Lora (id_imagen, id_modelo_lora, prompt, fuerza) VALUES
+(12, 2, 'battle dancer girl in glowing arena, cyber costume, dynamic pose', 1.2);
+
+INSERT INTO Aparece_En (id_imagen, id_personaje) VALUES
+(3, 3), (4, 4), (5, 5), (6, 6), (7, 7),
+(8, 8), (9, 9), (10, 10), (11, 11), (12, 12);
