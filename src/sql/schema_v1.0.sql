@@ -142,13 +142,13 @@ CREATE TABLE Usa_Modelo_Lora (
 SHOW TABLES;
 
 DROP DATABASE WaifuPaper;
-
+/* 
 SELECT * FROM personaje;
 SELECT * FROM etiqueta;
 SELECT * FROM imagen;
 SELECT * FROM usuario;
 
-/* DROP TABLE usuario;
+ DROP TABLE usuario;
 
 DROP TABLE etiqueta;
 
@@ -172,7 +172,7 @@ DELETE FROM imagen;
 
 DELETE FROM tiene_etiqueta;
 
-DELETE FROM favorito;
+DELETE FROM favorito; */
 
 CREATE VIEW Vista_Tiene_Etiqueta AS
 SELECT te.id_imagen, te.id_etiqueta, e.nombre AS nombre_etiqueta
@@ -238,4 +238,4 @@ SELECT
     i.fecha_actualizacion
 FROM
     tiene_etiqueta te
-    JOIN Vista_Imagenes_Sin_Negativas i ON te.id_imagen = i.id_imagen; */
+    JOIN Vista_Imagenes_Sin_Negativas i ON te.id_imagen = i.id_imagen; 
