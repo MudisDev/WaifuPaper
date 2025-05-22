@@ -146,6 +146,7 @@ DROP DATABASE WaifuPaper;
 SELECT * FROM personaje;
 SELECT * FROM etiqueta;
 SELECT * FROM imagen;
+SELECT * FROM usuario;
 
 /* DROP TABLE usuario;
 

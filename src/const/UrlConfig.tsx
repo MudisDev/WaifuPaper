@@ -2,7 +2,7 @@ import Config from 'react-native-config';
 
 const apiUrl = Config.API_URL;
 
-const aliasPhp = `${apiUrl}/nekopaper`;
+const aliasPhp = `${apiUrl}/waifupaper`;
 
 const api_path = `${aliasPhp}/api`;
 
