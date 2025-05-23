@@ -19,6 +19,7 @@ export const register_user = `${user_path}/registrar.php`;
 export const delete_profile = `${user_path}/eliminar_cuenta.php`;
 
 export const show_images = `${list_path}/mostrar_imagenes.php`;
+export const show_characters = `${list_path}/mostrar_personajes.php`;
 export const show_tags = `${list_path}/mostrar_etiquetas.php`;
 export const show_images_for_tag = `${list_path}/mostrar_imagenes_por_etiqueta.php`;
 export const show_favorites_images = `${list_path}/mostrar_imagenes_favoritas.php`;

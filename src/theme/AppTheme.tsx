@@ -58,4 +58,32 @@ export const stylesAppTheme = StyleSheet.create({
         textDecorationLine: "underline",
 
     },
+
+     animeConteiner: {
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        width: "100%",
+        justifyContent: "center",
+        borderRadius: 10,
+        marginTop: 5,
+        //marginHorizontal: -3,
+    },
+
+    animeCell:
+    {
+        padding: 0,
+        //margin: 5,
+        //marginHorizontal: 3,
+
+    },
+    animeCellImage: {
+        width: 100,
+        height: 150,
+        borderRadius: 10,
+
+    },
+    animeCellText: {
+        textAlign: "right",
+        width: 100,
+    },
 });
