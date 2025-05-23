@@ -44,6 +44,13 @@ class Lista
         $this->Set_Lista($resultado);
     }
 
+    public function Consultar_Personajes()
+    {
+        $conexion = new Conexion();
+        $resultado = $conexion->SetSelect("Personaje", ["*"]);
+        $this->Set_Lista($resultado);
+    }
+
     public function Set_Lista($datos)
     {
         $this->lista = $datos;

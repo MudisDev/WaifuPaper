@@ -6,6 +6,7 @@ import { Search } from '../screens/Search';
 import { Settings } from '../screens/Settings';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useTheme } from '../hooks/UseTheme';
+import { Characters } from '../screens/Characters';
 
 const Tab = createBottomTabNavigator();
 
@@ -34,14 +35,17 @@ export function BottomTabNavigator() {
                     else if (route.name === 'Settings') {
                         iconName = focused ? 'settings' : 'settings-outline'; // Cambia el icono según si está enfocado o no
                     }
+                    else if (route.name === 'Characters') {
+                        iconName = focused ? 'people' : 'people-outline'; // Cambia el icono según si está enfocado o no
+                    }
 
                     // Retorna el ícono correspondiente de Ionicons
                     return <Ionicons name={iconName} size={size} color={color} />;
                 },
-                tabBarActiveTintColor: themeData.texto ,  // Cambia el color del ícono cuando la pestaña está activa
+                tabBarActiveTintColor: themeData.texto,  // Cambia el color del ícono cuando la pestaña está activa
                 tabBarInactiveTintColor: 'gray',
-                tabBarStyle: { backgroundColor: themeData.fondo  },
-            
+                tabBarStyle: { backgroundColor: themeData.fondo },
+
                 tabBarShowLabel: false,
 
             }
@@ -49,6 +53,7 @@ export function BottomTabNavigator() {
         >
             <Tab.Screen name="Home" component={Home} options={{ headerShown: false }} />
             <Tab.Screen name="Search" component={Search} options={{ headerShown: false }} />
+            <Tab.Screen name="Characters" component={Characters} options={{ headerShown: false }} />
             <Tab.Screen name="Favorites" component={Favorites} options={{ headerShown: false }} />
             <Tab.Screen name="Profile" component={Profile} options={{ headerShown: false }} />
             <Tab.Screen name="Settings" component={Settings} options={{ headerShown: false }} />

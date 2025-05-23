@@ -143,6 +143,7 @@ SHOW TABLES;
 
 DROP DATABASE WaifuPaper;
 SELECT * FROM favorito;
+SELECT * FROM personaje;
 
 /* 
 SELECT * FROM personaje;
