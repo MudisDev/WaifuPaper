@@ -94,7 +94,7 @@ export const Characters = () => {
     const renderItem = ({ item }: { item: NekoImageData }) => (
         <TouchableOpacity
             //style={stylesAppTheme.animeCell}
-            onPress={() => navigation.navigate("ProfileCharacter", {/*  url: item?.url, tags: item?.tags, artist_name: item?.artist_name, */profile_photo: item.profile_photo, id: item?.id })}
+            onPress={() => navigation.navigate("ProfileCharacter", {/*  url: item?.url, tags: item?.tags, artist_name: item?.artist_name, */ /* profile_photo: item.profile_photo, */ id: item?.id })}
         >
             <Image
                 source={{ uri: item.profile_photo }}

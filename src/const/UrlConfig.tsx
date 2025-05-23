@@ -10,6 +10,7 @@ const user_path = `${api_path}/usuario`;
 const list_path = `${api_path}/lista`;
 const tag_path = `${api_path}/etiqueta`;
 const image_path = `${api_path}/imagen`;
+const character_path = `${api_path}/personaje`;
 
 export const login_path = `${user_path}/iniciar_sesion.php`;
 export const consult_favorite = `${user_path}/consultar_favorito.php`;
@@ -29,4 +30,6 @@ export const register_tag = `${tag_path}/registrar_etiqueta.php`;
 export const register_image = `${image_path}/registrar_imagen.php`;
 export const associate_tags = `${image_path}/asociar_etiquetas.php`;
 export const consult_tags = `${image_path}/consultar_etiquetas.php`;
+
+export const search_character = `${character_path}/buscar_personaje.php`;
 

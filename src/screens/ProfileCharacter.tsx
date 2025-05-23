@@ -1,11 +1,11 @@
 import { useFocusEffect, useNavigation } from '@react-navigation/native'
 import React, { useCallback, useContext, useEffect, useState } from 'react'
-import { View, Image, Dimensions, StyleSheet, ScrollView, Text, TouchableOpacity } from 'react-native'
+import { View, Image, Dimensions, StyleSheet, ScrollView, Text, TouchableOpacity, TextComponent } from 'react-native'
 import { UserContext } from '../context/UserContext';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
 import { stylesAppTheme } from '../theme/AppTheme';
-import { add_favorite, consult_favorite, consult_tags, delete_favorite } from '../const/UrlConfig';
+import { add_favorite, consult_favorite, consult_tags, delete_favorite, search_character } from '../const/UrlConfig';
 import { dynamicStylesAppTheme } from '../theme/DynamicAppTheme';
 import { useTheme } from '../hooks/UseTheme';
 
@@ -14,6 +14,23 @@ interface TagData {
     id_tag: string,
     name_tag: string,
 }
+
+
+interface WaifuData {
+    id_character: number;
+    name: string;
+    alias: string;
+    description: string;
+    history: string;
+    hobbie: string;
+    occupation: string;
+    day: number;
+    month: number;
+    age: number;
+    kind: number;
+    profile_photo: string;
+}
+
 
 export const ProfileCharacter = ({ route }) => {
     const navigation = useNavigation();
@@ -30,6 +47,7 @@ export const ProfileCharacter = ({ route }) => {
     const [isFavorite, setIsFavorite] = useState<boolean>();
 
     const [tags, setTags] = useState<TagData[] | null>();
+    const [waifu, setWaifu] = useState<WaifuData[] | null>();
 
 
     useEffect(() => {
@@ -39,12 +57,15 @@ export const ProfileCharacter = ({ route }) => {
         setImage(profile_photo);
         setArtist(artist_name);
 
+
+
     }, [])
 
     useFocusEffect(
         useCallback(() => {
+            Buscar_Personaje();
             Consultar_Favorito();
-            Consultar_Etiquetas();
+            /* Consultar_Etiquetas(); */
         }, [])
     )
 
@@ -52,7 +73,50 @@ export const ProfileCharacter = ({ route }) => {
         Consultar_Favorito();
     }, [isFavorite])
 
-    const Consultar_Etiquetas = async () => {
+    const Buscar_Personaje = async () => {
+        try {
+            const url = `${search_character}?` +
+                `id_personaje=${id}`;
+
+            const response = await fetch(url);
+            const data = await response.json();
+            console.log("Data waifu ->", data);
+
+
+            console.log("Array Waifu -> ", Array.isArray(data));
+            console.log("Waifu buscada =>", data[0]);
+
+            if (Array.isArray(data) && data.length > 0) {
+                const mappedData: WaifuData[] = data.map((item: any) => ({
+                    id_character: parseInt(item.id_personaje),
+                    name: item.nombre,
+                    alias: item.alias,
+                    description: item.descripcion,
+                    history: item.historia,
+                    hobbie: item.pasatiempo,
+                    occupation: item.ocupacion,
+                    day: parseInt(item.dia),
+                    month: parseInt(item.mes),
+                    age: parseInt(item.edad),
+                    kind: parseInt(item.id_especie),
+                    profile_photo: item.imagen_perfil,
+
+                }));
+
+                console.log("MappedData => ", mappedData);
+
+                setWaifu(mappedData);
+            } else {
+                console.warn("No se encontraron imágenes en la respuesta.");
+            }
+
+
+        } catch (e) {
+            console.error(`Error al buscar al personaje: ${e}`);
+        }
+    }
+
+    /* const Consultar_Etiquetas = async () => {
         try {
             //const url = `http://192.168.18.5/nekopaper/api/imagen/consultar_etiquetas.php?` +
             const url = `${consult_tags}?` +
@@ -79,7 +143,7 @@ export const ProfileCharacter = ({ route }) => {
         } catch (e) {
             console.error(`Error al consultar etiquetas: ${e}`);
         }
-    }
+    } */
 
     const Consultar_Favorito = async () => {
         try {
@@ -139,56 +203,64 @@ export const ProfileCharacter = ({ route }) => {
     return (
         //<ScrollView contentContainerStyle={[{ flexGrow: 1, alignItems: 'center', paddingTop: 40 }, dynamicStyles.dynamicScrollViewStyle]}>
         <ScrollView style={dynamicStyles.dynamicScrollViewStyle} /* style={{marginTop:200}} */>
+            <View style={{ padding: 16 }}>
+                {/* Nombre y favorito */}
+                {waifu &&
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <Text style={[dynamicStyles.dynamicText, { fontSize: 24, fontWeight: 'bold' }]}>{waifu[0]?.name} ({waifu[0]?.alias})</Text>
+                        <TouchableOpacity onPress={isFavorite ? Borrar_Favorito : Marcar_Favorito}>
+                            <Ionicons name={isFavorite ? "heart" : "heart-outline"} size={28} color={themeData.texto} />
+                        </TouchableOpacity>
+                    </View>}
 
-            {image && (
-                <Image
-                    source={{ uri: image }}
-                    style={{ width, height: height * 0.7, resizeMode: 'contain' }}
-                />
-            )}
-            {/* {artist && (
-                <Text >Artista: {artist}</Text>
-            )}
-            {id && (
-                <Text >Id: {id}</Text>
-            )}
-            <Text >IdUser: {userData?.idUser}</Text> */}
-            {tags && Array.isArray(tags) && (
-                <View style={styles.tagContainer}>
-                    {tags.map((tag: TagData, index: number) => (
-                        <Text key={tag.id_tag} style={[styles.tagText, dynamicStyles.dynamicText,dynamicStyles.dynamicViewContainer]}>#{tag.name_tag}</Text>
-                    ))}
+                {/* Imagen + Info básica */}
+                <View style={{ flexDirection: 'row', marginTop: 16 }}>
+                    {waifu &&
+                        <>
+                            <Image
+                                source={{ uri: waifu[0]?.profile_photo }}
+                                style={{
+                                    width: width * 0.4,
+                                    aspectRatio: 9 / 16,
+                                    borderRadius: 12,
+                                    marginRight: 16
+                                }}
+                            />
+                            <View style={{ flex: 1 }}>
+                                <Text style={dynamicStyles.dynamicText}>Edad: {waifu[0]?.age}</Text>
+                                <Text style={dynamicStyles.dynamicText}>Ocupación: {waifu[0]?.occupation}</Text>
+                                <Text style={dynamicStyles.dynamicText}>Pasatiempo: {waifu[0]?.hobbie}</Text>
+                                <Text style={dynamicStyles.dynamicText}>Cumpleaños: {waifu[0]?.day}/{waifu[0]?.month}</Text>
+                            </View>
+                        </>}
                 </View>
-            )}
-            <View style={styles.buttonsContainer}>
-                {/* <TouchableOpacity style={styles.button} onPress={Marcar_Favorito}>
-                    <Ionicons name={isFavorite ? "heart" : "heart-outline"} size={25} color={"red"} />
-                </TouchableOpacity> */}
-                {isFavorite ?
-                    (<TouchableOpacity style={[styles.button, dynamicStyles.dynamicViewContainer]} onPress={Borrar_Favorito}>
-                        <Ionicons name={"heart"} size={25} color={themeData.texto} />
-                    </TouchableOpacity>)
-                    :
-                    (<TouchableOpacity style={[styles.button, dynamicStyles.dynamicViewContainer]}  onPress={Marcar_Favorito}>
-                        <Ionicons name={"heart-outline"} size={25} color={themeData.texto} />
-                    </TouchableOpacity>)
-                }
 
-                <TouchableOpacity style={[styles.button, dynamicStyles.dynamicViewContainer]} >
-                    <Ionicons name={"information"} size={25} color={themeData.texto} />
-                </TouchableOpacity>
-                <TouchableOpacity style={[styles.button, dynamicStyles.dynamicViewContainer]} >
-                    <Ionicons name={"download"} size={25} color={themeData.texto} />
-                </TouchableOpacity>
-                <TouchableOpacity style={[styles.button, dynamicStyles.dynamicViewContainer]} >
-                    <Ionicons name={"share-social"} size={25} color={themeData.texto} />
-                </TouchableOpacity>
-                {/* <TouchableOpacity style={styles.button}>
-                    <Ionicons name={"people"} size={25} color={"red"} />
-                </TouchableOpacity> */}
+                {waifu &&
+                    <>
+                        {/* Descripción */}
 
+                        <Text style={[dynamicStyles.dynamicText, { marginTop: 16 }]}>
+                            {waifu[0]?.description}
+                        </Text>
+
+                        {/* Historia (expandible si deseas) */}
+                        <Text style={[dynamicStyles.dynamicText, { marginTop: 16, fontWeight: 'bold' }]}>Historia:</Text>
+                        <Text style={[dynamicStyles.dynamicText]}>
+                            {waifu[0]?.history}
+                        </Text>
+                    </>}
+
+                {/* Etiquetas opcionales si las activas */}
+                {tags && (
+                    <View style={styles.tagContainer}>
+                        {tags.map(tag => (
+                            <Text key={tag.id_tag} style={[styles.tagText, dynamicStyles.dynamicText]}>
+                                #{tag.name_tag}
+                            </Text>
+                        ))}
+                    </View>
+                )}
             </View>
-
         </ScrollView>
     );
 };
@@ -214,8 +286,19 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'center',
         //alignItems:'center',
-        alignSelf:'center',
+        alignSelf: 'center',
         gap: 15
+
+    },
+    profileContainer: {
+        //backgroundColor: 'red',
+        width: '80%',
+        /*  flexDirection: 'row', */
+        justifyContent: 'center',
+        //alignItems:'center',
+        alignSelf: 'center',
+        gap: 15,
+        borderRadius: 10,
 
     },
     button: {
