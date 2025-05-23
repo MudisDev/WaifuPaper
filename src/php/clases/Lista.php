@@ -48,6 +48,7 @@ class Lista
     {
         $conexion = new Conexion();
         $resultado = $conexion->SetSelect("Personaje", ["*"]);
+        //$resultado = $conexion->SetSelect("Vista_Perfil_Personaje", ["*"]);
         $this->Set_Lista($resultado);
     }
 

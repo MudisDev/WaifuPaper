@@ -27,7 +27,7 @@ interface WaifuData {
     day: number;
     month: number;
     age: number;
-    kind: number;
+    kind: string;
     profile_photo: string;
 }
 
@@ -64,14 +64,14 @@ export const ProfileCharacter = ({ route }) => {
     useFocusEffect(
         useCallback(() => {
             Buscar_Personaje();
-            Consultar_Favorito();
+            //Consultar_Favorito();
             /* Consultar_Etiquetas(); */
         }, [])
     )
 
-    useEffect(() => {
+    /* useEffect(() => {
         Consultar_Favorito();
-    }, [isFavorite])
+    }, [isFavorite]) */
 
     const Buscar_Personaje = async () => {
         try {
@@ -98,7 +98,8 @@ export const ProfileCharacter = ({ route }) => {
                     day: parseInt(item.dia),
                     month: parseInt(item.mes),
                     age: parseInt(item.edad),
-                    kind: parseInt(item.id_especie),
+                    //kind: parseInt(item.id_especie),
+                    kind: item.especie,
                     profile_photo: item.imagen_perfil,
 
                 }));
@@ -145,7 +146,7 @@ export const ProfileCharacter = ({ route }) => {
         }
     } */
 
-    const Consultar_Favorito = async () => {
+    /* const Consultar_Favorito = async () => {
         try {
             //const url = `http://192.168.18.5/nekopaper/api/usuario/consultar_favorito.php?` +
             const url = `${consult_favorite}?` +
@@ -198,7 +199,7 @@ export const ProfileCharacter = ({ route }) => {
         } catch (e) {
             console.error(`Error al marcar como favorito: ${e}`);
         }
-    }
+    } */
 
     return (
         //<ScrollView contentContainerStyle={[{ flexGrow: 1, alignItems: 'center', paddingTop: 40 }, dynamicStyles.dynamicScrollViewStyle]}>
@@ -206,11 +207,11 @@ export const ProfileCharacter = ({ route }) => {
             <View style={{ padding: 16 }}>
                 {/* Nombre y favorito */}
                 {waifu &&
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <View style={{  alignItems: 'center' }}>
                         <Text style={[dynamicStyles.dynamicText, { fontSize: 24, fontWeight: 'bold' }]}>{waifu[0]?.name} ({waifu[0]?.alias})</Text>
-                        <TouchableOpacity onPress={isFavorite ? Borrar_Favorito : Marcar_Favorito}>
+                        {/* <TouchableOpacity onPress={isFavorite ? Borrar_Favorito : Marcar_Favorito}>
                             <Ionicons name={isFavorite ? "heart" : "heart-outline"} size={28} color={themeData.texto} />
-                        </TouchableOpacity>
+                        </TouchableOpacity> */}
                     </View>}
 
                 {/* Imagen + Info básica */}
@@ -231,6 +232,7 @@ export const ProfileCharacter = ({ route }) => {
                                 <Text style={dynamicStyles.dynamicText}>Ocupación: {waifu[0]?.occupation}</Text>
                                 <Text style={dynamicStyles.dynamicText}>Pasatiempo: {waifu[0]?.hobbie}</Text>
                                 <Text style={dynamicStyles.dynamicText}>Cumpleaños: {waifu[0]?.day}/{waifu[0]?.month}</Text>
+                                <Text style={dynamicStyles.dynamicText}>Especie: {waifu[0]?.kind}</Text>
                             </View>
                         </>}
                 </View>
@@ -251,7 +253,7 @@ export const ProfileCharacter = ({ route }) => {
                     </>}
 
                 {/* Etiquetas opcionales si las activas */}
-                {tags && (
+                {/* {tags && (
                     <View style={styles.tagContainer}>
                         {tags.map(tag => (
                             <Text key={tag.id_tag} style={[styles.tagText, dynamicStyles.dynamicText]}>
@@ -259,7 +261,7 @@ export const ProfileCharacter = ({ route }) => {
                             </Text>
                         ))}
                     </View>
-                )}
+                )} */}
             </View>
         </ScrollView>
     );

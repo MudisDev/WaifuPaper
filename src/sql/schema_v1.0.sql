@@ -147,6 +147,7 @@ SELECT * FROM personaje;
 SELECT * FROM personaje WHERE id_personaje = 1;
 SELECT * FROM imagen;
 SELECT * FROM aparece_en;
+SELECT * FROM especie;
 
 /* 
 SELECT * FROM personaje;
@@ -179,6 +180,13 @@ DELETE FROM imagen;
 DELETE FROM tiene_etiqueta;
 
 DELETE FROM favorito; */
+
+CREATE VIEW Vista_Perfil_Personaje AS
+SELECT p.*, e.nombre AS especie
+FROM personaje p
+    JOIN especie e ON p.id_especie = e.id_especie;
+
+SELECT * FROM vista_perfil_personaje;
 
 CREATE VIEW Vista_Tiene_Etiqueta AS
 SELECT te.id_imagen, te.id_etiqueta, e.nombre AS nombre_etiqueta

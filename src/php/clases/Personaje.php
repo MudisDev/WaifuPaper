@@ -29,7 +29,8 @@ class Personaje
     {
         $condiciones = "id_personaje = '$this->id_personaje'";
         $conexion = new Conexion();
-        $resultado = $conexion->SetSelect("Personaje", ["*"], $condiciones);
+        //$resultado = $conexion->SetSelect("Personaje", ["*"], $condiciones);
+        $resultado = $conexion->SetSelect("Vista_Perfil_Personaje", ["*"], $condiciones);
         return $resultado;
         /* if (!isset($resultado['Error']))
             $this->Set_Perfil($resultado); */
