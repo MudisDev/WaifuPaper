@@ -144,6 +144,9 @@ SHOW TABLES;
 DROP DATABASE WaifuPaper;
 SELECT * FROM favorito;
 SELECT * FROM personaje;
+SELECT * FROM personaje WHERE id_personaje = 1;
+SELECT * FROM imagen;
+SELECT * FROM aparece_en;
 
 /* 
 SELECT * FROM personaje;
