@@ -29,6 +29,7 @@ interface WaifuData {
     age: number;
     kind: string;
     profile_photo: string;
+    personality: string;
 }
 
 
@@ -101,7 +102,7 @@ export const ProfileCharacter = ({ route }) => {
                     //kind: parseInt(item.id_especie),
                     kind: item.especie,
                     profile_photo: item.imagen_perfil,
-
+                    personality: item.personalidades,
                 }));
 
                 console.log("MappedData => ", mappedData);
@@ -233,6 +234,7 @@ export const ProfileCharacter = ({ route }) => {
                                 <Text style={dynamicStyles.dynamicText}>Pasatiempo: {waifu[0]?.hobbie}</Text>
                                 <Text style={dynamicStyles.dynamicText}>Cumpleaños: {waifu[0]?.day}/{waifu[0]?.month}</Text>
                                 <Text style={dynamicStyles.dynamicText}>Especie: {waifu[0]?.kind}</Text>
+                                <Text style={dynamicStyles.dynamicText}>Personalidad(es): {waifu[0]?.personality}</Text>
                             </View>
                         </>}
                 </View>

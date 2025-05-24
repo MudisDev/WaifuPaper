@@ -149,6 +149,9 @@ SELECT * FROM imagen;
 SELECT * FROM aparece_en;
 SELECT * FROM especie;
 
+SELECT * FROM personalidad;
+SELECT * FROM tiene_personalidad;
+
 /* 
 SELECT * FROM personaje;
 SELECT * FROM etiqueta;
@@ -182,10 +185,15 @@ DELETE FROM tiene_etiqueta;
 DELETE FROM favorito; */
 
 CREATE VIEW Vista_Perfil_Personaje AS
-SELECT p.*, e.nombre AS especie
+SELECT p.*, e.nombre AS especie, 
+GROUP_CONCAT(pe.nombre, ', ') AS personalidades
 FROM personaje p
-    JOIN especie e ON p.id_especie = e.id_especie;
+    JOIN especie e ON p.id_especie = e.id_especie
+    JOIN tiene_personalidad tp ON p.id_personaje = tp.id_personaje
+    JOIN personalidad pe ON tp.id_personalidad = pe.id_personalidad
+    GROUP BY p.id_personaje, p.nombre, e.nombre;
 
+DROP VIEW vista_perfil_personaje;
 SELECT * FROM vista_perfil_personaje;
 
 CREATE VIEW Vista_Tiene_Etiqueta AS
