@@ -42,12 +42,12 @@ export const Profile = () => {
       </View>
       <Text></Text>
 
-      <ButtonComponent title='Editar perfil' funcion={noFunction} active={false}/>
+      {/* <ButtonComponent title='Editar perfil' funcion={noFunction} active={false}/>
       <Text></Text>
       <ButtonComponent title='Cambiar username' funcion={noFunction} active={false}/>
       <Text></Text>
       <ButtonComponent title='Cambiar password' funcion={noFunction} active={false}/>
-      <Text></Text>
+      <Text></Text> */}
 
 
     </View>

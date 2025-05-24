@@ -98,11 +98,11 @@ export const Settings = () => {
         <Text style={[stylesAppTheme.textButton, dynamicStyles.dynamicText]} >DevTool Bv</Text>
       </TouchableOpacity> */}
 
-      {(userData?.idUser == 1) ?
+     {/*  {(userData?.idUser == 1) ?
         <ButtonComponent title='DevTool Bv' funcion={() => navigation.navigate("DevTool")} active={true} />
         :
         <ButtonComponent title='DevTool Bv' funcion={() => navigation.navigate("DevTool")} active={false} />
-      }
+      } */}
 
 
 

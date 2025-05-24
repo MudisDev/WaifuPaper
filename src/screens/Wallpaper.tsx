@@ -174,7 +174,7 @@ export const Wallpaper = ({ route }) => {
                     </TouchableOpacity>)
                 }
 
-                <TouchableOpacity style={[styles.button, dynamicStyles.dynamicViewContainer]} >
+                {/* <TouchableOpacity style={[styles.button, dynamicStyles.dynamicViewContainer]} >
                     <Ionicons name={"information"} size={25} color={themeData.texto} />
                 </TouchableOpacity>
                 <TouchableOpacity style={[styles.button, dynamicStyles.dynamicViewContainer]} >
@@ -182,7 +182,7 @@ export const Wallpaper = ({ route }) => {
                 </TouchableOpacity>
                 <TouchableOpacity style={[styles.button, dynamicStyles.dynamicViewContainer]} >
                     <Ionicons name={"share-social"} size={25} color={themeData.texto} />
-                </TouchableOpacity>
+                </TouchableOpacity> */}
                 {/* <TouchableOpacity style={styles.button}>
                     <Ionicons name={"people"} size={25} color={"red"} />
                 </TouchableOpacity> */}
