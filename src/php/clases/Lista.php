@@ -27,6 +27,14 @@ class Lista
         $this->Set_Lista($resultado);
     }
 
+    public function Consultar_Imagenes_Personaje($id_personaje)
+    {
+        $condicion = "id_personaje = '$id_personaje'";
+        $conexion = new Conexion();
+        $resultado = $conexion->SetSelect("Vista_Mostrar_Imagenes_Por_Personaje", ["*"], $condicion);
+        $this->Set_Lista($resultado);
+    }
+
     public function Consultar_Imagenes_Por_Etiqueta($id_etiqueta)
     {
         $condicion = "id_etiqueta = '$id_etiqueta' AND clasificacion = 'safe'";

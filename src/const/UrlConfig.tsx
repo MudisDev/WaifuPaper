@@ -23,6 +23,7 @@ export const show_images = `${list_path}/mostrar_imagenes.php`;
 export const show_characters = `${list_path}/mostrar_personajes.php`;
 export const show_tags = `${list_path}/mostrar_etiquetas.php`;
 export const show_images_for_tag = `${list_path}/mostrar_imagenes_por_etiqueta.php`;
+export const show_images_for_character = `${list_path}/mostrar_imagenes_por_personaje.php`;
 export const show_favorites_images = `${list_path}/mostrar_imagenes_favoritas.php`;
 
 export const register_tag = `${tag_path}/registrar_etiqueta.php`;

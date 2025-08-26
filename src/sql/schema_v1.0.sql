@@ -261,3 +261,28 @@ SELECT
 FROM
     tiene_etiqueta te
     JOIN Vista_Imagenes_Sin_Negativas i ON te.id_imagen = i.id_imagen; 
+
+
+show tables;
+
+select * from aparece_en
+
+CREATE VIEW Vista_Mostrar_Imagenes_Por_Personaje AS
+SELECT
+    ae.id_imagen,
+    ae.id_personaje,
+    i.id_imagen AS id_imagen_real,
+    i.url,
+    i.semilla,
+    i.imagen_listada,
+    i.id_modelo_base,
+    i.fecha_insercion,
+    i.fecha_actualizacion
+FROM
+    aparece_en ae
+    JOIN Imagen i ON ae.id_imagen = i.id_imagen; 
+
+SELECT * FROM vista_mostrar_imagen_por_personaje;
+
+SELECT * FROM imagen;
+SELECT * FROM personaje

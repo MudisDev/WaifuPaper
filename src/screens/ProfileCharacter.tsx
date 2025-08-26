@@ -5,7 +5,7 @@ import { UserContext } from '../context/UserContext';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
 import { stylesAppTheme } from '../theme/AppTheme';
-import { add_favorite, consult_favorite, consult_tags, delete_favorite, search_character } from '../const/UrlConfig';
+import { add_favorite, consult_favorite, consult_tags, delete_favorite, search_character, show_images, show_images_for_character } from '../const/UrlConfig';
 import { dynamicStylesAppTheme } from '../theme/DynamicAppTheme';
 import { useTheme } from '../hooks/UseTheme';
 
@@ -32,6 +32,15 @@ interface WaifuData {
     personality: string;
 }
 
+export interface NekoImageData {
+    id: number;
+    id_character: string;
+    url: string;
+    seed: string;
+    public_image: boolean;
+    id_base_model: number;
+}
+
 
 export const ProfileCharacter = ({ route }) => {
     const navigation = useNavigation();
@@ -49,6 +58,11 @@ export const ProfileCharacter = ({ route }) => {
 
     const [tags, setTags] = useState<TagData[] | null>();
     const [waifu, setWaifu] = useState<WaifuData[] | null>();
+
+    const [dataArray, setDataArray] = useState<NekoImageData[] | null>(null);
+    //const [dataArray, setDataArray] = useState<NekoImageData[] | null>();
+    const [noImages, setNoImages] = useState(false);
+
 
 
     useEffect(() => {
@@ -117,7 +131,6 @@ export const ProfileCharacter = ({ route }) => {
             console.error(`Error al buscar al personaje: ${e}`);
         }
     }
-
     /* const Consultar_Etiquetas = async () => {
         try {
             //const url = `http://192.168.18.5/nekopaper/api/imagen/consultar_etiquetas.php?` +
@@ -202,13 +215,57 @@ export const ProfileCharacter = ({ route }) => {
         }
     } */
 
+    useEffect(() => {
+
+        if(!waifu || waifu.length === 0 ) return;
+        //fetch("http://192.168.18.5/nekopaper/api/lista/mostrar_imagenes.php")
+        fetch(`${show_images_for_character}?id_personaje=${waifu[0].id_character}`)
+
+            .then((res) => res.json())
+            .then((data) => {
+                //const items = data?.items;
+                //const items = data[0];
+
+                //setDataArray(data);
+
+                console.log("wallpapers cargados de la bd Bv");
+                if (Array.isArray(data) && data.length > 0) {
+                    const mappedData: NekoImageData[] = data.map((item: any) => ({
+                        id: parseInt(item.id_imagen),
+                        id_character: item.id_personaje,
+                        url: item.url,
+                        seed: item.semilla,
+                        public_image: parseInt(item.imagen_listada),
+                        id_base_model: parseInt(item.id_modelo_base),
+                        insertion_date: item.fecha_insercion,
+                        update_date: item.fecha_actualizacion,
+
+                    }));
+                    console.log("Wallpapers de la waifu Bv");
+                    console.log(mappedData);
+
+                    setDataArray(mappedData);
+                    setNoImages(false);
+                } else {
+                    console.warn("No se encontraron imágenes en la respuesta.");
+                    setNoImages(true);
+                }
+                console.log(`id waifu ${waifu[0].id_character}`);
+
+
+
+            })
+            .catch((err) => console.error("Error al traer imagen:", err));
+    }, [waifu]);
+
+
     return (
         //<ScrollView contentContainerStyle={[{ flexGrow: 1, alignItems: 'center', paddingTop: 40 }, dynamicStyles.dynamicScrollViewStyle]}>
         <ScrollView style={dynamicStyles.dynamicScrollViewStyle} /* style={{marginTop:200}} */>
             <View style={{ padding: 16 }}>
                 {/* Nombre y favorito */}
                 {waifu &&
-                    <View style={{  alignItems: 'center' }}>
+                    <View style={{ alignItems: 'center' }}>
                         <Text style={[dynamicStyles.dynamicText, { fontSize: 24, fontWeight: 'bold' }]}>{waifu[0]?.name} ({waifu[0]?.alias})</Text>
                         {/* <TouchableOpacity onPress={isFavorite ? Borrar_Favorito : Marcar_Favorito}>
                             <Ionicons name={isFavorite ? "heart" : "heart-outline"} size={28} color={themeData.texto} />
@@ -253,6 +310,35 @@ export const ProfileCharacter = ({ route }) => {
                             {waifu[0]?.history}
                         </Text>
                     </>}
+
+                {waifu &&
+                    <>
+                        <Text style={[dynamicStyles.dynamicText, { fontWeight: 'bold' }]}>Wallpapers</Text>
+                    </>
+                }
+
+                <View style={{flexDirection: 'row'}}>
+                    {waifu &&
+                        <>
+                            {dataArray?.map((item) => (
+
+                                <Image
+                                    key={item.id}
+                                    source={{ uri: item.url }}
+                                    style={{
+                                        width: width * 0.2,
+                                        aspectRatio: 9 / 16,
+                                        borderRadius: 12,
+                                        marginRight: 16
+                                    }}
+                                />
+
+                            ))
+                            }
+
+                        </>
+                    }
+                </View>
 
                 {/* Etiquetas opcionales si las activas */}
                 {/* {tags && (
