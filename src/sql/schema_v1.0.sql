@@ -286,3 +286,16 @@ SELECT * FROM vista_mostrar_imagen_por_personaje;
 
 SELECT * FROM imagen;
 SELECT * FROM personaje;
+
+
+CREATE TABLE Sesion_Iniciada (
+    id_token INT AUTO_INCREMENT PRIMARY KEY,
+    id_usuario INT NOT NULL,
+    token TEXT NOT NULL,
+    fecha_token DATETIME DEFAULT CURRENT_TIMESTAMP,
+
+    FOREIGN KEY (id_usuario) REFERENCES Usuario (id_usuario)
+);
+DROP TABLE sesion_iniciada;
+
+SELECT * FROM sesion_iniciada;
