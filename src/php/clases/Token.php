@@ -36,9 +36,9 @@ class Token
         return $this->token;
     }
 
-    public function Eliminar_Token()
+    public function Eliminar_Token($id_usuario)
     {
-        $condiciones = null;
+        $condiciones = "id_usuario = '$id_usuario'";
         $conexion = new Conexion();
         $resultado = $conexion->SetDelete("Sesion_Iniciada", $condiciones);
         return $resultado;
