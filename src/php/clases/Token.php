@@ -24,9 +24,9 @@ class Token
         return $resultado;
     }
 
-    public function Consultar_Token()
+    public function Consultar_Token($id_usuario, $token)
     {
-        $condiciones = null;
+        $condiciones = "id_usuario = '$id_usuario' AND token = '$token'";
         $conexion = new Conexion();
         $resultado = $conexion->SetSelect("Sesion_Iniciada", ["*"], $condiciones);
         return $resultado;
