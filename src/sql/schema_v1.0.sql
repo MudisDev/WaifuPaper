@@ -285,4 +285,4 @@ FROM
 SELECT * FROM vista_mostrar_imagen_por_personaje;
 
 SELECT * FROM imagen;
-SELECT * FROM personaje
+SELECT * FROM personaje;
