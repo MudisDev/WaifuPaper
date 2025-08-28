@@ -291,7 +291,7 @@ SELECT * FROM personaje;
 CREATE TABLE Sesion_Iniciada (
     id_token INT AUTO_INCREMENT PRIMARY KEY,
     id_usuario INT NOT NULL,
-    token TEXT NOT NULL,
+    token VARCHAR(255) NOT NULL,
     fecha_token DATETIME DEFAULT CURRENT_TIMESTAMP,
 
     FOREIGN KEY (id_usuario) REFERENCES Usuario (id_usuario)
