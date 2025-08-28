@@ -3,10 +3,10 @@
 require_once '../../clases/Token.php';
 
 $id_usuario = $_GET['id_usuario'];
-$token = $_GET['token'];
+$token_recibido = $_GET['token'];
 
 $token = new Token();
-$resultado = $token->Consultar_Token($id_usuario, $token);
+$resultado = $token->Consultar_Token($id_usuario, $token_recibido);
 echo json_encode($resultado);
 
 ?>
