@@ -11,6 +11,7 @@ const list_path = `${api_path}/lista`;
 const tag_path = `${api_path}/etiqueta`;
 const image_path = `${api_path}/imagen`;
 const character_path = `${api_path}/personaje`;
+const token_path = `${api_path}/token`;
 
 export const login_path = `${user_path}/iniciar_sesion.php`;
 export const consult_favorite = `${user_path}/consultar_favorito.php`;
@@ -33,4 +34,8 @@ export const associate_tags = `${image_path}/asociar_etiquetas.php`;
 export const consult_tags = `${image_path}/consultar_etiquetas.php`;
 
 export const search_character = `${character_path}/buscar_personaje.php`;
+
+export const generate_token = `${token_path}/generar_token.php`;
+export const consult_token = `${token_path}/consultar_token.php`;
+export const delete_token = `${token_path}/eliminar_token.php`;
 

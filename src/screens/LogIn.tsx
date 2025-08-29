@@ -3,7 +3,7 @@ import React, { useState, useContext, use, useEffect } from 'react'
 import { View, Text, TouchableOpacity, TextInput, StyleSheet } from 'react-native'
 import { stylesAppTheme } from '../theme/AppTheme'
 import { UserContext } from '../context/UserContext'
-import { login_path } from '../const/UrlConfig'
+import { generate_token, login_path } from '../const/UrlConfig'
 import { useTheme } from '../hooks/UseTheme'
 import { TextInputComponent } from '../components/TextInputComponent'
 import { ButtonComponent } from '../components/ButtonComponent'
@@ -11,11 +11,13 @@ import { TextLinkComponent } from '../components/TextLinkComponent'
 import { ThemeContext } from '../context/ThemeContext'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
+
 export const LogIn = () => {
 
     const navigation = useNavigation();
     const [username, setUsername] = useState<string | null>();
     const [password, setPassword] = useState<string | null>();
+
 
     const { userData, setUserData } = useContext(UserContext) || { setUserData: () => { } }; // Maneja el caso de que el contexto no esté definido
 
@@ -24,25 +26,25 @@ export const LogIn = () => {
     const context = useContext(ThemeContext); // Obtiene el contexto
     //const themeData = context?.themeData; // Obtiene themeData del contexto
     const setThemeData = context?.setThemeData;
-   
+
     if (!themeData) {
         return null; // Puedes manejar la carga o estado por defecto aquí
-      }
-      // Genera los estilos dinámicos pasando themeData
-      //const dynamicStyles = dynamicStylesAppTheme(themeData);
-    
-      useEffect(() => {
+    }
+    // Genera los estilos dinámicos pasando themeData
+    //const dynamicStyles = dynamicStylesAppTheme(themeData);
+
+    useEffect(() => {
         // Carga el tema al iniciar la app
         const loadStoredTheme = async () => {
-          const storedTheme = await AsyncStorage.getItem("themeColors");
-          if (storedTheme) {
-            //setTheme(JSON.parse(storedTheme));
-            setThemeData(JSON.parse(storedTheme));
-            console.log("Theme loaded!");
-          }
+            const storedTheme = await AsyncStorage.getItem("themeColors");
+            if (storedTheme) {
+                //setTheme(JSON.parse(storedTheme));
+                setThemeData(JSON.parse(storedTheme));
+                console.log("Theme loaded!");
+            }
         };
         loadStoredTheme();
-      }, []);
+    }, []);
 
     const IniciarSesion = async () => {
         try {
@@ -79,6 +81,7 @@ export const LogIn = () => {
 
                 console.log(userData?.email);
 
+                Generar_Token(userDataResponse.idUser);
 
 
                 navigation.navigate("BottomTabNavigator");
@@ -90,7 +93,62 @@ export const LogIn = () => {
         }
     }
 
+    const Generar_Token = async (id_usuario) => {
+        try {
+            const response = await fetch(`${generate_token}?id_usuario=${id_usuario}`);
+            const data = await response.json();
+            // Retorna los datos para ser usados en el componente
+            console.log(data);
+
+            const token = data[0];
+            console.log(`token -> ${token[0].token}`);
+            console.log(`id-usuario -> ${token[0].id_usuario}`)
+            console.log(`tokenIsArray -> ${Array.isArray(token)}`);
+
+
+
+            const storeData = async () => {
+                try {
+
+                    await AsyncStorage.setItem('localToken', token.token);
+                    await AsyncStorage.setItem('localUsername', token.id_usuario);
+                } catch (e) {
+                    console.log("Error al intentar almacenar el token y usuario");
+
+                    console.error(`error: ${e}`);
+                }
+            };
+
+            /* console.log(`userdata -> ${userDataResponse}`);
+            const array = JSON.stringify(userDataResponse);
+            console.log(Array.isArray(array)); */
+            /* 
+                        setUserData(userDataResponse);
+            
+                        console.log(userData?.email);
+            
+            
+            
+                        navigation.navigate("BottomTabNavigator");
+                     */
+
+
+        } catch (e) {
+            console.log("Error al intentar generar el token");
+
+            console.error(`error: ${e}`);
+        }
+    }
+
     const activeButton = (username && password) ? true : false;
+
+
+
+
+
+
+
+
 
     return (
         <View style={[{ alignItems: 'center', flex: 1, paddingTop: 90 }, dynamicStyles.dynamicScrollViewStyle]}>
