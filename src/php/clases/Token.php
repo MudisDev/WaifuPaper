@@ -20,10 +20,12 @@ class Token
 
     public function Almacenar_Token($id_usuario)
     {
-        $condiciones = null;
+        //$condiciones = null;
         $conexion = new Conexion();
         $resultado = $conexion->SetInsert("Sesion_Iniciada", ["id_usuario", "token"], [$id_usuario, $this->token]);
-        return $resultado;
+        if (isset($resultado['Success'])) {
+            $this->Consultar_Token($id_usuario, $this->token);
+        }
     }
 
     public function Consultar_Token($id_usuario, $token)
@@ -31,7 +33,7 @@ class Token
         $condiciones = "id_usuario = '$id_usuario' AND token = '$token'";
         $conexion = new Conexion();
         $resultado = $conexion->SetSelect("Sesion_Iniciada", ["*"], $condiciones);
-        $this->Set_Token($resultado);
+        $this->Set_Token($resultado[0]);
     }
 
     public function Set_Token(array $datos)
@@ -43,16 +45,14 @@ class Token
         }
     }
 
-    public function Get_Token(): array
-    {
-        $datos[] = [
-            'id_token' => $this->id_token,
-            'id_usuario' => $this->id_usuario,
-            'token' => $this->token,
-            'fecha_token' => $this->fecha_token
-        ];
-        return $datos;
-    }
+    public function Get_Token(): array {
+    return [
+        'id_token' => $this->id_token,
+        'id_usuario' => $this->id_usuario,
+        'token' => $this->token,
+        'fecha_token' => $this->fecha_token
+    ];
+}
 
     public function Eliminar_Token($id_usuario)
     {

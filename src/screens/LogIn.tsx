@@ -80,7 +80,7 @@ export const LogIn = () => {
                 setUserData(userDataResponse);
 
                 console.log(userData?.email);
-
+                console.log(`id_usuario que genera el token -> ${userDataResponse.idUser}`)
                 Generar_Token(userDataResponse.idUser);
 
 
@@ -95,29 +95,32 @@ export const LogIn = () => {
 
     const Generar_Token = async (id_usuario) => {
         try {
+            console.log("Entra al TRY de Generar_TOken");
             const response = await fetch(`${generate_token}?id_usuario=${id_usuario}`);
             const data = await response.json();
             // Retorna los datos para ser usados en el componente
-            console.log(data);
+            console.log(`data del token -> ${data}`);
 
-            const token = data[0];
-            console.log(`token -> ${token[0].token}`);
-            console.log(`id-usuario -> ${token[0].id_usuario}`)
+            const token = data;
+            console.log(`token -> ${token.token}`);
+            console.log(`id-usuario -> ${token.id_usuario}`)
+            console.log(`fecha token -> ${token.fecha_token}`)
+            console.log(`id token -> ${token.id_token}`)
             console.log(`tokenIsArray -> ${Array.isArray(token)}`);
 
 
 
-            const storeData = async () => {
-                try {
 
-                    await AsyncStorage.setItem('localToken', token.token);
-                    await AsyncStorage.setItem('localUsername', token.id_usuario);
-                } catch (e) {
-                    console.log("Error al intentar almacenar el token y usuario");
+            try {
+                console.log("Entra al TRY de  storeData");
+                await AsyncStorage.setItem('localToken', token.token);
+                await AsyncStorage.setItem('localUsername', token.id_usuario);
+            } catch (e) {
+                console.log("Error al intentar almacenar el token y usuario");
 
-                    console.error(`error: ${e}`);
-                }
-            };
+                console.error(`error: ${e}`);
+            }
+
 
             /* console.log(`userdata -> ${userDataResponse}`);
             const array = JSON.stringify(userDataResponse);
