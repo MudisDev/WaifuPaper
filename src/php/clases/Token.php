@@ -5,7 +5,9 @@ class Token
 {
 
     private $token = null;
-
+    private $id_token = null;
+    private $id_usuario = null;
+    private $fecha_token = null;
     public function __construct()
     {
 
@@ -29,11 +31,27 @@ class Token
         $condiciones = "id_usuario = '$id_usuario' AND token = '$token'";
         $conexion = new Conexion();
         $resultado = $conexion->SetSelect("Sesion_Iniciada", ["*"], $condiciones);
-        return $resultado;
+        $this->Set_Token($resultado);
     }
-    public function Obtener_Token(): string
+
+    public function Set_Token(array $datos)
     {
-        return $this->token;
+        foreach ($datos as $key => $value) {
+            if (property_exists($this, $key)) {
+                $this->$key = $value;
+            }
+        }
+    }
+
+    public function Get_Token(): array
+    {
+        $datos[] = [
+            'id_token' => $this->id_token,
+            'id_usuario' => $this->id_usuario,
+            'token' => $this->token,
+            'fecha_token' => $this->fecha_token
+        ];
+        return $datos;
     }
 
     public function Eliminar_Token($id_usuario)
