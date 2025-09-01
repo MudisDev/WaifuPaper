@@ -89,6 +89,11 @@ export const Settings = () => {
     }
   }
 
+  const Cerrar_Sesion = async () => {
+    await AsyncStorage.removeItem('localToken');
+    await AsyncStorage.removeItem('localIdUser');
+  }
+
 
   return (
     <View style={[stylesAppTheme.container, dynamicStyles.dynamicScrollViewStyle]}>
@@ -98,7 +103,7 @@ export const Settings = () => {
         <Text style={[stylesAppTheme.textButton, dynamicStyles.dynamicText]} >DevTool Bv</Text>
       </TouchableOpacity> */}
 
-     {/*  {(userData?.idUser == 1) ?
+      {/*  {(userData?.idUser == 1) ?
         <ButtonComponent title='DevTool Bv' funcion={() => navigation.navigate("DevTool")} active={true} />
         :
         <ButtonComponent title='DevTool Bv' funcion={() => navigation.navigate("DevTool")} active={false} />
@@ -107,7 +112,7 @@ export const Settings = () => {
 
 
       <Text></Text>
-      <ButtonComponent title='Cerrar sesion' funcion={() => { setUserData(null); navigation.navigate('LogIn'); }} active={true} />
+      <ButtonComponent title='Cerrar sesion' funcion={() => { Cerrar_Sesion(); setUserData(null); navigation.navigate('LogIn'); }} active={true} />
 
       {/* <TouchableOpacity style={[stylesAppTheme.button, dynamicStyles.dynamicViewContainer]} onPress={() => { setUserData(null); navigation.navigate('LogIn'); }}>
         <Text style={[stylesAppTheme.textButton, dynamicStyles.dynamicText]}>Cerrar Sesion</Text>
