@@ -23,6 +23,9 @@ export const LogIn = () => {
 
     const { themeData, dynamicStyles } = useTheme();
 
+    const [localToken, setLocalToken] = useState<string | null>(null);
+    const [localIdUser, setLocalIdUser] = useState<string | null>(null);
+
     const context = useContext(ThemeContext); // Obtiene el contexto
     //const themeData = context?.themeData; // Obtiene themeData del contexto
     const setThemeData = context?.setThemeData;
@@ -102,11 +105,11 @@ export const LogIn = () => {
             console.log(`data del token -> ${data}`);
 
             const token = data;
-            console.log(`token -> ${token.token}`);
+            /* console.log(`token -> ${token.token}`);
             console.log(`id-usuario -> ${token.id_usuario}`)
             console.log(`fecha token -> ${token.fecha_token}`)
             console.log(`id token -> ${token.id_token}`)
-            console.log(`tokenIsArray -> ${Array.isArray(token)}`);
+            console.log(`tokenIsArray -> ${Array.isArray(token)}`); */
 
 
 
@@ -114,7 +117,7 @@ export const LogIn = () => {
             try {
                 console.log("Entra al TRY de  storeData");
                 await AsyncStorage.setItem('localToken', token.token);
-                await AsyncStorage.setItem('localUsername', token.id_usuario);
+                await AsyncStorage.setItem('localIdUser', token.id_usuario);
             } catch (e) {
                 console.log("Error al intentar almacenar el token y usuario");
 
@@ -146,6 +149,34 @@ export const LogIn = () => {
     const activeButton = (username && password) ? true : false;
 
 
+    useEffect(() => {
+        const Leer_Datos = async () => {
+            /*  try { */
+            /* await AsyncStorage.setItem('localToken', token.token);
+            await AsyncStorage.setItem('localUsername', token.id_usuario); */
+            const token = await AsyncStorage.getItem('localToken');
+            const id_usuario = await AsyncStorage.getItem('localIdUser');
+
+
+            /* } catch (e) {
+                console.log("Error al intentar leer el token almacenado");
+
+                console.error(`error: ${e}`);
+            } */
+
+            if (token)
+                setLocalToken(token);
+            if (id_usuario)
+                setLocalIdUser(id_usuario);
+
+            console.log(`Token leido -> ${token}`);
+            console.log(`ID usuario leido -> ${id_usuario}`);
+
+
+        }
+
+        Leer_Datos();
+    }, [])
 
 
 
