@@ -3,7 +3,7 @@ import React, { useState, useContext, use, useEffect } from 'react'
 import { View, Text, TouchableOpacity, TextInput, StyleSheet } from 'react-native'
 import { stylesAppTheme } from '../theme/AppTheme'
 import { UserContext } from '../context/UserContext'
-import { generate_token, login_path } from '../const/UrlConfig'
+import { consult_token, delete_token, generate_token, login_path } from '../const/UrlConfig'
 import { useTheme } from '../hooks/UseTheme'
 import { TextInputComponent } from '../components/TextInputComponent'
 import { ButtonComponent } from '../components/ButtonComponent'
@@ -178,6 +178,27 @@ export const LogIn = () => {
         Leer_Datos();
     }, [])
 
+    useEffect(() => {
+        const Consultar_Token = async () => {
+            const token = await AsyncStorage.getItem("localToken");
+            const id_usuario = await AsyncStorage.getItem("localIdUser");
+
+            if (token != null && id_usuario != null) {
+                try {
+                    const respuesta = await fetch(`${consult_token}?id_usuario=${id_usuario}&token=${token}`);
+                    const data = await respuesta.json();
+                    console.log(`Data de la consulta de token -> ${data}`);
+                    if (data && !data.Error && data.token) {
+                        // token válido
+                        navigation.replace("BottomTabNavigator");
+                    }
+                } catch (e) {
+                    console.error(`Error al llamar a delete token -> ${e}`);
+                }
+            }
+        }
+        Consultar_Token();
+    }, [localToken, localIdUser]);
 
 
 
