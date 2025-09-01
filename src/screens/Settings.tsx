@@ -10,7 +10,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import { ColorPaletteTheme } from '../theme/ColorPaletteTheme'
 import RNPickerSelect from 'react-native-picker-select';
 import { ButtonComponent } from '../components/ButtonComponent'
-import { delete_profile } from '../const/UrlConfig'
+import { delete_profile, delete_token } from '../const/UrlConfig'
 
 export const Settings = () => {
   const navigation = useNavigation();
@@ -90,8 +90,28 @@ export const Settings = () => {
   }
 
   const Cerrar_Sesion = async () => {
+
+    //const token = await AsyncStorage.getItem('localToken');
+    const id_usuario = await AsyncStorage.getItem('localIdUser');
+
+    try {
+      const response = await fetch(`${delete_token}?id_usuario=${id_usuario}`);
+      const data = await response.json();
+      // Retorna los datos para ser usados en el componente
+      console.log(`eliminacion de token -> ${data}`);
+
+      //const token = data;
+    } catch (e) {
+      console.error(`Error al llamar a detele_token -> ${e}`);
+    }
+
     await AsyncStorage.removeItem('localToken');
     await AsyncStorage.removeItem('localIdUser');
+    
+    const check = await AsyncStorage.getItem("localToken");
+    console.log("token después de logout:", check); // debería ser null
+    //navigation.navigate('LogIn');
+    navigation.replace('LogIn');
   }
 
 
@@ -112,7 +132,7 @@ export const Settings = () => {
 
 
       <Text></Text>
-      <ButtonComponent title='Cerrar sesion' funcion={() => { Cerrar_Sesion(); setUserData(null); navigation.navigate('LogIn'); }} active={true} />
+      <ButtonComponent title='Cerrar sesion' funcion={() => { Cerrar_Sesion(); setUserData(null);  }} active={true} />
 
       {/* <TouchableOpacity style={[stylesAppTheme.button, dynamicStyles.dynamicViewContainer]} onPress={() => { setUserData(null); navigation.navigate('LogIn'); }}>
         <Text style={[stylesAppTheme.textButton, dynamicStyles.dynamicText]}>Cerrar Sesion</Text>
