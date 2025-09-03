@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react'
-import { View, Text, TouchableOpacity } from 'react-native'
+import { View, Text, TouchableOpacity, Alert } from 'react-native'
 import { stylesAppTheme } from '../theme/AppTheme'
 import { useNavigation } from '@react-navigation/native'
 import { UserContext } from '../context/UserContext'
@@ -105,14 +105,46 @@ export const Settings = () => {
       console.error(`Error al llamar a detele_token -> ${e}`);
     }
 
+    setUserData(null);
+
     await AsyncStorage.removeItem('localToken');
     await AsyncStorage.removeItem('localIdUser');
-    
+
+
+
     const check = await AsyncStorage.getItem("localToken");
     console.log("token después de logout:", check); // debería ser null
     //navigation.navigate('LogIn');
     navigation.replace('LogIn');
   }
+
+  const Alert_Cerrar_Sesion = () =>
+    Alert.alert(
+      'Cerrar sesion',
+      '¿Seguro que deseas cerrar sesion?',
+      [
+        {
+          text: 'Cancel',
+          onPress: () => {},
+          style: 'cancel',
+        },
+        {
+          text: 'Ok',
+          onPress: () => Cerrar_Sesion(),
+          style: 'destructive',
+        },
+        
+      ],
+      {
+        cancelable: true,
+        /* onDismiss: () =>
+          Alert.alert(
+            'This alert was dismissed by tapping outside of the alert dialog.',
+          ), */
+      },
+    );
+
+
 
 
   return (
@@ -132,7 +164,8 @@ export const Settings = () => {
 
 
       <Text></Text>
-      <ButtonComponent title='Cerrar sesion' funcion={() => { Cerrar_Sesion(); setUserData(null);  }} active={true} />
+      {/* <ButtonComponent title='Cerrar sesion' funcion={() => { Cerrar_Sesion(); setUserData(null); }} active={true} /> */}
+      <ButtonComponent title='Cerrar sesion' funcion={() => { Alert_Cerrar_Sesion(); }} active={true} />
 
       {/* <TouchableOpacity style={[stylesAppTheme.button, dynamicStyles.dynamicViewContainer]} onPress={() => { setUserData(null); navigation.navigate('LogIn'); }}>
         <Text style={[stylesAppTheme.textButton, dynamicStyles.dynamicText]}>Cerrar Sesion</Text>
