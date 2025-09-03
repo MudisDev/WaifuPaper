@@ -299,3 +299,4 @@ CREATE TABLE Sesion_Iniciada (
 DROP TABLE sesion_iniciada;
 
 SELECT * FROM sesion_iniciada;
+SELECT * FROM usuario;

@@ -17,7 +17,7 @@ export const login_path = `${user_path}/iniciar_sesion.php`;
 export const consult_favorite = `${user_path}/consultar_favorito.php`;
 export const add_favorite = `${user_path}/marcar_favorito.php`;
 export const delete_favorite = `${user_path}/borrar_favorito.php`;
-export const register_user = `${user_path}/registrar.php`;
+export const register_user = `${user_path}/registrar_usuario.php`;
 export const delete_profile = `${user_path}/eliminar_cuenta.php`;
 
 export const show_images = `${list_path}/mostrar_imagenes.php`;
