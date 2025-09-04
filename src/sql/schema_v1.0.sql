@@ -294,7 +294,7 @@ CREATE TABLE Sesion_Iniciada (
     token VARCHAR(255) NOT NULL,
     fecha_token DATETIME DEFAULT CURRENT_TIMESTAMP,
 
-    FOREIGN KEY (id_usuario) REFERENCES Usuario (id_usuario)
+    FOREIGN KEY (id_usuario) REFERENCES Usuario (id_usuario) ON DELETE CASCADE
 );
 DROP TABLE sesion_iniciada;
 
