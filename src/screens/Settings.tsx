@@ -76,7 +76,16 @@ export const Settings = () => {
         console.log("Error al eliminar la cuenta");
       }
       else if (data.Success) {
-        navigation.navigate("LogIn");
+
+        setUserData(null);
+
+        await AsyncStorage.removeItem('localToken');
+        await AsyncStorage.removeItem('localIdUser');
+
+        const check = await AsyncStorage.getItem("localToken");
+        console.log("token después de logout:", check); // debería ser null
+
+        navigation.replace("LogIn");
         console.log("Success, cuenta eliminada correctamente");
       }
       else if (data.Warning) {
