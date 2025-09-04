@@ -282,7 +282,7 @@ FROM
     aparece_en ae
     JOIN Imagen i ON ae.id_imagen = i.id_imagen; 
 
-SELECT * FROM vista_mostrar_imagen_por_personaje;
+SELECT * FROM vista_mostrar_imagenes_por_personaje;
 
 SELECT * FROM imagen;
 SELECT * FROM personaje;
@@ -300,3 +300,9 @@ DROP TABLE sesion_iniciada;
 
 SELECT * FROM sesion_iniciada;
 SELECT * FROM usuario;
+
+SELECT * FROM imagen;
+SELECT * FROM aparece_en;
+SELECT * FROM tiene_etiqueta;
+
+SHOW TABLES;
