@@ -144,6 +144,13 @@ class Usuario
         $resultado = $conexion->SetDelete("Usuario", $condiciones);
         return $resultado;
     }
+    public function Actualizar_Perfil()
+    {
+        $condiciones = "id_usuario = '$this->id_usuario'";
+        $columnas = null;
+        $conexion = new Conexion();
+        $conexion->SetUpdate("Usuario", $columnas, $condiciones);
+    }
 }
 
 
