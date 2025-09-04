@@ -125,7 +125,7 @@ export const Settings = () => {
       [
         {
           text: 'Cancel',
-          onPress: () => {},
+          onPress: () => { },
           style: 'cancel',
         },
         {
@@ -133,7 +133,33 @@ export const Settings = () => {
           onPress: () => Cerrar_Sesion(),
           style: 'destructive',
         },
-        
+
+      ],
+      {
+        cancelable: true,
+        /* onDismiss: () =>
+          Alert.alert(
+            'This alert was dismissed by tapping outside of the alert dialog.',
+          ), */
+      },
+    );
+
+  const Alert_Eliminar_Cuenta = () =>
+    Alert.alert(
+      'Eliminar cuenta',
+      '¿Seguro que deseas eliminar tu cuenta?',
+      [
+        {
+          text: 'Cancel',
+          onPress: () => { },
+          style: 'cancel',
+        },
+        {
+          text: 'Ok',
+          onPress: () => DeleteProfile(),
+          style: 'destructive',
+        },
+
       ],
       {
         cancelable: true,
@@ -172,7 +198,8 @@ export const Settings = () => {
       </TouchableOpacity> */}
       <Text></Text>
 
-      <ButtonComponent title='eliminar cuenta' funcion={DeleteProfile} active={true} />
+      {/* <ButtonComponent title='eliminar cuenta' funcion={DeleteProfile} active={true} /> */}
+      <ButtonComponent title='eliminar cuenta' funcion={Alert_Eliminar_Cuenta} active={true} />
 
       <Text></Text>
       <Text></Text>
