@@ -48,11 +48,8 @@ export const Profile = () => {
         </> :
         <></>
       }
-      {(editarPerfil == false) ?
-        <ButtonComponent title='Editar perfil' funcion={() => setEditarPerfil(true)} active={true} />
-        :
-        <ButtonComponent title='Guardar Cambios' funcion={() => setEditarPerfil(false)} active={true} />
-      }
+
+      <ButtonComponent title={editarPerfil ? 'Guardar cambios' : 'Editar perfil'} funcion={() => setEditarPerfil(!editarPerfil) } active={true} />
 
       <Text></Text>
       {/*
