@@ -217,7 +217,7 @@ export const ProfileCharacter = ({ route }) => {
 
     useEffect(() => {
 
-        if(!waifu || waifu.length === 0 ) return;
+        if (!waifu || waifu.length === 0) return;
         //fetch("http://192.168.18.5/nekopaper/api/lista/mostrar_imagenes.php")
         fetch(`${show_images_for_character}?id_personaje=${waifu[0].id_character}`)
 
@@ -317,21 +317,22 @@ export const ProfileCharacter = ({ route }) => {
                     </>
                 }
 
-                <View style={{flexDirection: 'row'}}>
+                <View style={{ flexDirection: 'row' }}>
                     {waifu &&
                         <>
                             {dataArray?.map((item) => (
-
-                                <Image
-                                    key={item.id}
-                                    source={{ uri: item.url }}
-                                    style={{
-                                        width: width * 0.2,
-                                        aspectRatio: 9 / 16,
-                                        borderRadius: 12,
-                                        marginRight: 16
-                                    }}
-                                />
+                                <TouchableOpacity onPress={() => navigation.navigate("Wallpaper", {url: item.url, id: item.id})} key={item.id}>
+                                    <Image
+                                        /*  key={item.id} */
+                                        source={{ uri: item.url }}
+                                        style={{
+                                            width: width * 0.2,
+                                            aspectRatio: 9 / 16,
+                                            borderRadius: 12,
+                                            marginRight: 16
+                                        }}
+                                    />
+                                </TouchableOpacity>
 
                             ))
                             }
