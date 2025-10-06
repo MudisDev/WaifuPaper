@@ -66,10 +66,23 @@ class Usuario
 
     public function Iniciar_Sesion()
     {
-        $condiciones = "username = '$this->username'";
+        if ($this->password == null) {
+            $condiciones = "id_usuario = '$this->id_usuario'";
+        } else {
+            $condiciones = "username = '$this->username'";
+        }
+        /* $condiciones = "username = '$this->username'"; */
         $conexion = new Conexion();
         //$resultado = $conexion->IniciarSesion("Usuario", ["*"], "username", $this->username, $this->password);
-        $resultado = $conexion->SetSelect("Usuario", ["*"], $condiciones, true, $this->password);
+
+        if ($this->password == null) {
+            $resultado = $conexion->SetSelect("Usuario", ["*"], $condiciones);
+        } else {
+            $resultado = $conexion->SetSelect("Usuario", ["*"], $condiciones, true, $this->password);
+        }
+        //$resultado = $conexion->SetSelect("Usuario", ["*"], $condiciones, true, $this->password);
+
+
         if (!isset($resultado['Error'])) {
             $this->Set_Datos($resultado[0]);
         }

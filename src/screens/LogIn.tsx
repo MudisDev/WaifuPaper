@@ -190,6 +190,7 @@ export const LogIn = () => {
                     console.log(`Data de la consulta de token -> ${data}`);
                     if (data && !data.Error && data.token) {
                         // token válido
+                        RecibirDatoPerfil(id_usuario);
                         navigation.replace("BottomTabNavigator");
                     }
                 } catch (e) {
@@ -201,7 +202,52 @@ export const LogIn = () => {
     }, [localToken, localIdUser]);
 
 
+const RecibirDatoPerfil = async ( id_usuario) => {
+        try {
+            console.log("Path login -> ", login_path)
+            //const response = await fetch(`http://localhost/nekopaper/api/usuario/iniciar_sesion.php?username=${username}&password=${password}`);
+            //const response = await fetch(`http://192.168.18.5/nekopaper/api/usuario/iniciar_sesion.php?username=${username}&password=${password}`);
+            const response = await fetch(`${login_path}?id_usuario=${id_usuario}`);
+            const data = await response.json();
+            // Retorna los datos para ser usados en el componente
+            console.log(data);
 
+            const user = data[0];
+            console.log(`user -> ${user}`);
+            console.log(`userIsArray -> ${Array.isArray(user)}`);
+
+            if (!data.Error) {
+
+                const userDataResponse = {
+                    username: user.username,
+                    name: user.nombre,
+                    phoneNumber: user.telefono,
+                    email: user.email,
+                    profilePhoto: user.foto_perfil,
+                    //registerDate: user.fecha_registro,
+                    idUser: user.id_usuario,
+                    gender: user.genero
+                }
+
+                /* console.log(`userdata -> ${userDataResponse}`);
+                const array = JSON.stringify(userDataResponse);
+                console.log(Array.isArray(array)); */
+
+                setUserData(userDataResponse);
+
+                console.log(userData?.email);
+                console.log(`id_usuario que genera el token -> ${userDataResponse.idUser}`)
+                /* Generar_Token(userDataResponse.idUser);
+
+
+                navigation.navigate("BottomTabNavigator"); */
+            }
+
+
+        } catch (e) {
+            console.error(`error: ${e}`);
+        }
+    }
 
 
 
