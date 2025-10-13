@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { View, Text, StyleSheet, TextComponent } from 'react-native'
+import { View, Text, StyleSheet, TextComponent, Alert } from 'react-native'
 import { stylesAppTheme } from '../theme/AppTheme'
 import { UserContext } from '../context/UserContext'
 import { useTheme } from '../hooks/UseTheme'
@@ -14,6 +14,7 @@ export const Profile = () => {
   const { userData } = useContext(UserContext) || { setUserData: () => { } }; // Maneja el caso de que el contexto no esté definido
 
   const [editarPerfil, setEditarPerfil] = useState<boolean>(false);
+  const [datosEditados, setDatosEditados] = useState<boolean>(false);
 
   const [name, setName] = useState<string>("");
   const [username, setUsername] = useState<string>("");
@@ -31,10 +32,48 @@ export const Profile = () => {
 
   }, [editarPerfil])
 
+  useEffect(
+    () => {
+      if (userData?.name != name || userData?.email != email || userData?.gender != gender) {
+        setDatosEditados(true);
+      }
+      else {
+        setDatosEditados(false);
+      }
 
+    }, [name, email, gender]
+  )
 
 
   const noFunction = () => { }
+
+  const Alert_Editar_Perfil = () =>
+    Alert.alert(
+      'Editando perfil',
+      '¿Seguro que deseas guardar cambios?',
+      [
+        {
+          text: 'Cancel',
+          onPress: () => { },
+          style: 'cancel',
+        },
+        {
+          text: 'Ok',
+          //onPress: () => DeleteProfile(),
+          onPress: () => setEditarPerfil(false),
+
+          style: 'destructive',
+        },
+
+      ],
+      {
+        cancelable: true,
+        /* onDismiss: () =>
+          Alert.alert(
+            'This alert was dismissed by tapping outside of the alert dialog.',
+          ), */
+      },
+    );
 
   return (
     // <View style={[stylesAppTheme.container, dynamicStyles.dynamicScrollViewStyle]}>
@@ -68,8 +107,8 @@ export const Profile = () => {
         <>
           <TextInputComponent placeholderText='Nombre' action={setName} value={name} isPassword={false} verified={false} />
           <Text></Text>
-          <TextInputComponent placeholderText='Usuario' action={setUsername} value={username} isPassword={false} verified={false} />
-          <Text></Text>
+          {/* <TextInputComponent placeholderText='Usuario' action={setUsername} value={username} isPassword={false} verified={false} />
+          <Text></Text> */}
           <TextInputComponent placeholderText='Correo E.' action={setEmail} value={email} isPassword={false} verified={false} />
           <Text></Text>
           <TextInputComponent placeholderText='Genero' action={setGender} value={gender} isPassword={false} verified={false} />
@@ -78,7 +117,18 @@ export const Profile = () => {
         </>
       }
 
-      <ButtonComponent title={editarPerfil ? 'Guardar cambios' : 'Editar perfil'} funcion={() => setEditarPerfil(!editarPerfil)} active={true} />
+      {/* <ButtonComponent title={editarPerfil ? 'Guardar cambios' : 'Editar perfil'} funcion={() => setEditarPerfil(!editarPerfil)} active={true} /> */}
+
+      {(editarPerfil == false)
+        ?
+        <ButtonComponent title='Editar Perfil' funcion={() => setEditarPerfil(true)} active={true} />
+        :
+        <ButtonComponent title={datosEditados ? 'guardar cambios' : 'regresar'} funcion={datosEditados ?
+          () => Alert_Editar_Perfil()
+          :
+          () => setEditarPerfil(false)} active={true} />
+
+      }
 
       <Text></Text>
       {/*
