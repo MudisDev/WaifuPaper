@@ -313,23 +313,24 @@ export const ProfileCharacter = ({ route }) => {
 
                 {waifu &&
                     <>
+                        <Text></Text>
                         <Text style={[dynamicStyles.dynamicText, { fontWeight: 'bold' }]}>Wallpapers</Text>
                     </>
                 }
 
-                <View style={{ flexDirection: 'row' }}>
+                <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 10, padding: 10, /* backgroundColor: "red", */ justifyContent: 'center' }}>
                     {waifu &&
                         <>
                             {dataArray?.map((item) => (
-                                <TouchableOpacity onPress={() => navigation.navigate("Wallpaper", {url: item.url, id: item.id})} key={item.id}>
+                                <TouchableOpacity onPress={() => navigation.navigate("Wallpaper", { url: item.url, id: item.id })} key={item.id}>
                                     <Image
                                         /*  key={item.id} */
                                         source={{ uri: item.url }}
                                         style={{
-                                            width: width * 0.2,
+                                            width: width * 0.25, // un poco más grande
                                             aspectRatio: 9 / 16,
-                                            borderRadius: 12,
-                                            marginRight: 16
+                                            borderRadius: 14,
+                                            resizeMode: 'cover', // importante: evita que se estire raro
                                         }}
                                     />
                                 </TouchableOpacity>
