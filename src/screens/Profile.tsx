@@ -55,7 +55,8 @@ export const Profile = () => {
       [
         {
           text: 'Cancel',
-          onPress: () => { },
+          //onPress: () => { },
+          onPress: () => setEditarPerfil(false),
           style: 'cancel',
         },
         {
