@@ -306,3 +306,7 @@ SELECT * FROM aparece_en;
 SELECT * FROM tiene_etiqueta;
 
 SHOW TABLES;
+
+SELECT * from usa_modelo_lora;
+SELECT * FROM modelo_lora;
+SELECT * FROM modelo_base;
