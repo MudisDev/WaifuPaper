@@ -5,13 +5,14 @@ import { UserContext } from '../context/UserContext'
 import { useTheme } from '../hooks/UseTheme'
 import { ButtonComponent } from '../components/ButtonComponent'
 import { TextInputComponent } from '../components/TextInputComponent'
+import { update_profile } from '../const/UrlConfig'
 
 
 export const Profile = () => {
 
   const { themeData, dynamicStyles } = useTheme();
 
-  const { userData } = useContext(UserContext) || { setUserData: () => { } }; // Maneja el caso de que el contexto no esté definido
+  const { userData, setUserData } = useContext(UserContext) || { setUserData: () => { } }; // Maneja el caso de que el contexto no esté definido
 
   const [editarPerfil, setEditarPerfil] = useState<boolean>(false);
   const [datosEditados, setDatosEditados] = useState<boolean>(false);
@@ -30,7 +31,7 @@ export const Profile = () => {
       setGender(userData?.gender || "");
     }
 
-  }, [editarPerfil])
+  }, [editarPerfil, setUserData])
 
   useEffect(
     () => {
@@ -60,7 +61,8 @@ export const Profile = () => {
         {
           text: 'Ok',
           //onPress: () => DeleteProfile(),
-          onPress: () => setEditarPerfil(false),
+          //onPress: () => setEditarPerfil(false),
+          onPress: () => ActualizarPerfil(userData?.idUser),
 
           style: 'destructive',
         },
@@ -74,6 +76,79 @@ export const Profile = () => {
           ), */
       },
     );
+
+
+  const ActualizarPerfil = async (id_usuario) => {
+    try {
+      //console.log("Path login -> ", login_path)
+      //const response = await fetch(`http://localhost/nekopaper/api/usuario/iniciar_sesion.php?username=${username}&password=${password}`);
+      //const response = await fetch(`http://192.168.18.5/nekopaper/api/usuario/iniciar_sesion.php?username=${username}&password=${password}`);
+      const response = await fetch(`${update_profile}?id_usuario=${id_usuario}&nombre=${name}&email=${email}&genero=${gender}`);
+      console.log('Paso del await en actualizar');
+      console.log(`response => ${response}`);
+      const data = await response.json();
+      // Retorna los datos para ser usados en el componente
+      console.log(data);
+
+      const user = data[0];
+      console.log(`user -> ${user}`);
+      console.log(`userIsArray -> ${Array.isArray(user)}`);
+
+      if (data.Success) {
+
+        /* const userDataResponse = {
+         username: user.username,
+         name: user.nombre,
+         phoneNumber: user.telefono,
+         email: user.email,
+         profilePhoto: user.foto_perfil,
+         //registerDate: user.fecha_registro,
+         idUser: user.id_usuario,
+         gender: user.genero
+       }  */
+
+        const userDataResponse = {
+          username: userData?.username,
+          name: name,
+          phoneNumber: userData?.phoneNumber || "",
+          email: email,
+          profilePhoto: userData?.profilePhoto || "",
+          //registerDate: user.fecha_registro,
+          idUser: userData?.idUser || 0,
+          gender: gender
+        }
+
+        /* console.log(`userdata -> ${userDataResponse}`);
+        const array = JSON.stringify(userDataResponse);
+        console.log(Array.isArray(array)); */
+
+        setUserData(userDataResponse);
+
+        /* console.log(userData?.email);
+        console.log(`id_usuario que genera el token -> ${userDataResponse.idUser}`) */
+        /* Generar_Token(userDataResponse.idUser);
+ 
+ 
+        navigation.navigate("BottomTabNavigator"); */
+        console.log('Update Success');
+      }
+      else if (data.Warning) {
+        console.log('Update Warning');
+
+      }
+      else if (data.Error) {
+        console.log('Update Warning');
+
+      }
+
+      setDatosEditados(false);
+      setEditarPerfil(false);
+
+
+    } catch (e) {
+      console.error(`error: ${e}`);
+    }
+  }
 
   return (
     // <View style={[stylesAppTheme.container, dynamicStyles.dynamicScrollViewStyle]}>

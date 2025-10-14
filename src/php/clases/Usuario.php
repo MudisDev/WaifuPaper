@@ -160,9 +160,10 @@ class Usuario
     public function Actualizar_Perfil()
     {
         $condiciones = "id_usuario = '$this->id_usuario'";
-        $columnas = null;
+        $columnas = "nombre = '$this->nombre', email = '$this->email', genero = '$this->genero'";
         $conexion = new Conexion();
-        $conexion->SetUpdate("Usuario", $columnas, $condiciones);
+        $resultado = $conexion->SetUpdate("Usuario", $columnas, $condiciones);
+        return $resultado;
     }
 }
 
