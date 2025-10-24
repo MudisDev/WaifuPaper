@@ -120,8 +120,13 @@ class Conexion
         }
     }
 
-    public function SetInsert(string $tabla, array $columnas, array $datos)
+    public function SetInsert(string $tabla, array $columnas, array $datos, bool $is_register = false)
     {
+
+        if ($is_register) {
+            $hashed_password = password_hash($datos[3], PASSWORD_DEFAULT);
+            $datos[3] = $hashed_password;
+        }
         //echo "Entro a set insert en conexion";
 
         $valores = [];

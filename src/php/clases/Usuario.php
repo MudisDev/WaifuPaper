@@ -59,7 +59,7 @@ class Usuario
                 $this->genero,
                 $this->telefono,
                 $this->foto_perfil
-            ]
+            ], true
         );
         return $resultado;
     }
