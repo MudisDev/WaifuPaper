@@ -1,5 +1,5 @@
 <?php
-require_once  __DIR__ . '/../config/credentials.php';
+require_once __DIR__ . '/../config/credentials.php';
 
 class Conexion
 {
@@ -49,6 +49,8 @@ class Conexion
             $this->sql .= " WHERE $condiciones";
         }
 
+
+
         $coincidenciaBusqueda = false;
 
         $resultados = [];
@@ -58,7 +60,8 @@ class Conexion
             while ($fila = $resultado->fetch_assoc()) {
 
                 if ($is_login) {
-                    if ($password == $fila['password']) {
+                    //if ($password == $fila['password']) {
+                    if (password_verify($password, $fila['password'])) {
                         $coincidenciaBusqueda = true;
                         $resultados[] = $fila; // Cada fila es un diccionario (asociativo)
                         break;
@@ -72,11 +75,17 @@ class Conexion
             }
         }
 
-        if ($coincidenciaBusqueda == false) {
-            return ["Error" => "No hubo coincidencias"];
-        } else {
-            return $resultados;
+        // Si es login y no hubo coincidencia
+        if ($is_login && empty($resultados)) {
+            return ["Error" => "Contraseña incorrecta o usuario no encontrado"];
         }
+
+        // Si es consulta normal y no hay resultados
+        if (!$is_login && empty($resultados)) {
+            return ["Error" => "No hubo coincidencias"];
+        }
+
+        return $resultados;
     }
 
     /* public function IniciarSesion(string $tabla, array $columnas = ['*'], $columna_usuario, $username, $password)
