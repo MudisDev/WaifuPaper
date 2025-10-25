@@ -165,6 +165,13 @@ class Usuario
         $resultado = $conexion->SetUpdate("Usuario", $columnas, $condiciones);
         return $resultado;
     }
+
+    public function Buscar_Email(){
+        $condiciones = "username = '$this->username'";
+        $conexion = new Conexion();
+        $resultado = $conexion->SetSelect('Usuario', ["email"], $condiciones);
+        return $resultado;
+    }
 }
 
 
