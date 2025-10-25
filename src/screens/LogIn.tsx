@@ -280,6 +280,7 @@ const RecibirDatoPerfil = async ( id_usuario) => {
             <ButtonComponent title='iniciar sesion' funcion={IniciarSesion} active={activeButton} />
             <Text></Text>
             <TextLinkComponent text='¿No tienes una cuenta? Registrate' screenNavigation='Register' />
+            <TextLinkComponent text='¿Olvidaste tu contraseña?' screenNavigation='RecoverAccount' />
 
         </View>
     )
