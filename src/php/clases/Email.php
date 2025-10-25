@@ -5,6 +5,8 @@ require __DIR__ . '/../vendor/phpmailer/phpmailer/src/PHPMailer.php';
 require __DIR__ . '/../vendor/phpmailer/phpmailer/src/SMTP.php';
 require __DIR__ . '/../vendor/phpmailer/phpmailer/src/Exception.php';
 
+require_once __DIR__ . '/../config/credentials_email.php';
+
 class Email
 {
 
@@ -17,16 +19,17 @@ class Email
 
         // Configuración de MailHog
         $this->mail->isSMTP();
-        $this->mail->Host = 'localhost';
-        $this->mail->Port = 1025;
-        $this->mail->SMTPAuth = false;
-        $this->mail->SMTPSecure = '';
+        $this->mail->Host = EMAIL_HOST;
+        $this->mail->Port = EMAIL_PORT;
+        $this->mail->SMTPAuth = EMAIL_SMTAUTH;
+        $this->mail->SMTPSecure = EMAIL_SMTPSECURE;
+
     }
 
     public function Set_Datos($destinatario, $asunto, $cuerpo, $usuario)
     {
         // Dirección de envío
-        $this->mail->setFrom('test@example.com', 'Servidor Local ');
+        $this->mail->setFrom(EMAIL_FROMEMAIL, EMAIL_FROMNAME);
         $this->mail->addAddress($destinatario, $usuario);
 
         // Contenido
