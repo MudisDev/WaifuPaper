@@ -26,33 +26,31 @@ class Email
 
     }
 
-    public function Set_Datos($destinatario, $asunto, $cuerpo, $usuario)
+    public function Set_Datos($email, $asunto, $cuerpo, $username)
     {
         // Dirección de envío
         $this->mail->setFrom(EMAIL_FROMEMAIL, EMAIL_FROMNAME);
-        $this->mail->addAddress($destinatario, $usuario);
+        $this->mail->addAddress($email, $username);
 
         // Contenido
         $this->mail->isHTML(true);
         $this->mail->Subject = $asunto;
         $this->mail->Body = $cuerpo;
         $this->mail->AltBody = $cuerpo;
-
     }
 
     public function Enviar_Email()
     {
         try {
-
             // Enviar
             $this->mail->send();
-            echo "Correo enviado ✅. Revisa MailHog en http://localhost:8025";
+            //echo "Correo enviado ✅. Revisa MailHog en http://localhost:8025";
+            return ["Success" => "Envio de email exitoso"];
         } catch (PHPMailer\PHPMailer\Exception $e) {
-            echo "Error al enviar: {$this->mail->ErrorInfo}";
+            //echo "Error al enviar: {$this->mail->ErrorInfo}";
+            return ["Error" => "Fallo al intentar enviar email"];
         }
     }
-
-
 }
 
 
