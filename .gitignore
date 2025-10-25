@@ -37,3 +37,5 @@ src/php/config/
 
 # typescript
 *.tsbuildinfo
+
+src/php/vendor

@@ -1,0 +1,17 @@
+{
+    "name": "mudisdev/waifupaper-backend",
+    "autoload": {
+        "psr-4": {
+            "Mudisdev\\WaifupaperBackend\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "MudisDev",
+            "email": "martin.bibiano4@outlook.com"
+        }
+    ],
+    "require": {
+        "phpmailer/phpmailer": "^7.0"
+    }
+}
