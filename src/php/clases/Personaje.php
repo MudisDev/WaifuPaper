@@ -76,6 +76,18 @@ class Personaje
           imagen_perfil TEXT NOT NULL,
           FOREIGN KEY (id_especie) REFERENCES Especie (id_especie) */
     }
+
+    public function Asignar_Personalidad($id_personalidad)
+    {
+
+        $conexion = new Conexion();
+        $resultado = $conexion->SetInsert(
+            "Tiene_Personalidad",
+            ["id_personaje", "id_personalidad"],
+            [$this->id_personaje, $id_personalidad]
+        );
+        return $resultado;
+    }
     /* 
         public function Set_Perfil(array $datos)
         {

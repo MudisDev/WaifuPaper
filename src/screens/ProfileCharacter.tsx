@@ -65,7 +65,7 @@ export const ProfileCharacter = ({ route }) => {
 
 
 
-    useEffect(() => {
+/*     useEffect(() => {
         console.log("URL:", url);
         console.log("Artista recibido:", artist_name);
 
@@ -74,7 +74,7 @@ export const ProfileCharacter = ({ route }) => {
 
 
 
-    }, [])
+    }, []) */
 
     useFocusEffect(
         useCallback(() => {
@@ -89,7 +89,10 @@ export const ProfileCharacter = ({ route }) => {
     }, [isFavorite]) */
 
     const Buscar_Personaje = async () => {
+        console.log("Buscando personaje ");
         try {
+            console.log("ENtro al try de buscar personaje");
+            console.log(`id personaje => ${id}`)
             const url = `${search_character}?` +
                 `id_personaje=${id}`;
 
@@ -123,7 +126,7 @@ export const ProfileCharacter = ({ route }) => {
 
                 setWaifu(mappedData);
             } else {
-                console.warn("No se encontraron imágenes en la respuesta.");
+                console.log("No se encontraron imágenes en la respuesta.");
             }
 
 
@@ -216,7 +219,7 @@ export const ProfileCharacter = ({ route }) => {
     } */
 
     useEffect(() => {
-
+        console.log("Intentando mostrar wallpapers");
         if (!waifu || waifu.length === 0) return;
         //fetch("http://192.168.18.5/nekopaper/api/lista/mostrar_imagenes.php")
         fetch(`${show_images_for_character}?id_personaje=${waifu[0].id_character}`)
@@ -247,7 +250,7 @@ export const ProfileCharacter = ({ route }) => {
                     setDataArray(mappedData);
                     setNoImages(false);
                 } else {
-                    console.warn("No se encontraron imágenes en la respuesta.");
+                    console.log("No se encontraron imágenes en la respuesta.");
                     setNoImages(true);
                 }
                 console.log(`id waifu ${waifu[0].id_character}`);
