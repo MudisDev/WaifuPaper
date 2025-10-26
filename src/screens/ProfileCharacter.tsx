@@ -126,7 +126,7 @@ export const ProfileCharacter = ({ route }) => {
 
                 setWaifu(mappedData);
             } else {
-                console.log("No se encontraron imágenes en la respuesta.");
+                console.warn("No se encontraron imágenes en la respuesta.");
             }
 
 
@@ -250,7 +250,7 @@ export const ProfileCharacter = ({ route }) => {
                     setDataArray(mappedData);
                     setNoImages(false);
                 } else {
-                    console.log("No se encontraron imágenes en la respuesta.");
+                    console.warn("No se encontraron imágenes en la respuesta.");
                     setNoImages(true);
                 }
                 console.log(`id waifu ${waifu[0].id_character}`);

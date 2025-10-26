@@ -9,7 +9,7 @@ import { dynamicStylesAppTheme } from '../theme/DynamicAppTheme';
 interface TextInputProps {
     placeholderText: string,
     value: string,
-    action: (text: string) => void,
+    action: (text: string ) => void,
     isPassword: boolean,
     isNumericKeybordType?: boolean,
     verified: boolean,
