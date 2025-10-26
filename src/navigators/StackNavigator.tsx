@@ -7,6 +7,7 @@ import { Wallpaper } from '../screens/Wallpaper';
 import { DevTool } from '../screens/DevTool';
 import { ProfileCharacter } from '../screens/ProfileCharacter';
 import { RecoverAccount } from '../screens/RecoverAccount';
+import { TopTabNavigator } from './TopTabNavigator';
 
 const Stack = createNativeStackNavigator();
 
@@ -21,6 +22,7 @@ export function StackNavigator() {
       <Stack.Screen name="DevTool" component={DevTool} options={{ headerShown: false }} />
       <Stack.Screen name="ProfileCharacter" component={ProfileCharacter} options={{ headerShown: false }} />
       <Stack.Screen name="RecoverAccount" component={RecoverAccount} options={{ headerShown: false }} />
+      <Stack.Screen name="TopTabNavigator" component={TopTabNavigator} options={{ headerShown: false }} />
 
     </Stack.Navigator>
   );
