@@ -162,7 +162,7 @@ export const AdminAddWaifu = () => {
             </View> */}
             <Image
                 /*  key={item.id} */
-                source={{ uri: 'https://images.steamusercontent.com/ugc/832454479536053344/8465272211524FA4E79D28F847A70DF9863E5396/?imw=637&imh=358&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=true' }}
+                source={ {uri: profilePhoto}}
                 style={{
                     //width: width * 0.25, // un poco más grande
                     width: 50,
