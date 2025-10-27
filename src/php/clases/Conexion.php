@@ -172,7 +172,11 @@ class Conexion
         $resultado = $this->conn->query($this->sql);
         if ($resultado) {
             if ($this->conn->affected_rows > 0) {
-                return ["Success" => "Registro exitoso en tabla $tabla."];
+
+                // Obtener el ID generado
+                $lastId = $this->conn->insert_id;
+
+                return ["Success" => "Registro exitoso en tabla $tabla.", "id_generado" => $lastId];
             } else {
                 return ["Warning" => "La consulta se ejecutó, pero no se insertó ninguna fila en $tabla."];
             }

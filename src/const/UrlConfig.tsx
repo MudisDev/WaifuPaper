@@ -37,6 +37,8 @@ export const associate_tags = `${image_path}/asociar_etiquetas.php`;
 export const consult_tags = `${image_path}/consultar_etiquetas.php`;
 
 export const search_character = `${character_path}/buscar_personaje.php`;
+export const register_character = `${character_path}/registrar_personaje.php`;
+export const assign_personality = `${character_path}/asignar_personalidad.php`;
 
 export const generate_token = `${token_path}/generar_token.php`;
 export const consult_token = `${token_path}/consultar_token.php`;

@@ -3,8 +3,10 @@ import { View, Text, Image } from 'react-native'
 import { useTheme } from '../hooks/UseTheme';
 import { stylesAppTheme } from '../theme/AppTheme';
 import { TextInputComponent } from '../components/TextInputComponent';
+import { assign_personality, register_character } from '../const/UrlConfig';
+import { ButtonComponent } from '../components/ButtonComponent';
 
-import { Picker } from '@react-native-picker/picker';
+/* import { Picker } from '@react-native-picker/picker'; */
 
 export const AdminAddWaifu = () => {
     const { themeData, dynamicStyles } = useTheme();
@@ -23,7 +25,69 @@ export const AdminAddWaifu = () => {
     const [idPersonality, setIdPersonality] = useState<number>();
 
 
-    const [selectedLanguage, setSelectedLanguage] = useState();
+    /* const [selectedLanguage, setSelectedLanguage] = useState(); */
+
+
+    const Registrar_Personaje = async () => {
+
+        try {
+
+            //console.log("Path login -> ", login_path)
+            //const response = await fetch(`http://localhost/nekopaper/api/usuario/iniciar_sesion.php?username=${username}&password=${password}`);
+            //const response = await fetch(`http://192.168.18.5/nekopaper/api/usuario/iniciar_sesion.php?username=${username}&password=${password}`);
+            const response = await fetch(`${register_character}?
+                nombre=${name}&
+                alias=${alias}&
+                descripcion=${description}&
+                historia=${history}&
+                ocupacion=${occupation}&
+                pasatiempo=${hobbies}&
+                dia=${day}&
+                mes=${month}&
+                edad=${age}&
+                id_especie=${idKind}&
+                imagen_perfil=${profilePhoto}`);
+
+            const data = await response.json();
+            // Retorna los datos para ser usados en el componente
+            console.log(data);
+            
+            
+
+            if (!data.Error) {
+                console.log("Al parecer registro de personaje exitoso");
+                Asignar_Personalidad(data.id_generado);
+            }
+
+
+        } catch (e) {
+            console.error(`error registrar personaje: ${e}`);
+        }
+    }
+
+    const Asignar_Personalidad = async (id_personaje: number) => {
+
+        try {
+
+            //console.log("Path login -> ", login_path)
+            //const response = await fetch(`http://localhost/nekopaper/api/usuario/iniciar_sesion.php?username=${username}&password=${password}`);
+            //const response = await fetch(`http://192.168.18.5/nekopaper/api/usuario/iniciar_sesion.php?username=${username}&password=${password}`);
+            const response = await fetch(`${assign_personality}?id_personaje=${id_personaje}&id_personalidad=${idPersonality}`);
+            const data = await response.json();
+            // Retorna los datos para ser usados en el componente
+            console.log(data);
+
+
+            if (!data.Error) {
+                console.log("Parece que se asigno exitosamente la personalidad");
+
+            }
+
+
+        } catch (e) {
+            console.error(`error asignar personalidad: ${e}`);
+        }
+    }
 
     return (
         <View style={[stylesAppTheme.container, dynamicStyles.dynamicScrollViewStyle]}>
@@ -37,13 +101,55 @@ export const AdminAddWaifu = () => {
 
             <TextInputComponent value={occupation} action={setOccupation} placeholderText='Ocupacion' verified={false} isPassword={false} />
             <TextInputComponent value={hobbies} action={setHobbies} placeholderText='Pasatiempos' verified={false} isPassword={false} />
-            <TextInputComponent value={day} action={setDay} placeholderText='Edad' verified={false} isPassword={false} />
-            <TextInputComponent value={month} action={setMonth} placeholderText='Mes' verified={false} isPassword={false} />
+
+            <TextInputComponent
+                value={day?.toString() || ''}
+                action={(text) => setDay(Number(text))}
+                placeholderText='Día'
+                verified={false}
+                isPassword={false}
+                isNumericKeybordType
+            />
+            <TextInputComponent
+                value={month?.toString() || ''}
+                action={(text) => setMonth(Number(text))}
+                placeholderText='Mes'
+                verified={false}
+                isPassword={false}
+                isNumericKeybordType
+            />
+            <TextInputComponent
+                value={age?.toString() || ''}
+                action={(text) => setAge(Number(text))}
+                placeholderText='Edad'
+                verified={false}
+                isPassword={false}
+                isNumericKeybordType
+            />
+            <TextInputComponent
+                value={idKind?.toString() || ''}
+                action={(text) => setIdKind(Number(text))}
+                placeholderText='Especie'
+                verified={false}
+                isPassword={false}
+                isNumericKeybordType
+            />
+            <TextInputComponent
+                value={idPersonality?.toString() || ''}
+                action={(text) => setIdPersonality(Number(text))}
+                placeholderText='Personalidad'
+                verified={false}
+                isPassword={false}
+                isNumericKeybordType
+            />
+            {/* <TextInputComponent value={day} action={setDay} placeholderText='Edad' verified={false} isPassword={false} /> */}
+            {/* <TextInputComponent value={month} action={setMonth} placeholderText='Mes' verified={false} isPassword={false} />
             <TextInputComponent value={age} action={setAge} placeholderText='Edad' verified={false} isPassword={false} />
-            <TextInputComponent value={idKind} action={setIdKind} placeholderText='Especie' verified={false} isPassword={false} />
+            <TextInputComponent value={idKind} action={setIdKind} placeholderText='Especie' verified={false} isPassword={false} /> */}
             <TextInputComponent value={profilePhoto} action={setProfilePhoto} placeholderText='Imagen perfil Url' verified={false} isPassword={false} />
-            <TextInputComponent value={idPersonality} action={setIdPersonality} placeholderText='Personalidad' verified={false} isPassword={false} />
-            <View style={{ backgroundColor: "red", width: 200 }}>
+            {/* <TextInputComponent value={idPersonality} action={setIdPersonality} placeholderText='Personalidad' verified={false} isPassword={false} /> */}
+
+            {/* <View style={{ backgroundColor: "red", width: 200 }}>
 
                 <Picker
                     selectedValue={selectedLanguage}
@@ -53,7 +159,7 @@ export const AdminAddWaifu = () => {
                     <Picker.Item label="Java" value="java" />
                     <Picker.Item label="JavaScript" value="js" />
                 </Picker>
-            </View>
+            </View> */}
             <Image
                 /*  key={item.id} */
                 source={{ uri: 'https://images.steamusercontent.com/ugc/832454479536053344/8465272211524FA4E79D28F847A70DF9863E5396/?imw=637&imh=358&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=true' }}
@@ -65,6 +171,7 @@ export const AdminAddWaifu = () => {
                     resizeMode: 'cover', // importante: evita que se estire raro
                 }}
             />
+            <ButtonComponent active={true} funcion={()=> Registrar_Personaje()} title='Registrar Waifu'/>
 
         </View>
     )

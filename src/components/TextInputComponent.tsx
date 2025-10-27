@@ -9,7 +9,7 @@ import { dynamicStylesAppTheme } from '../theme/DynamicAppTheme';
 interface TextInputProps {
     placeholderText: string,
     value: string,
-    action: (text: string ) => void,
+    action: (text: string) => void,
     isPassword: boolean,
     isNumericKeybordType?: boolean,
     verified: boolean,
@@ -38,7 +38,16 @@ export const TextInputComponent: React.FC<TextInputProps> = ({ placeholderText, 
                 placeholder={placeholderText}
                 value={value}
                 //onChangeText={(text) => action(text)}
-                onChangeText={action}
+                //onChangeText={action}
+                onChangeText={(text) => {
+                    if (isNumericKeybordType) {
+                        // Solo permite dígitos del 0 al 9
+                        const numericValue = text.replace(/[^0-9]/g, '');
+                        action(numericValue);
+                    } else {
+                        action(text);
+                    }
+                }}
                 secureTextEntry={isPassword && !passIsVisible}
                 keyboardType={keyboardType}
 
