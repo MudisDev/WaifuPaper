@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { StrictMode, useEffect, useState } from 'react'
 import { View, Text, Image, ScrollView } from 'react-native'
 import { useTheme } from '../hooks/UseTheme';
 import { stylesAppTheme } from '../theme/AppTheme';
@@ -94,21 +94,24 @@ export const AdminEditWaifu = () => {
 
         try {
 
+            const params = new URLSearchParams({
+                id_personaje: String(idCharacter),
+                nombre: editWaifu?.name || '',
+                alias: editWaifu?.alias || '',
+                descripcion: editWaifu?.description || '',
+                historia: editWaifu?.history || '',
+                pasatiempo: editWaifu?.hobbies || '',
+                ocupacion: editWaifu?.occupation || '',
+                dia: String(editWaifu?.day) || '',
+                mes: String(editWaifu?.month || ''),
+                edad: String(editWaifu?.age || ''),
+                imagen_perfil: editWaifu?.profilePhoto || ''
+
+            });
             //console.log("Path login -> ", login_path)
             //const response = await fetch(`http://localhost/nekopaper/api/usuario/iniciar_sesion.php?username=${username}&password=${password}`);
             //const response = await fetch(`http://192.168.18.5/nekopaper/api/usuario/iniciar_sesion.php?username=${username}&password=${password}`);
-            const response = await fetch(`${edit_profile}?id_personaje=${idCharacter}
-                    &nombre=${editWaifu?.name}
-                    &alias=${editWaifu?.alias}
-                    &descripcion=${editWaifu?.description}
-                    &historia=${editWaifu?.history}
-                    &pasatiempo=${editWaifu?.hobbies}
-                    &ocupacion=${editWaifu?.occupation}
-                    &dia=${editWaifu?.day}
-                    &mes=${editWaifu?.month}
-                    &edad=${editWaifu?.age}
-                    &imagen_perfil=${editWaifu?.profilePhoto}
-                    `);
+            const response = await fetch(`${edit_profile}?id_personaje=${idCharacter}&${params.toString()}`);
 
 
             /* nombre VARCHAR(40) NOT NULL,
@@ -157,7 +160,7 @@ export const AdminEditWaifu = () => {
                 setIsEditing(false);
 
             }
-        
+
 
 
         } catch (e) {
@@ -172,8 +175,14 @@ export const AdminEditWaifu = () => {
                 <Text style={[dynamicStyles.dynamicText, { fontSize: 25 }]}>
                     Editar waifu Bv
                 </Text>
-                <TextInputComponent value={idCharacter?.toString() || ''} action={(text) => setIdCharacter(Number(text))} placeholderText='id waifu' verified={false} isPassword={false} />
-                <ButtonComponent active={true} funcion={Buscar_Personaje} title='Buscar waifu' />
+                {
+                    dataWaifu && !isEditing && (
+                        <><TextInputComponent value={idCharacter?.toString() || ''} action={(text) => setIdCharacter(Number(text))} placeholderText='id waifu' verified={false} isPassword={false} />
+                            <ButtonComponent active={true} funcion={Buscar_Personaje} title='Buscar waifu' />
+                        </>
+                    )
+                }
+
                 {/* <ScrollView style={[dynamicStyles.dynamicViewContainer]}></ScrollView> */}
                 {
                     dataWaifu ? (
