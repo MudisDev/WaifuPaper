@@ -4,7 +4,7 @@ import { useTheme } from '../hooks/UseTheme';
 import { stylesAppTheme } from '../theme/AppTheme';
 import { TextInputComponent } from '../components/TextInputComponent';
 import { ButtonComponent } from '../components/ButtonComponent';
-import { search_character } from '../const/UrlConfig';
+import { edit_profile, search_character } from '../const/UrlConfig';
 
 
 interface WaifuData {
@@ -31,6 +31,7 @@ export const AdminEditWaifu = () => {
     const [dataWaifu, setDataWaifu] = useState<WaifuData>();
     const [editWaifu, setEditWaifu] = useState<WaifuData>();
     const [isEditing, setIsEditing] = useState<boolean>(false);
+    const isModified = JSON.stringify(dataWaifu) != JSON.stringify(editWaifu);
 
     const Buscar_Personaje = async () => {
 
@@ -89,6 +90,81 @@ export const AdminEditWaifu = () => {
     }, [isEditing])
 
 
+    const Editar_Perfil = async () => {
+
+        try {
+
+            //console.log("Path login -> ", login_path)
+            //const response = await fetch(`http://localhost/nekopaper/api/usuario/iniciar_sesion.php?username=${username}&password=${password}`);
+            //const response = await fetch(`http://192.168.18.5/nekopaper/api/usuario/iniciar_sesion.php?username=${username}&password=${password}`);
+            const response = await fetch(`${edit_profile}?id_personaje=${idCharacter}
+                    &nombre=${editWaifu?.name}
+                    &alias=${editWaifu?.alias}
+                    &descripcion=${editWaifu?.description}
+                    &historia=${editWaifu?.history}
+                    &pasatiempo=${editWaifu?.hobbies}
+                    &ocupacion=${editWaifu?.occupation}
+                    &dia=${editWaifu?.day}
+                    &mes=${editWaifu?.month}
+                    &edad=${editWaifu?.age}
+                    &imagen_perfil=${editWaifu?.profilePhoto}
+                    `);
+
+
+            /* nombre VARCHAR(40) NOT NULL,
+            alias VARCHAR(30) NOT NULL,
+            descripcion TEXT NOT NULL,
+            historia TEXT NOT NULL,
+            pasatiempo TEXT NOT NULL,
+            ocupacion VARCHAR(40) NOT NULL,
+            dia INT NOT NULL,
+            mes INT NOT NULL,
+            edad INT NOT NULL,
+            id_especie INT NOT NULL,
+            imagen_perfil TEXT NOT NULL, */
+
+            const data = await response.json();
+            // Retorna los datos para ser usados en el componente
+            const waifu = data[0];
+            console.log(`datos editados => ${waifu}`);
+
+
+            if (!data.error) {
+                console.log("Al parecer si edito a la waifu Bv");
+
+                /* Asignar_Personalidad(data.id_generado); */
+
+                /* const mappedData: WaifuData = {
+                    id: waifu.id_personaje,
+                    age: waifu.edad,
+                    alias: waifu.alias,
+                    day: waifu.dia,
+                    description: waifu.descripcion,
+                    history: waifu.historia,
+                    hobbies: waifu.pasatiempo,
+                    idKind: waifu.id_especie,
+                    kind: waifu.especie,
+                    month: waifu.mes,
+                    name: waifu.nombre,
+                    occupation: waifu.ocupacion,
+                    //idPersonality: waifu.id_personalidad,
+                    personalities: waifu.personalidades,
+                    profilePhoto: waifu.imagen_perfil,
+                } */
+
+                //setDataWaifu(mappedData);
+
+                setIsEditing(false);
+
+            }
+        
+
+
+        } catch (e) {
+            console.error(`error al editar el perfil de waifu: ${e}`);
+        }
+    }
+
 
     return (
         <ScrollView style={[/* stylesAppTheme.container,  */dynamicStyles.dynamicScrollViewStyle]}>
@@ -129,7 +205,7 @@ export const AdminEditWaifu = () => {
                                         <Text style={dynamicStyles.dynamicText}>Especie: {dataWaifu?.kind}</Text>
                                         <Text style={dynamicStyles.dynamicText}>Personalidad(es): {dataWaifu?.personalities}</Text>
                                         <Text style={[dynamicStyles.dynamicText, { marginTop: 16 }]}>
-                                            {dataWaifu?.description}
+                                            Descripcion: {dataWaifu?.description}
                                         </Text>
 
                                         {/* Historia (expandible si deseas) */}
@@ -177,8 +253,12 @@ export const AdminEditWaifu = () => {
                                                             isNumericKeybordType
                                                         /> */}
 
+                                        {isModified ?
+                                            <ButtonComponent active={true} funcion={() => { Editar_Perfil() }} title='Guardar cambios' />
+                                            :
+                                            <ButtonComponent active={true} funcion={() => { setIsEditing(false) }} title='Volver' />
 
-                                        <ButtonComponent active={true} funcion={() => { setIsEditing(false) }} title='Guardar cambios' />
+                                        }
                                     </>
                                 )
                             }
