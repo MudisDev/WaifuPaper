@@ -88,6 +88,29 @@ class Personaje
         );
         return $resultado;
     }
+
+    public function Editar_Perfil()
+    {
+        $condiciones = "id_personaje = '$this->id_personaje'";
+        $conexion = new Conexion();
+        $resultado = $conexion->SetUpdate(
+            "Personaje",
+            "nombre = '$this->nombre',
+                alias = '$this->alias',
+                descripcion = '$this->descripcion',
+                historia = '$this->historia',
+                pasatiempo = '$this->pasatiempo',
+                ocupacion = '$this->ocupacion',
+                dia = '$this->dia',
+                mes = '$this->mes',
+                edad = '$this->edad',
+                imagen_perfil = '$this->imagen_perfil'",
+            $condiciones
+        );
+        return $resultado;
+    }
+
+
     /* 
         public function Set_Perfil(array $datos)
         {

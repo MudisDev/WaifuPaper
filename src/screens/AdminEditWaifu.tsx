@@ -19,7 +19,9 @@ interface WaifuData {
     month: number;
     age: number;
     idKind: number;
-    idPersonality: number;
+    kind: string;
+    //idPersonality: number;
+    personalities: string;
     profilePhoto: string;
 }
 
@@ -59,10 +61,12 @@ export const AdminEditWaifu = () => {
                     history: waifu.historia,
                     hobbies: waifu.pasatiempo,
                     idKind: waifu.id_especie,
+                    kind: waifu.especie,
                     month: waifu.mes,
                     name: waifu.nombre,
                     occupation: waifu.ocupacion,
-                    idPersonality: waifu.id_personalidad,
+                    //idPersonality: waifu.id_personalidad,
+                    personalities: waifu.personalidades,
                     profilePhoto: waifu.imagen_perfil,
                 }
 
@@ -122,8 +126,8 @@ export const AdminEditWaifu = () => {
                                         <Text style={dynamicStyles.dynamicText}>Ocupación: {dataWaifu?.occupation}</Text>
                                         <Text style={dynamicStyles.dynamicText}>Pasatiempo: {dataWaifu?.hobbies}</Text>
                                         <Text style={dynamicStyles.dynamicText}>Cumpleaños: {dataWaifu?.day}/{dataWaifu?.month}</Text>
-                                        <Text style={dynamicStyles.dynamicText}>Especie: {dataWaifu?.idKind}</Text>
-                                        <Text style={dynamicStyles.dynamicText}>Personalidad(es): {dataWaifu?.idPersonality}</Text>
+                                        <Text style={dynamicStyles.dynamicText}>Especie: {dataWaifu?.kind}</Text>
+                                        <Text style={dynamicStyles.dynamicText}>Personalidad(es): {dataWaifu?.personalities}</Text>
                                         <Text style={[dynamicStyles.dynamicText, { marginTop: 16 }]}>
                                             {dataWaifu?.description}
                                         </Text>
@@ -138,16 +142,25 @@ export const AdminEditWaifu = () => {
                                 </>) :
                                 (
                                     <>
+                                        <Text style={dynamicStyles.dynamicText}>Nombre:</Text>
                                         <TextInputComponent value={editWaifu?.name || ''} action={(text) => setEditWaifu(pre => ({ ...pre!, name: text }))} placeholderText='Nombre' verified={false} isPassword={false} />
+                                        <Text style={dynamicStyles.dynamicText}>Alias:</Text>
                                         <TextInputComponent value={editWaifu?.alias || ''} action={(text) => setEditWaifu(pre => ({ ...pre!, alias: text }))} placeholderText='Alias' verified={false} isPassword={false} />
+                                        <Text style={dynamicStyles.dynamicText}>Descripcion:</Text>
                                         <TextInputComponent value={editWaifu?.description || ''} action={(text) => setEditWaifu(pre => ({ ...pre!, description: text }))} placeholderText='Descripcion' verified={false} isPassword={false} />
+                                        <Text style={dynamicStyles.dynamicText}>Ocupacion:</Text>
                                         <TextInputComponent value={editWaifu?.occupation || ''} action={(text) => setEditWaifu(pre => ({ ...pre!, occupation: text }))} placeholderText='Ocupacion' verified={false} isPassword={false} />
+                                        <Text style={dynamicStyles.dynamicText}>Pasatiempos:</Text>
                                         <TextInputComponent value={editWaifu?.hobbies || ''} action={(text) => setEditWaifu(pre => ({ ...pre!, hobbies: text }))} placeholderText='Pasatiempos' verified={false} isPassword={false} />
+                                        <Text style={dynamicStyles.dynamicText}>Dia:</Text>
                                         <TextInputComponent value={editWaifu?.day ? String(editWaifu.day) : ''} action={(text) => setEditWaifu(pre => ({ ...pre!, day: Number(text) }))} placeholderText='Dia' verified={false} isPassword={false} />
+                                        <Text style={dynamicStyles.dynamicText}>Mes:</Text>
                                         <TextInputComponent value={editWaifu?.month ? String(editWaifu.month) : ''} action={(text) => setEditWaifu(pre => ({ ...pre!, month: Number(text) }))} placeholderText='Mes' verified={false} isPassword={false} />
+                                        <Text style={dynamicStyles.dynamicText}>Edad:</Text>
                                         <TextInputComponent value={editWaifu?.age ? String(editWaifu.age) : ''} action={(text) => setEditWaifu(pre => ({ ...pre!, age: Number(text) }))} placeholderText='Edad' verified={false} isPassword={false} />
-                                        <TextInputComponent value={editWaifu?.idKind ? String(editWaifu.idKind) : ''} action={(text) => setEditWaifu(pre => ({ ...pre!, idKind: Number(text) }))} placeholderText='Id Especie' verified={false} isPassword={false} />
-                                        <TextInputComponent value={editWaifu?.idPersonality ? String(editWaifu.idPersonality) : ''} action={(text) => setEditWaifu(pre => ({ ...pre!, idPersonality: Number(text) }))} placeholderText='Id Personalidad' verified={false} isPassword={false} />
+                                        {/* <TextInputComponent value={editWaifu?.idKind ? String(editWaifu.idKind) : ''} action={(text) => setEditWaifu(pre => ({ ...pre!, idKind: Number(text) }))} placeholderText='Id Especie' verified={false} isPassword={false} />
+                                        <TextInputComponent value={editWaifu?.idPersonality ? String(editWaifu.idPersonality) : ''} action={(text) => setEditWaifu(pre => ({ ...pre!, idPersonality: Number(text) }))} placeholderText='Id Personalidad' verified={false} isPassword={false} /> */}
+                                        <Text style={dynamicStyles.dynamicText}>Url imagen de perfil:</Text>
                                         <TextInputComponent value={editWaifu?.profilePhoto || ''} action={(text) => setEditWaifu(pre => ({ ...pre!, profilePhoto: text }))} placeholderText='Url Imagen Perfil' verified={false} isPassword={false} />
                                         {/* 
                                        
