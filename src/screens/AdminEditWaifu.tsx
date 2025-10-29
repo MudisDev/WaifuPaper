@@ -176,7 +176,7 @@ export const AdminEditWaifu = () => {
                     Editar waifu Bv
                 </Text>
                 {
-                    dataWaifu && !isEditing && (
+                    !isEditing && (
                         <><TextInputComponent value={idCharacter?.toString() || ''} action={(text) => setIdCharacter(Number(text))} placeholderText='id waifu' verified={false} isPassword={false} />
                             <ButtonComponent active={true} funcion={Buscar_Personaje} title='Buscar waifu' />
                         </>
