@@ -50,9 +50,10 @@ export const RecoverAccount = () => {
             console.log(`userIsArray -> ${Array.isArray(email)}`);
 
             if (!data.Error) {
-                console.log(`Este es el email => ${data[0].email}`)
+                console.log(`Este es el email => ${data[0].email}`);
+                console.log(`Este es el id_usuario => ${data[0].id_usuario}`);
                 
-                Enviar_Email(data[0].email);
+                Enviar_Email(data[0].email, data[0].id_usuario);
             }
 
 
@@ -61,14 +62,15 @@ export const RecoverAccount = () => {
         }
     }
 
-    const Enviar_Email = async (email: string) => {
+    const Enviar_Email = async (email: string, id_usuario: number) => {
         console.log(`${username} + ${email}`);
         try {
             console.log("entro al try en enviar email");
+            console.log(`email => ${email} id_usuario => ${id_usuario}`);
             //console.log("Path login -> ", login_path)
             //const response = await fetch(`http://localhost/nekopaper/api/usuario/iniciar_sesion.php?username=${username}&password=${password}`);
             //const response = await fetch(`http://192.168.18.5/nekopaper/api/usuario/iniciar_sesion.php?username=${username}&password=${password}`);
-            const response = await fetch(`${send_email}?username=${username}&email=${email}`);
+            const response = await fetch(`${send_email}?username=${username}&email=${email}&id_usuario=${id_usuario}`);
             const data = await response.json();
             // Retorna los datos para ser usados en el componente
             console.log(data);

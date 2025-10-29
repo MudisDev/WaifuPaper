@@ -18,6 +18,16 @@ CREATE TABLE Usuario (
     foto_perfil TEXT DEFAULT NULL
 );
 
+CREATE TABLE Token_Recuperacion (
+    id_token INT AUTO_INCREMENT PRIMARY KEY,
+    id_usuario INT NOT NULL,
+    token VARCHAR(10) NOT NULL,
+    fecha_creacion DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    token_usado BOOLEAN DEFAULT 0 NOT NULL,
+
+    FOREIGN KEY (id_usuario) REFERENCES Usuario (id_usuario) ON DELETE CASCADE
+)
+
 /* ALTER TABLE Usuario ADD UNIQUE (telefono);
 
 ALTER TABLE Usuario DROP INDEX telefono; */

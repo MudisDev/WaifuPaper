@@ -169,7 +169,7 @@ class Usuario
     public function Buscar_Email(){
         $condiciones = "username = '$this->username'";
         $conexion = new Conexion();
-        $resultado = $conexion->SetSelect('Usuario', ["email"], $condiciones);
+        $resultado = $conexion->SetSelect('Usuario', ["email", "id_usuario"], $condiciones);
         return $resultado;
     }
 }
