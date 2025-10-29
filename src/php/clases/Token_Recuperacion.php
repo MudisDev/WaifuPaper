@@ -29,6 +29,16 @@ class Token_Recuperacion
         $resultado = $conexion->SetInsert("Token_Recuperacion", ["id_usuario", "token"], [$this->id_usuario, $this->token]);
         return $resultado;
     }
+
+    public function Validar_Token($token)
+    {
+        $token_varchar = (string) $token;
+        $columnas_actualizar = "token_usado = 1";
+        $condiciones = "token = '$token_varchar' AND id_usuario = '$this->id_usuario'";
+        $conexion = new Conexion();
+        $resultado = $conexion->SetUpdate("Token_Recuperacion", $columnas_actualizar, $condiciones);
+        return $resultado;
+    }
 }
 
 ?>
