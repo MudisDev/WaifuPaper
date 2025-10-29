@@ -24,9 +24,10 @@ CREATE TABLE Token_Recuperacion (
     token VARCHAR(6) NOT NULL,
     fecha_creacion DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     token_usado BOOLEAN DEFAULT 0 NOT NULL,
-
     FOREIGN KEY (id_usuario) REFERENCES Usuario (id_usuario) ON DELETE CASCADE
 )
+
+SELECT * FROM token_recuperacion;
 
 DROP TABLE token_recuperacion;
 
@@ -145,7 +146,7 @@ CREATE TABLE Usa_Modelo_Lora (
     id_imagen INT NOT NULL,
     id_modelo_lora INT NOT NULL,
     prompt TEXT NOT NULL,
-    fuerza DECIMAL(3,1) NOT NULL,
+    fuerza DECIMAL(3, 1) NOT NULL,
     PRIMARY KEY (id_imagen, id_modelo_lora),
     FOREIGN KEY (id_imagen) REFERENCES Imagen (id_imagen) ON DELETE CASCADE,
     FOREIGN KEY (id_modelo_lora) REFERENCES Modelo_Lora (id_modelo_lora) ON DELETE CASCADE
@@ -154,14 +155,21 @@ CREATE TABLE Usa_Modelo_Lora (
 SHOW TABLES;
 
 DROP DATABASE WaifuPaper;
+
 SELECT * FROM favorito;
+
 SELECT * FROM personaje;
+
 SELECT * FROM personaje WHERE id_personaje = 1;
+
 SELECT * FROM imagen;
+
 SELECT * FROM aparece_en;
+
 SELECT * FROM especie;
 
 SELECT * FROM personalidad;
+
 SELECT * FROM tiene_personalidad;
 
 /* 
@@ -170,7 +178,7 @@ SELECT * FROM etiqueta;
 SELECT * FROM imagen;
 SELECT * FROM usuario;
 
- DROP TABLE usuario;
+DROP TABLE usuario;
 
 DROP TABLE etiqueta;
 
@@ -197,15 +205,19 @@ DELETE FROM tiene_etiqueta;
 DELETE FROM favorito; */
 
 CREATE VIEW Vista_Perfil_Personaje AS
-SELECT p.*, e.nombre AS especie, 
-GROUP_CONCAT(pe.nombre, ', ') AS personalidades
-FROM personaje p
+SELECT p.*, e.nombre AS especie, GROUP_CONCAT(pe.nombre, ', ') AS personalidades
+FROM
+    personaje p
     JOIN especie e ON p.id_especie = e.id_especie
     JOIN tiene_personalidad tp ON p.id_personaje = tp.id_personaje
     JOIN personalidad pe ON tp.id_personalidad = pe.id_personalidad
-    GROUP BY p.id_personaje, p.nombre, e.nombre;
+GROUP BY
+    p.id_personaje,
+    p.nombre,
+    e.nombre;
 
 DROP VIEW vista_perfil_personaje;
+
 SELECT * FROM vista_perfil_personaje;
 
 CREATE VIEW Vista_Tiene_Etiqueta AS
@@ -224,7 +236,7 @@ FROM tiene_etiqueta te
     JOIN imagen i ON te.id_imagen = i.id_imagen;
 
 CREATE VIEW Vista_Favorito AS
-SELECT f.id_favorito, f.id_usuario, f.id_imagen, f.fecha_favorito, i.url AS url 
+SELECT f.id_favorito, f.id_usuario, f.id_imagen, f.fecha_favorito, i.url AS url
 FROM favorito f
     JOIN imagen i ON f.id_imagen = i.id_imagen;
 
@@ -272,8 +284,7 @@ SELECT
     i.fecha_actualizacion
 FROM
     tiene_etiqueta te
-    JOIN Vista_Imagenes_Sin_Negativas i ON te.id_imagen = i.id_imagen; 
-
+    JOIN Vista_Imagenes_Sin_Negativas i ON te.id_imagen = i.id_imagen;
 
 show tables;
 
@@ -290,35 +301,39 @@ SELECT
     i.id_modelo_base,
     i.fecha_insercion,
     i.fecha_actualizacion
-FROM
-    aparece_en ae
-    JOIN Imagen i ON ae.id_imagen = i.id_imagen; 
+FROM aparece_en ae
+    JOIN Imagen i ON ae.id_imagen = i.id_imagen;
 
 SELECT * FROM vista_mostrar_imagenes_por_personaje;
 
 SELECT * FROM imagen;
-SELECT * FROM personaje;
 
+SELECT * FROM personaje;
 
 CREATE TABLE Sesion_Iniciada (
     id_token INT AUTO_INCREMENT PRIMARY KEY,
     id_usuario INT NOT NULL,
     token VARCHAR(255) NOT NULL,
     fecha_token DATETIME DEFAULT CURRENT_TIMESTAMP,
-
     FOREIGN KEY (id_usuario) REFERENCES Usuario (id_usuario) ON DELETE CASCADE
 );
+
 DROP TABLE sesion_iniciada;
 
 SELECT * FROM sesion_iniciada;
+
 SELECT * FROM usuario;
 
 SELECT * FROM imagen;
+
 SELECT * FROM aparece_en;
+
 SELECT * FROM tiene_etiqueta;
 
 SHOW TABLES;
 
 SELECT * from usa_modelo_lora;
+
 SELECT * FROM modelo_lora;
+
 SELECT * FROM modelo_base;

@@ -9,7 +9,7 @@ $token_recuperacion = new Token_Recuperacion($id_usuario);
 $token_recuperacion->Generar_Token();
 $resultado = $token_recuperacion->Insertar_Token();
 $token = $token_recuperacion->Get_Token();
-$respuesta = [$resultado, "token" => $token];
-echo json_encode($respuesta);
+$resultado["token"] = $token;
+echo json_encode($resultado);
 
 ?>
