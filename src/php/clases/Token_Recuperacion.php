@@ -34,7 +34,7 @@ class Token_Recuperacion
     {
         $token_varchar = (string) $token;
         $columnas_actualizar = "token_usado = 1";
-        $condiciones = "token = '$token_varchar' AND id_usuario = '$this->id_usuario'";
+        $condiciones = "token = '$token_varchar' AND id_usuario = '$this->id_usuario' AND token_usado = 0";
         $conexion = new Conexion();
         $resultado = $conexion->SetUpdate("Token_Recuperacion", $columnas_actualizar, $condiciones);
         return $resultado;

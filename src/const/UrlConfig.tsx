@@ -49,3 +49,4 @@ export const delete_token = `${token_path}/eliminar_token.php`;
 export const send_email = `${email_path}/enviar_email.php`;
 
 export const generate_recovery_token = `${recovery_token_path}/generar_token.php`;
+export const validate_recovery_token = `${recovery_token_path}/validar_token.php`;
