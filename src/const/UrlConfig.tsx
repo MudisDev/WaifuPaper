@@ -23,6 +23,7 @@ export const register_user = `${user_path}/registrar_usuario.php`;
 export const delete_profile = `${user_path}/eliminar_cuenta.php`;
 export const update_profile = `${user_path}/actualizar_perfil.php`;
 export const search_email = `${user_path}/buscar_email.php`;
+export const update_password = `${user_path}/actualizar_password.php`;
 
 export const show_images = `${list_path}/mostrar_imagenes.php`;
 export const show_characters = `${list_path}/mostrar_personajes.php`;

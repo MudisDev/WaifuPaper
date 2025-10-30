@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { View, Text, TextInput, TouchableOpacity } from 'react-native'
 import { stylesAppTheme } from '../theme/AppTheme'
 import { useNavigation } from '@react-navigation/native'
-import { generate_recovery_token, search_email, send_email, validate_recovery_token } from '../const/UrlConfig'
+import { generate_recovery_token, search_email, send_email, update_password, validate_recovery_token } from '../const/UrlConfig'
 import { useTheme } from '../hooks/UseTheme'
 import { TextLinkComponent } from '../components/TextLinkComponent'
 import { TextInputComponent } from '../components/TextInputComponent'
@@ -170,6 +170,41 @@ export const RecoverAccount = () => {
 
     const isNewPasswordValid = (newPassword == newPasswordTemp) && newPassword != ''; 
 
+    const Actualizar_Password = async () => {
+
+        try {
+
+            //console.log("Path login -> ", login_path)
+            //const response = await fetch(`http://localhost/nekopaper/api/usuario/iniciar_sesion.php?username=${username}&password=${password}`);
+            //const response = await fetch(`http://192.168.18.5/nekopaper/api/usuario/iniciar_sesion.php?username=${username}&password=${password}`);
+            console.log("ENtro al try de UPDATE PASSWORD Bv");
+            const response = await fetch(`${update_password}?id_usuario=${idUser}&password=${newPassword}`);
+            const data = await response.json();
+            // Retorna los datos para ser usados en el componente
+            console.log(`Data=> ${data}`);
+            /* console.log(`Data[0] => ${data[0].token}`); */
+            console.log(`Data => ${data.token}`);
+
+
+
+            if (!data.error && !data.Warning) {
+
+                console.log("Se actualizo la contrasenia");
+                /* setValidToken(true); */
+
+                /* Enviar_Email(email, id_usuario, data.token); */
+            }
+            else {
+                console.warn("La contrasenia no pudo ser actualizada Bv");
+            }
+            Reset();
+
+
+        } catch (e) {
+            console.error(`error al actualizar contrasenia: ${e}`);
+        }
+    }
+
     return (
         <View style={[{ alignItems: 'center', flex: 1, paddingTop: 40 }, dynamicStyles.dynamicScrollViewStyle]}>
 
@@ -201,7 +236,7 @@ export const RecoverAccount = () => {
                 <>
                     <TextInputComponent placeholderText='Nueva Contraseña' value={newPassword} action={setNewPassword} isPassword={true} verified={false} />
                     <TextInputComponent placeholderText='Repite Contraseña' value={newPasswordTemp} action={setNewPasswordTemp} isPassword={true} verified={false} />
-                    <ButtonComponent active={isNewPasswordValid} title='Nueva contraseña' funcion={() => { }} />
+                    <ButtonComponent active={isNewPasswordValid} title='Nueva contraseña' funcion={Actualizar_Password} />
                     <Text></Text>
                     <ButtonComponent active={true} title='Volver' funcion={Reset} />
                 </>
