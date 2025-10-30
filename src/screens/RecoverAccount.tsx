@@ -28,6 +28,7 @@ export const RecoverAccount = () => {
     const [securityCode, setSecurityCode] = useState<string>('');
     const [idUser, setIdUser] = useState<number>(0);
     const [newPassword, setNewPassword] = useState<string>('');
+    const [newPasswordTemp, setNewPasswordTemp] = useState<string>('');
 
 
 
@@ -167,6 +168,8 @@ export const RecoverAccount = () => {
         setValidToken(false);
     }
 
+    const isNewPasswordValid = (newPassword == newPasswordTemp) && newPassword != ''; 
+
     return (
         <View style={[{ alignItems: 'center', flex: 1, paddingTop: 40 }, dynamicStyles.dynamicScrollViewStyle]}>
 
@@ -197,7 +200,8 @@ export const RecoverAccount = () => {
             {validToken && (
                 <>
                     <TextInputComponent placeholderText='Nueva Contraseña' value={newPassword} action={setNewPassword} isPassword={true} verified={false} />
-                    <ButtonComponent active={true} title='Nueva contraseña' funcion={() => { }} />
+                    <TextInputComponent placeholderText='Repite Contraseña' value={newPasswordTemp} action={setNewPasswordTemp} isPassword={true} verified={false} />
+                    <ButtonComponent active={isNewPasswordValid} title='Nueva contraseña' funcion={() => { }} />
                     <Text></Text>
                     <ButtonComponent active={true} title='Volver' funcion={Reset} />
                 </>

@@ -172,6 +172,21 @@ class Usuario
         $resultado = $conexion->SetSelect('Usuario', ["email", "id_usuario"], $condiciones);
         return $resultado;
     }
+
+    public function Actualizar_Password(){
+
+        if(!$this->password){
+            return ["Error" => "Contraseña nula"];
+        }
+        $hashed_password = password_hash($this->password, PASSWORD_DEFAULT );
+
+        $columnas_actualizar = "password = '$hashed_password'";
+        $condiciones = "id_usuario = '$this->id_usuario'";
+        $conexion  = new Conexion();
+        $resultado = $conexion->SetUpdate("Usuario",$columnas_actualizar, $condiciones);
+        return $resultado;
+
+    }
 }
 
 
