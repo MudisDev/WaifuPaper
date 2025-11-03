@@ -11,6 +11,7 @@ import { TextLinkComponent } from '../components/TextLinkComponent'
 import { ThemeContext } from '../context/ThemeContext'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { ShowAlert } from '../helpers/ShowAlert'
+import { InitialLoadingIndicator, LoadingIndicator } from '../components/LoadingIndicator'
 
 
 export const LogIn = () => {
@@ -30,6 +31,9 @@ export const LogIn = () => {
     const context = useContext(ThemeContext); // Obtiene el contexto
     //const themeData = context?.themeData; // Obtiene themeData del contexto
     const setThemeData = context?.setThemeData;
+
+    const [isLoading, setIsLoading] = useState(true);
+
 
     if (!themeData) {
         return null; // Puedes manejar la carga o estado por defecto aquí
@@ -90,8 +94,8 @@ export const LogIn = () => {
 
                 navigation.navigate("BottomTabNavigator");
             }
-            else 
-                ShowAlert({title: 'Error', text: 'Credenciales invalidas', buttonOk: 'Ok', onConfirm: () => void {}})
+            else
+                ShowAlert({ title: 'Error', text: 'Credenciales invalidas', buttonOk: 'Ok', onConfirm: () => void {} })
 
 
         } catch (e) {
@@ -175,6 +179,8 @@ export const LogIn = () => {
             console.log(`Token leido -> ${token}`);
             console.log(`ID usuario leido -> ${id_usuario}`);
 
+            if (!token || !id_usuario)
+                setIsLoading(false);
 
         }
 
@@ -194,9 +200,12 @@ export const LogIn = () => {
                     if (data && !data.Error && data.token) {
                         // token válido
                         RecibirDatoPerfil(id_usuario);
+                        setIsLoading(false);
                         navigation.replace("BottomTabNavigator");
                     }
                 } catch (e) {
+                    setIsLoading(false);
+
                     console.error(`Error al llamar a delete token -> ${e}`);
                 }
             }
@@ -205,7 +214,7 @@ export const LogIn = () => {
     }, [localToken, localIdUser]);
 
 
-const RecibirDatoPerfil = async ( id_usuario) => {
+    const RecibirDatoPerfil = async (id_usuario) => {
         try {
             console.log("Path login -> ", login_path)
             //const response = await fetch(`http://localhost/nekopaper/api/usuario/iniciar_sesion.php?username=${username}&password=${password}`);
@@ -252,6 +261,9 @@ const RecibirDatoPerfil = async ( id_usuario) => {
         }
     }
 
+
+    if (isLoading)
+        return <InitialLoadingIndicator />
 
 
     return (
