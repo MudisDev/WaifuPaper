@@ -11,6 +11,7 @@ import { ColorPaletteTheme } from '../theme/ColorPaletteTheme'
 import RNPickerSelect from 'react-native-picker-select';
 import { ButtonComponent } from '../components/ButtonComponent'
 import { delete_profile, delete_token } from '../const/UrlConfig'
+import { ShowAlert } from '../helpers/ShowAlert'
 
 export const Settings = () => {
   const navigation = useNavigation();
@@ -127,32 +128,6 @@ export const Settings = () => {
     navigation.replace('LogIn');
   }
 
-  const Alert_Cerrar_Sesion = () =>
-    Alert.alert(
-      'Cerrar sesion',
-      '¿Seguro que deseas cerrar sesion?',
-      [
-        {
-          text: 'Cancel',
-          onPress: () => { },
-          style: 'cancel',
-        },
-        {
-          text: 'Ok',
-          onPress: () => Cerrar_Sesion(),
-          style: 'destructive',
-        },
-
-      ],
-      {
-        cancelable: true,
-        /* onDismiss: () =>
-          Alert.alert(
-            'This alert was dismissed by tapping outside of the alert dialog.',
-          ), */
-      },
-    );
-
   const Alert_Eliminar_Cuenta = () =>
     Alert.alert(
       'Eliminar cuenta',
@@ -190,17 +165,18 @@ export const Settings = () => {
         <Text style={[stylesAppTheme.textButton, dynamicStyles.dynamicText]} >DevTool Bv</Text>
       </TouchableOpacity> */}
 
-       {(userData?.idUser == 1) ?
+      {(userData?.idUser == 1) ?
         <ButtonComponent title='DevTool Bv' funcion={() => navigation.navigate("TopTabNavigator")} active={true} />
         :
-        <ButtonComponent title='DevTool Bv' funcion={() => {}} active={false} />
+        <ButtonComponent title='DevTool Bv' funcion={() => { }} active={false} />
       }
 
 
 
       <Text></Text>
       {/* <ButtonComponent title='Cerrar sesion' funcion={() => { Cerrar_Sesion(); setUserData(null); }} active={true} /> */}
-      <ButtonComponent title='Cerrar sesion' funcion={() => { Alert_Cerrar_Sesion(); }} active={true} />
+      {/* <ButtonComponent title='Cerrar sesion' funcion={() => { Alert_Cerrar_Sesion(); }} active={true} /> */}
+      <ButtonComponent title='Cerrar sesion' funcion={() => ShowAlert({ title: 'Cerrar Sesion', text: '¿Seguro que quieres cerrar sesion?', buttonOk: 'Ok', onConfirm: Cerrar_Sesion, buttonCancel: 'Cancelar', onCancel: () => void {} })} active={true} />
 
       {/* <TouchableOpacity style={[stylesAppTheme.button, dynamicStyles.dynamicViewContainer]} onPress={() => { setUserData(null); navigation.navigate('LogIn'); }}>
         <Text style={[stylesAppTheme.textButton, dynamicStyles.dynamicText]}>Cerrar Sesion</Text>
@@ -208,7 +184,7 @@ export const Settings = () => {
       <Text></Text>
 
       {/* <ButtonComponent title='eliminar cuenta' funcion={DeleteProfile} active={true} /> */}
-      <ButtonComponent title='eliminar cuenta' funcion={Alert_Eliminar_Cuenta} active={true} />
+      <ButtonComponent title='eliminar cuenta' funcion={() => ShowAlert({ title: 'Eliminar Cuenta', text: '¿Seguro que deseas eliminar la cuenta? (No se puede deshacer)', buttonOk: 'Ok', onConfirm: DeleteProfile, buttonCancel: 'Cancelar', onCancel: () => void {} })} active={true} />
 
       <Text></Text>
       <Text></Text>

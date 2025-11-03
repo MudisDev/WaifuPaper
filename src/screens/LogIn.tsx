@@ -10,6 +10,7 @@ import { ButtonComponent } from '../components/ButtonComponent'
 import { TextLinkComponent } from '../components/TextLinkComponent'
 import { ThemeContext } from '../context/ThemeContext'
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import { ShowAlert } from '../helpers/ShowAlert'
 
 
 export const LogIn = () => {
@@ -89,6 +90,8 @@ export const LogIn = () => {
 
                 navigation.navigate("BottomTabNavigator");
             }
+            else 
+                ShowAlert({title: 'Error', text: 'Credenciales invalidas', buttonOk: 'Ok', onConfirm: () => void {}})
 
 
         } catch (e) {

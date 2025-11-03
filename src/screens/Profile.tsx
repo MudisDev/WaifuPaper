@@ -6,6 +6,7 @@ import { useTheme } from '../hooks/UseTheme'
 import { ButtonComponent } from '../components/ButtonComponent'
 import { TextInputComponent } from '../components/TextInputComponent'
 import { update_profile } from '../const/UrlConfig'
+import { ShowAlert } from '../helpers/ShowAlert'
 
 
 export const Profile = () => {
@@ -132,6 +133,7 @@ export const Profile = () => {
  
         navigation.navigate("BottomTabNavigator"); */
         console.log('Update Success');
+        ShowAlert({title: 'Acción exitosa', text: 'Perfil actualizado con éxito', buttonOk: 'Ok', onConfirm: () => void {}})
       }
       else if (data.Warning) {
         console.log('Update Warning');
@@ -170,10 +172,10 @@ export const Profile = () => {
           </View>
           <Text></Text>
 
-          <View style={[dynamicStyles.dynamicViewContainer, styles.labelContainer]}>
+          {/* <View style={[dynamicStyles.dynamicViewContainer, styles.labelContainer]}>
             <Text style={dynamicStyles.dynamicText}>Telefono: {userData?.phoneNumber}</Text>
           </View>
-          <Text></Text>
+          <Text></Text> */}
 
           <View style={[dynamicStyles.dynamicViewContainer, styles.labelContainer]}>
             <Text style={dynamicStyles.dynamicText}>Genero: {userData?.gender}</Text>
@@ -200,11 +202,33 @@ export const Profile = () => {
         <ButtonComponent title='Editar Perfil' funcion={() => setEditarPerfil(true)} active={true} />
         :
         <ButtonComponent title={datosEditados ? 'guardar cambios' : 'regresar'} funcion={datosEditados ?
-          () => Alert_Editar_Perfil()
+          () => ShowAlert({title: 'Edicion de perfil', text: '¿Seguro que deseas guardar cambios?', buttonOk: 'Ok', onConfirm: () => ActualizarPerfil(userData?.idUser), buttonCancel: 'Cancelar', onCancel: () => setEditarPerfil(false)})
+          
           :
           () => setEditarPerfil(false)} active={true} />
 
       }
+
+      {/* const Alert_Editar_Perfil = () =>
+    Alert.alert(
+      'Editando perfil',
+      '¿Seguro que deseas guardar cambios?',
+      [
+        {
+          text: 'Cancel',
+          //onPress: () => { },
+          onPress: () => setEditarPerfil(false),
+          style: 'cancel',
+        },
+        {
+          text: 'Ok',
+          //onPress: () => DeleteProfile(),
+          //onPress: () => setEditarPerfil(false),
+          onPress: () => ActualizarPerfil(userData?.idUser),
+
+          style: 'destructive',
+        },
+ */}
 
       <Text></Text>
       {/*

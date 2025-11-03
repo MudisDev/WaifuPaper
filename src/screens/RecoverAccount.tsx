@@ -8,6 +8,7 @@ import { TextLinkComponent } from '../components/TextLinkComponent'
 import { TextInputComponent } from '../components/TextInputComponent'
 import { RegexFormValidator } from '../utils/RegexFormValidator'
 import { ButtonComponent } from '../components/ButtonComponent'
+import { ShowAlert } from '../helpers/ShowAlert'
 
 
 export const RecoverAccount = () => {
@@ -65,6 +66,8 @@ export const RecoverAccount = () => {
                 //Enviar_Email(data[0].email, data[0].id_usuario);
                 Generar_Token(data[0].email, data[0].id_usuario);
             }
+            else
+                ShowAlert({title: 'Error', text: 'Usuario no encontrado', buttonOk: 'Ok', onConfirm: () => void {}})
 
 
         } catch (e) {
@@ -126,6 +129,7 @@ export const RecoverAccount = () => {
             }
             else {
                 console.warn("El token no pudo ser validado Bv");
+                ShowAlert({title: 'Error', text: 'Token invalido', buttonOk: 'Ok', onConfirm: () => void {}})
             }
 
 
@@ -190,12 +194,14 @@ export const RecoverAccount = () => {
             if (!data.error && !data.Warning) {
 
                 console.log("Se actualizo la contrasenia");
+                ShowAlert({title: 'Exito', text: 'Cambio de contraseña correcto', buttonOk: 'Ok', onConfirm: () => void {}})
                 /* setValidToken(true); */
 
                 /* Enviar_Email(email, id_usuario, data.token); */
             }
             else {
                 console.warn("La contrasenia no pudo ser actualizada Bv");
+                ShowAlert({title: 'Error', text: 'No se pudo cambiar la contraseña', buttonOk: 'Ok', onConfirm: () => void {}})
             }
             Reset();
 
