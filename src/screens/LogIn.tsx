@@ -200,8 +200,8 @@ export const LogIn = () => {
                     if (data && !data.Error && data.token) {
                         // token válido
                         RecibirDatoPerfil(id_usuario);
-                        setIsLoading(false);
                         navigation.replace("BottomTabNavigator");
+                        setIsLoading(false);
                     }
                 } catch (e) {
                     setIsLoading(false);
