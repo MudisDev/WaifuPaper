@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from 'react'
-import { StatusBar } from 'expo-status-bar';
-import { View, Text, StyleSheet, Image, ScrollView, TouchableOpacity } from 'react-native'
+import { View, Text, Image, TouchableOpacity } from 'react-native'
 import { FlatList, } from 'react-native-gesture-handler';
-import { NekosAPI } from 'nekosapi';
-
 import { useNavigation } from '@react-navigation/native';
 import { stylesAppTheme } from '../theme/AppTheme';
-import { show_characters, show_images } from '../const/UrlConfig';
+import { show_characters } from '../const/UrlConfig';
 import { useTheme } from '../hooks/UseTheme';
+import { NekoImageData } from '../helpers/Interfaces';
 
 
 /* export interface NekoImageData {
@@ -21,9 +19,9 @@ import { useTheme } from '../hooks/UseTheme';
     source_url: string | null;
 } */
 
-export interface NekoImageData {
+/* export interface NekoImageData {
     id: number;
-    name: string;
+    name: string; */
     /* alias: string;
     description: string;
     history: string;
@@ -33,15 +31,15 @@ export interface NekoImageData {
     month: number;
     age: number;
     kind: number; */
-    profile_photo: string;
-}
+    /* profile_photo: string;
+} */
 
 export const Characters = () => {
 
-    const [imageUrl, setImageUrl] = useState<string | null>(null);
+   
 
     const [dataArray, setDataArray] = useState<NekoImageData[] | null>(null);
-    const { themeData, dynamicStyles } = useTheme();
+    const {  dynamicStyles } = useTheme();
 
     const [noImages, setNoImages] = useState(false);
 
@@ -94,7 +92,7 @@ export const Characters = () => {
     const renderItem = ({ item }: { item: NekoImageData }) => (
         <TouchableOpacity
             //style={stylesAppTheme.animeCell}
-            onPress={() => navigation.navigate("ProfileCharacter", {/*  url: item?.url, tags: item?.tags, artist_name: item?.artist_name, */ /* profile_photo: item.profile_photo, */ id: item?.id })}
+            onPress={() => navigation.navigate("ProfileCharacter", { id: item?.id })}
         >
             <Image
                 source={{ uri: item.profile_photo }}

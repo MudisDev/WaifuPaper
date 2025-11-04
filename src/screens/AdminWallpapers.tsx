@@ -1,16 +1,17 @@
 import React, { useState } from 'react'
 import { View, Text, ScrollView, Image } from 'react-native'
 import { useTheme } from '../hooks/UseTheme';
-import { stylesAppTheme } from '../theme/AppTheme';
+
 import { TextInputComponent } from '../components/TextInputComponent';
 import { ButtonComponent } from '../components/ButtonComponent';
 import { show_images_for_character } from '../const/UrlConfig';
-import { NekoImageData } from './ProfileCharacter';
+import { NekoImageData } from '../helpers/Interfaces';
+
 
 
 
 export const AdminWallpapers = () => {
-    const { themeData, dynamicStyles } = useTheme();
+    const {  dynamicStyles } = useTheme();
     const [idCharacter, setIdCharacter] = useState<number>();
     const [wallpapersWaifu, setWallpapersWaifu] = useState<NekoImageData[]>();
 

@@ -1,44 +1,23 @@
-import { useFocusEffect, useNavigation } from '@react-navigation/native'
+import { useFocusEffect } from '@react-navigation/native'
 import React, { useCallback, useContext, useEffect, useState } from 'react'
 import { View, Image, Dimensions, StyleSheet, ScrollView, Text, TouchableOpacity } from 'react-native'
 import { UserContext } from '../context/UserContext';
 import Ionicons from '@expo/vector-icons/Ionicons';
-
-import { stylesAppTheme } from '../theme/AppTheme';
 import { add_favorite, consult_favorite, consult_tags, delete_favorite } from '../const/UrlConfig';
-import { dynamicStylesAppTheme } from '../theme/DynamicAppTheme';
 import { useTheme } from '../hooks/UseTheme';
-
-
-interface TagData {
-    id_tag: string,
-    name_tag: string,
-}
+import { TagData } from '../helpers/Interfaces';
 
 export const Wallpaper = ({ route }) => {
-    const navigation = useNavigation();
-
     const [image, setImage] = useState<string | null>(null)
-    const [artist, setArtist] = useState<string | null>(null);
     const { width, height } = Dimensions.get('window');
-    const { url, artist_name, id } = route.params;
+    const { url, id } = route.params;
     const { userData, } = useContext(UserContext) || { setUserData: () => { } }; // Maneja el caso de que el contexto no esté definido
-
     const { themeData, dynamicStyles } = useTheme();
-
-
     const [isFavorite, setIsFavorite] = useState<boolean>();
-
     const [tags, setTags] = useState<TagData[] | null>();
 
-
     useEffect(() => {
-        console.log("URL:", url);
-        console.log("Artista recibido:", artist_name);
-
         setImage(url);
-        setArtist(artist_name);
-
     }, [])
 
     useFocusEffect(
@@ -54,9 +33,7 @@ export const Wallpaper = ({ route }) => {
 
     const Consultar_Etiquetas = async () => {
         try {
-            //const url = `http://192.168.18.5/nekopaper/api/imagen/consultar_etiquetas.php?` +
-            const url = `${consult_tags}?` +
-                `id_imagen=${id}`;
+            const url = `${consult_tags}?` + `id_imagen=${id}`;
 
             const response = await fetch(url);
             const data = await response.json();
@@ -83,10 +60,7 @@ export const Wallpaper = ({ route }) => {
 
     const Consultar_Favorito = async () => {
         try {
-            //const url = `http://192.168.18.5/nekopaper/api/usuario/consultar_favorito.php?` +
-            const url = `${consult_favorite}?` +
-                `id_imagen=${id}` +
-                `&id_usuario=${userData?.idUser}`;
+            const url = `${consult_favorite}?` + `id_imagen=${id}` + `&id_usuario=${userData?.idUser}`;
 
             const response = await fetch(url);
             const data = await response.json();
@@ -106,11 +80,7 @@ export const Wallpaper = ({ route }) => {
 
     const Marcar_Favorito = async () => {
         try {
-            //const url = `http://192.168.18.5/nekopaper/api/usuario/marcar_favorito.php?` +
-            const url = `${add_favorite}?` +
-                `id_imagen=${id}` +
-                `&id_usuario=${userData?.idUser}`;
-
+            const url = `${add_favorite}?` + `id_imagen=${id}` + `&id_usuario=${userData?.idUser}`;
             const response = await fetch(url);
             const data = await response.json();
             console.log("Data favorito ->", data);
@@ -123,10 +93,7 @@ export const Wallpaper = ({ route }) => {
 
     const Borrar_Favorito = async () => {
         try {
-            const url = `${delete_favorite}?` +
-                `id_imagen=${id}` +
-                `&id_usuario=${userData?.idUser}`;
-
+            const url = `${delete_favorite}?` + `id_imagen=${id}` + `&id_usuario=${userData?.idUser}`;
             const response = await fetch(url);
             const data = await response.json();
             console.log("Data favorito ->", data);
@@ -146,17 +113,11 @@ export const Wallpaper = ({ route }) => {
                     style={{ width, height: height * 0.7, resizeMode: 'contain' }}
                 />
             )}
-            {/* {artist && (
-                <Text >Artista: {artist}</Text>
-            )}
-            {id && (
-                <Text >Id: {id}</Text>
-            )}
-            <Text >IdUser: {userData?.idUser}</Text> */}
+
             {tags && Array.isArray(tags) && (
                 <View style={styles.tagContainer}>
                     {tags.map((tag: TagData, index: number) => (
-                        <Text key={tag.id_tag} style={[styles.tagText, dynamicStyles.dynamicText,dynamicStyles.dynamicViewContainer]}>#{tag.name_tag}</Text>
+                        <Text key={tag.id_tag} style={[styles.tagText, dynamicStyles.dynamicText, dynamicStyles.dynamicViewContainer]}>#{tag.name_tag}</Text>
                     ))}
                 </View>
             )}
@@ -169,7 +130,7 @@ export const Wallpaper = ({ route }) => {
                         <Ionicons name={"heart"} size={25} color={themeData.texto} />
                     </TouchableOpacity>)
                     :
-                    (<TouchableOpacity style={[styles.button, dynamicStyles.dynamicViewContainer]}  onPress={Marcar_Favorito}>
+                    (<TouchableOpacity style={[styles.button, dynamicStyles.dynamicViewContainer]} onPress={Marcar_Favorito}>
                         <Ionicons name={"heart-outline"} size={25} color={themeData.texto} />
                     </TouchableOpacity>)
                 }
@@ -186,7 +147,6 @@ export const Wallpaper = ({ route }) => {
                 {/* <TouchableOpacity style={styles.button}>
                     <Ionicons name={"people"} size={25} color={"red"} />
                 </TouchableOpacity> */}
-
             </View>
 
         </ScrollView>
@@ -214,7 +174,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'center',
         //alignItems:'center',
-        alignSelf:'center',
+        alignSelf: 'center',
         gap: 15
 
     },
