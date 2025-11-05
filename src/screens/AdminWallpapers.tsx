@@ -1,17 +1,19 @@
 import React, { useState } from 'react'
-import { View, Text, ScrollView, Image } from 'react-native'
+import { View, Text, ScrollView, Image, Button, StyleSheet } from 'react-native'
 import { useTheme } from '../hooks/UseTheme';
 
 import { TextInputComponent } from '../components/TextInputComponent';
 import { ButtonComponent } from '../components/ButtonComponent';
 import { show_images_for_character } from '../const/UrlConfig';
 import { NekoImageData } from '../helpers/Interfaces';
+import * as ImagePicker from 'expo-image-picker';
+import { ShowAlert } from '../helpers/ShowAlert';
 
 
 
 
 export const AdminWallpapers = () => {
-    const {  dynamicStyles } = useTheme();
+    const { dynamicStyles } = useTheme();
     const [idCharacter, setIdCharacter] = useState<number>();
     const [wallpapersWaifu, setWallpapersWaifu] = useState<NekoImageData[]>();
 
@@ -63,6 +65,85 @@ export const AdminWallpapers = () => {
     }
 
 
+    const [image, setImage] = useState<string | null>(null);
+
+    const pickImage = async () => {
+        // No permissions request is necessary for launching the image library
+        let result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ['images', 'videos'],
+            allowsEditing: true,
+            aspect: [4, 3],
+            quality: 1,
+        });
+
+        console.log(result);
+
+        if (!result.canceled) {
+            setImage(result.assets[0].uri);
+        }
+    };
+
+
+
+    const Registrar = () => {
+        const formData = new FormData();
+        /* formData.append('username', username);
+        formData.append('password', password);
+        formData.append('name', name);
+        formData.append('phone', phoneNumber);
+        formData.append('email', email); */
+
+        formData.append('id_personaje', idCharacter);
+
+
+        if (image /* && profilePhoto.uri */) {
+            //const localUri = profilePhoto.uri;
+            const localUri = image;
+            const filename = localUri.split('/').pop();
+            const match = /\.(\w+)$/.exec(filename || '');
+            const type = match ? `image/${match[1]}` : `image`;
+
+            console.log(`localUri => ${localUri}`);
+            console.log(`filename => ${filename}`);
+            console.log(`match => ${match}`);
+            console.log(`type => ${type}`);
+
+            formData.append('imagen_perfil', {
+                uri: localUri,
+                name: filename || 'image',
+                type: type,
+            } as any);  // Añadimos 'as any' para evitar el error de 'Blob'
+        }
+
+        fetch(`https://mudisdev.com/subir_imagen.php`, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        })
+            .then(response => response.text())
+            .then(data => {
+                console.log('success', data);
+                ShowAlert({ title: 'Subida exitosa', text: '¡Imagen subida correctamente!', buttonOk: 'Ok', onConfirm: () => void {} });
+            })
+            .catch(error => {
+                console.warn('error', error);
+                ShowAlert({ title: 'Error', text: 'Ocurrió un error durante el registro.', buttonOk: 'Ok', onConfirm: () => void {} });
+            });
+    };
+
+    /*  const selectImage = () => {
+         launchImageLibrary({ mediaType: 'photo' }, (response) => {
+             if (response.assets && response.assets.length > 0) {
+                 setProfilePhoto(response.assets[0]);
+             }
+         });
+     }; */
+
+
+
+
     return (
         <ScrollView style={[/* stylesAppTheme.container,  */dynamicStyles.dynamicScrollViewStyle]}>
             <View /* style={stylesAppTheme.container} */>
@@ -98,14 +179,38 @@ export const AdminWallpapers = () => {
                                     resizeMode: 'cover',
                                 }}
                             />
+
                         ))
                     ) : (
                         <Text style={dynamicStyles.dynamicText}>No hay wallpapers Bv</Text>
                     )}
                 </View>
+                {wallpapersWaifu &&
+                    <Button title="Pick an image from camera roll" onPress={pickImage} />
+                }
+                {image && <>
+                    <Image source={{ uri: image }} style={styles.image} />
+                    <Text style={{ color: "aqua" }}> imagen = {image}</Text>
 
+
+                    <Button title="registrar" onPress={Registrar} />
+
+
+                </>}
 
             </View >
         </ScrollView >
     )
+
 }
+const styles = StyleSheet.create({
+    /* container: {
+      flex: 1,
+      alignItems: 'center',
+      justifyContent: 'center',
+    }, */
+    image: {
+        width: 200,
+        height: 200,
+    },
+});
