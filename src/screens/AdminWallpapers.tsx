@@ -118,9 +118,7 @@ export const AdminWallpapers = () => {
         fetch(`https://mudisdev.com/subir_imagen.php`, {
             method: 'POST',
             body: formData,
-            headers: {
-                'Content-Type': 'multipart/form-data',
-            },
+
         })
             .then(response => response.text())
             .then(data => {
@@ -194,10 +192,12 @@ export const AdminWallpapers = () => {
 
 
                     <Button title="registrar" onPress={Registrar} />
-
+                   
 
                 </>}
-
+                <Text></Text>
+                <Text></Text>
+                <Text></Text>
             </View >
         </ScrollView >
     )
