@@ -220,9 +220,9 @@ class Conexion
             }
         } else {
             return [
-                "error" => "Update fallido en tabla $tabla.",
-                "sql" => $this->sql,
-                "mysql_error" => $this->conn->error
+                "Error" => "Update fallido en tabla $tabla.",
+                "Sql" => $this->sql,
+                "Mysql_error" => $this->conn->error
             ];
         }
 

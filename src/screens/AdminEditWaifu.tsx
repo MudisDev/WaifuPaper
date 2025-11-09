@@ -132,7 +132,7 @@ export const AdminEditWaifu = () => {
             console.log(`datos editados => ${waifu}`);
 
 
-            if (!data.error) {
+            if (!data.Error) {
                 console.log("Al parecer si edito a la waifu Bv");
 
                 /* Asignar_Personalidad(data.id_generado); */

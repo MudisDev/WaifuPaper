@@ -120,7 +120,7 @@ export const RecoverAccount = () => {
 
 
 
-            if (!data.error && !data.Warning) {
+            if (!data.Error && !data.Warning) {
 
                 console.log("Se valido el token");
                 setValidToken(true);
@@ -191,7 +191,7 @@ export const RecoverAccount = () => {
 
 
 
-            if (!data.error && !data.Warning) {
+            if (!data.Error && !data.Warning) {
 
                 console.log("Se actualizo la contrasenia");
                 ShowAlert({title: 'Exito', text: 'Cambio de contraseña correcto', buttonOk: 'Ok', onConfirm: () => void {}})
