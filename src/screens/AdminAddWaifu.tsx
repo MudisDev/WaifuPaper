@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { View, Text, Image } from 'react-native'
+import { View, Text, Image, StyleSheet, ScrollView } from 'react-native'
 import { useTheme } from '../hooks/UseTheme';
 import { stylesAppTheme } from '../theme/AppTheme';
 import { TextInputComponent } from '../components/TextInputComponent';
@@ -51,8 +51,8 @@ export const AdminAddWaifu = () => {
             const data = await response.json();
             // Retorna los datos para ser usados en el componente
             console.log(data);
-            
-            
+
+
 
             if (!data.Error) {
                 console.log("Al parecer registro de personaje exitoso");
@@ -90,66 +90,80 @@ export const AdminAddWaifu = () => {
     }
 
     return (
-        <View style={[stylesAppTheme.container, dynamicStyles.dynamicScrollViewStyle]}>
-            <Text style={[dynamicStyles.dynamicText, { fontSize: 25 }]}>
-                Agregar waifu Bv
-            </Text>
-            <TextInputComponent value={name} action={setName} placeholderText='Nombre' verified={false} isPassword={false} />
-            <TextInputComponent value={alias} action={setAlias} placeholderText='Alias' verified={false} isPassword={false} />
-            <TextInputComponent value={description} action={setDescription} placeholderText='Descripcion' verified={false} isPassword={false} />
-            <TextInputComponent value={history} action={setHistory} placeholderText='Historia' verified={false} isPassword={false} />
+        <ScrollView style={[/* stylesAppTheme.container, */ dynamicStyles.dynamicScrollViewStyle,]}>
+            <View style={[/* stylesAppTheme.container,  */{ marginTop: 20, marginBottom: 60, alignItems: 'center' }]}>
+                <Text style={[dynamicStyles.dynamicText, { fontSize: 25 }]}>
+                    Agregar waifu Bv
+                </Text>
+                <Text></Text>
+                <TextInputComponent value={name} action={setName} placeholderText='Nombre' verified={false} isPassword={false} />
+                <Text></Text>
+                <TextInputComponent value={alias} action={setAlias} placeholderText='Alias' verified={false} isPassword={false} />
+                <Text></Text>
+                <TextInputComponent value={description} action={setDescription} placeholderText='Descripcion' verified={false} isPassword={false} />
+                <Text></Text>
+                <TextInputComponent value={history} action={setHistory} placeholderText='Historia' verified={false} isPassword={false} />
+                <Text></Text>
+                <TextInputComponent value={occupation} action={setOccupation} placeholderText='Ocupacion' verified={false} isPassword={false} />
+                <Text></Text>
+                <TextInputComponent value={hobbies} action={setHobbies} placeholderText='Pasatiempos' verified={false} isPassword={false} />
+                <Text></Text>
+                <View style={style.numericContainer} >
+                    <TextInputComponent
+                        value={day?.toString() || ''}
+                        action={(text) => setDay(Number(text))}
+                        placeholderText='Día'
+                        verified={false}
+                        isPassword={false}
+                        isNumericKeybordType
+                    />
+                    <TextInputComponent
+                        value={month?.toString() || ''}
+                        action={(text) => setMonth(Number(text))}
+                        placeholderText='Mes'
+                        verified={false}
+                        isPassword={false}
+                        isNumericKeybordType
+                    />
+                    <TextInputComponent
+                        value={age?.toString() || ''}
+                        action={(text) => setAge(Number(text))}
+                        placeholderText='Edad'
+                        verified={false}
+                        isPassword={false}
+                        isNumericKeybordType
+                    />
+                </View>
+                <Text></Text>
 
-            <TextInputComponent value={occupation} action={setOccupation} placeholderText='Ocupacion' verified={false} isPassword={false} />
-            <TextInputComponent value={hobbies} action={setHobbies} placeholderText='Pasatiempos' verified={false} isPassword={false} />
+                <View style={style.numericContainer} >
+                    <TextInputComponent
+                        value={idKind?.toString() || ''}
+                        action={(text) => setIdKind(Number(text))}
+                        placeholderText='Especie'
+                        verified={false}
+                        isPassword={false}
+                        isNumericKeybordType
+                    />
+                    <TextInputComponent
+                        value={idPersonality?.toString() || ''}
+                        action={(text) => setIdPersonality(Number(text))}
+                        placeholderText='Personalidad'
+                        verified={false}
+                        isPassword={false}
+                        isNumericKeybordType
+                    />
+                </View>
+                <Text></Text>
 
-            <TextInputComponent
-                value={day?.toString() || ''}
-                action={(text) => setDay(Number(text))}
-                placeholderText='Día'
-                verified={false}
-                isPassword={false}
-                isNumericKeybordType
-            />
-            <TextInputComponent
-                value={month?.toString() || ''}
-                action={(text) => setMonth(Number(text))}
-                placeholderText='Mes'
-                verified={false}
-                isPassword={false}
-                isNumericKeybordType
-            />
-            <TextInputComponent
-                value={age?.toString() || ''}
-                action={(text) => setAge(Number(text))}
-                placeholderText='Edad'
-                verified={false}
-                isPassword={false}
-                isNumericKeybordType
-            />
-            <TextInputComponent
-                value={idKind?.toString() || ''}
-                action={(text) => setIdKind(Number(text))}
-                placeholderText='Especie'
-                verified={false}
-                isPassword={false}
-                isNumericKeybordType
-            />
-            <TextInputComponent
-                value={idPersonality?.toString() || ''}
-                action={(text) => setIdPersonality(Number(text))}
-                placeholderText='Personalidad'
-                verified={false}
-                isPassword={false}
-                isNumericKeybordType
-            />
-            {/* <TextInputComponent value={day} action={setDay} placeholderText='Edad' verified={false} isPassword={false} /> */}
-            {/* <TextInputComponent value={month} action={setMonth} placeholderText='Mes' verified={false} isPassword={false} />
+                {/* <TextInputComponent value={day} action={setDay} placeholderText='Edad' verified={false} isPassword={false} /> */}
+                {/* <TextInputComponent value={month} action={setMonth} placeholderText='Mes' verified={false} isPassword={false} />
             <TextInputComponent value={age} action={setAge} placeholderText='Edad' verified={false} isPassword={false} />
             <TextInputComponent value={idKind} action={setIdKind} placeholderText='Especie' verified={false} isPassword={false} /> */}
-            <TextInputComponent value={profilePhoto} action={setProfilePhoto} placeholderText='Imagen perfil Url' verified={false} isPassword={false} />
-            {/* <TextInputComponent value={idPersonality} action={setIdPersonality} placeholderText='Personalidad' verified={false} isPassword={false} /> */}
+                <TextInputComponent value={profilePhoto} action={setProfilePhoto} placeholderText='Imagen perfil Url' verified={false} isPassword={false} />
+                {/* <TextInputComponent value={idPersonality} action={setIdPersonality} placeholderText='Personalidad' verified={false} isPassword={false} /> */}
 
-            {/* <View style={{ backgroundColor: "red", width: 200 }}>
+                {/* <View style={{ backgroundColor: "red", width: 200 }}>
 
                 <Picker
                     selectedValue={selectedLanguage}
@@ -160,33 +174,29 @@ export const AdminAddWaifu = () => {
                     <Picker.Item label="JavaScript" value="js" />
                 </Picker>
             </View> */}
-            <Image
-                /*  key={item.id} */
-                source={ {uri: profilePhoto}}
-                style={{
-                    //width: width * 0.25, // un poco más grande
-                    width: 50,
-                    aspectRatio: 9 / 16,
-                    borderRadius: 14,
-                    resizeMode: 'cover', // importante: evita que se estire raro
-                }}
-            />
-            <ButtonComponent active={true} funcion={()=> Registrar_Personaje()} title='Registrar Waifu'/>
-
-        </View>
+                <Image
+                    /*  key={item.id} */
+                    source={{ uri: profilePhoto }}
+                    style={{
+                        //width: width * 0.25, // un poco más grande
+                        width: 50,
+                        aspectRatio: 9 / 16,
+                        borderRadius: 14,
+                        resizeMode: 'cover', // importante: evita que se estire raro
+                    }}
+                />
+                <ButtonComponent active={true} funcion={() => Registrar_Personaje()} title='Registrar Waifu' />
+            </View>
+        </ScrollView>
     )
 }
 
-/* id_personaje INT AUTO_INCREMENT PRIMARY KEY,
-    nombre VARCHAR(40) NOT NULL,
-    alias VARCHAR(30) NOT NULL,
-    descripcion TEXT NOT NULL,
-    historia TEXT NOT NULL,
-    pasatiempo TEXT NOT NULL,
-    ocupacion VARCHAR(40) NOT NULL,
-    dia INT NOT NULL,
-    mes INT NOT NULL,
-    edad INT NOT NULL,
-    id_especie INT NOT NULL,
-    imagen_perfil TEXT NOT NULL,
-    FOREIGN KEY (id_especie) REFERENCES Especie (id_especie) */
+const style = StyleSheet.create({
+    numericContainer: {
+        width: '100%',
+        /* backgroundColor: "red", */
+        flexDirection: 'row',
+        justifyContent: 'center',
+        gap: 4
+    }
+});

@@ -8,7 +8,7 @@ import { show_images_for_character } from '../const/UrlConfig';
 import { NekoImageData } from '../helpers/Interfaces';
 import * as ImagePicker from 'expo-image-picker';
 import { ShowAlert } from '../helpers/ShowAlert';
-
+import { stylesAppTheme } from '../theme/AppTheme';
 
 
 
@@ -144,17 +144,23 @@ export const AdminWallpapers = () => {
 
     return (
         <ScrollView style={[/* stylesAppTheme.container,  */dynamicStyles.dynamicScrollViewStyle]}>
-            <View /* style={stylesAppTheme.container} */>
-                <Text style={[dynamicStyles.dynamicText, { fontSize: 25 }]}>
-                    Administrar Wallpapers Bv
-                </Text>
-                {
-                    !isEditing && (
-                        <><TextInputComponent value={idCharacter?.toString() || ''} action={(text) => setIdCharacter(Number(text))} placeholderText='id waifu' verified={false} isPassword={false} />
-                            <ButtonComponent active={true} funcion={Buscar_Personaje} title='Buscar waifu' />
-                        </>
-                    )
-                }
+            <View style={[/* stylesAppTheme.container,  */{ marginTop: 20 }]}>
+                <View style={{ alignItems: 'center'/* , backgroundColor: 'red' */ }}>
+                    <Text style={[dynamicStyles.dynamicText, { fontSize: 25 }]}>
+                        Administrar Wallpapers Bv
+                    </Text>
+                    <Text></Text>
+                    {
+                        !isEditing && (
+                            <><TextInputComponent value={idCharacter?.toString() || ''} action={(text) => setIdCharacter(Number(text))} placeholderText='id waifu' verified={false} isPassword={false} />
+                                <Text></Text>
+                                <ButtonComponent active={true} funcion={Buscar_Personaje} title='Buscar waifu' />
+                                <Text></Text>
+
+                            </>
+                        )
+                    }
+                </View>
                 <View
                     style={{
                         flexDirection: 'row',
@@ -192,7 +198,7 @@ export const AdminWallpapers = () => {
 
 
                     <Button title="registrar" onPress={Registrar} />
-                   
+
 
                 </>}
                 <Text></Text>

@@ -13,6 +13,7 @@ interface TextInputProps {
     isPassword: boolean,
     isNumericKeybordType?: boolean,
     verified: boolean,
+
 }
 
 export const TextInputComponent: React.FC<TextInputProps> = ({ placeholderText, value, action, isPassword, isNumericKeybordType = false, verified }) => {
@@ -24,7 +25,7 @@ export const TextInputComponent: React.FC<TextInputProps> = ({ placeholderText, 
 
     // Determina el tipo de teclado basado en `isNumericKeybordType`
     const keyboardType = isNumericKeybordType ? 'numeric' : 'default';
-
+    const widthPorcent = isNumericKeybordType ? '26%' : '80%';
 
     if (!themeData) {
         return null; // Puedes manejar la carga o estado por defecto aquí
@@ -32,7 +33,7 @@ export const TextInputComponent: React.FC<TextInputProps> = ({ placeholderText, 
     // Genera los estilos dinámicos pasando themeData
     const dynamicStyles = dynamicStylesAppTheme(themeData);
     return (
-        <View style={[{ borderRadius: 5, width: '80%', /* backgroundColor: "red"  */ }, dynamicStyles.dynamicViewContainer]}>
+        <View style={[{ borderRadius: 5, width: widthPorcent /* backgroundColor: "red"  */ }, dynamicStyles.dynamicViewContainer]}>
             <TextInput style={[dynamicStyles.dynamicText, /* dynamicStyles.dynamicBorder, */]}
                 placeholderTextColor={themeData.texto}
                 placeholder={placeholderText}
