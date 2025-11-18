@@ -1,10 +1,10 @@
 import React, { useState } from 'react'
-import { View, Text, ScrollView, Image, Button, StyleSheet } from 'react-native'
+import { View, Text, ScrollView, Image, Button, StyleSheet, TouchableOpacity } from 'react-native'
 import { useTheme } from '../hooks/UseTheme';
 
 import { TextInputComponent } from '../components/TextInputComponent';
 import { ButtonComponent } from '../components/ButtonComponent';
-import { show_images_for_character } from '../const/UrlConfig';
+import { register_image, register_image_character, register_image_lora_model, register_image_tag, show_images_for_character, upload_image_to_server } from '../const/UrlConfig';
 import { NekoImageData } from '../helpers/Interfaces';
 import * as ImagePicker from 'expo-image-picker';
 import { ShowAlert } from '../helpers/ShowAlert';
@@ -17,7 +17,14 @@ export const AdminWallpapers = () => {
     const [idCharacter, setIdCharacter] = useState<number>();
     const [wallpapersWaifu, setWallpapersWaifu] = useState<NekoImageData[]>();
 
-    const [isEditing, setIsEditing] = useState<boolean>(false);
+    const [isAddingWallpaper, setIsAddingWallpaper] = useState<boolean>(false);
+    const [image, setImage] = useState<string>("");
+
+    const [seed, setSeed] = useState<string>("");
+    const [publicImage, setPublicImage] = useState<number>(0);
+    const [idBaseModel, setIdBaseModel] = useState<number>(0);
+
+
 
 
     const Buscar_Personaje = async () => {
@@ -65,7 +72,6 @@ export const AdminWallpapers = () => {
     }
 
 
-    const [image, setImage] = useState<string | null>(null);
 
     const pickImage = async () => {
         // No permissions request is necessary for launching the image library
@@ -116,7 +122,9 @@ export const AdminWallpapers = () => {
         }
 
         try {
+
             const response = await fetch(`https://mudisdev.com/waifupaper/src/php/api/gestor_imagenes/subir_imagen.php`, {
+                //const response = await fetch(`${upload_image_to_server}`, {
                 method: 'POST',
                 body: formData,
 
@@ -125,9 +133,58 @@ export const AdminWallpapers = () => {
             const data = await response.json();
 
             if (data.Success) {
+                /* INSERT INTO Imagen(url, semilla, imagen_listada, id_modelo_base) VALUES
+                            ('freya_dance.png', '77889900', true, 2); */
+                console.log('IMAGEN SUBIDA => ', data);
 
-                console.log('success', data);
-                ShowAlert({ title: 'Subida exitosa', text: '¡Imagen subida correctamente!', buttonOk: 'Ok', onConfirm: () => void {} });
+                const response_register_image = await fetch(`${register_image}?url=${data.url}&semilla=${seed}&imagen_lista=${publicImage}&id_modelo_base=${idBaseModel}`)
+                const data_response_register_image = await response_register_image.json();
+                const id_imagen = data_response_register_image.id_generado;
+                if (data_response_register_image.Success) {
+                    console.log('IMAGEN REGISTRADA => ', data_response_register_image);
+                    const response_register_image_lora_model = await fetch(`${register_image_lora_model}?id_imagen=${id_imagen}&id_modelo_lora=1&prompt=prompt&fuerza=1.1`)
+                    //id_imagen=134&id_modelo_lora=1&prompt=ejmplo de fuerza Bv&fuerza=0.8
+
+                    const data_response_register_image_lora_model = await response_register_image_lora_model.json();
+
+                    if (data_response_register_image_lora_model.Success) {
+
+                        const response_register_image_character = await fetch(`${register_image_character}?id_imagen=${id_imagen}&id_personaje=${idCharacter}`)
+                        const data_response_register_image_character = await response_register_image_character.json();
+
+                        if (data_response_register_image_character.Success) {
+
+
+                            const response_register_image_tag = await fetch(`${register_image_tag}?id_imagen=${id_imagen}&id_etiqueta=1`)
+                            const data_response_register_image_tag = await response_register_image_tag.json();
+
+                            if (data_response_register_image_tag.Success) {
+                                ShowAlert({ title: 'Subida exitosa', text: '¡Imagen subida correctamente!', buttonOk: 'Ok', onConfirm: () => void {} });
+                            }
+                            else {
+                                ShowAlert({ title: 'Error', text: 'No pudo ser asociada la etiqueta a la IMAGEN.', buttonOk: 'Ok', onConfirm: () => void {} });
+
+                            }
+
+                        }
+                        else {
+                            ShowAlert({ title: 'Error', text: 'No pudo ser asociada la imagen a la WAIFU.', buttonOk: 'Ok', onConfirm: () => void {} });
+
+                        }
+
+                    }
+                    else {
+                        ShowAlert({ title: 'Error', text: 'No pudo ser asociada la imagen al LORA.', buttonOk: 'Ok', onConfirm: () => void {} });
+
+                    }
+
+
+                }
+                else if (data_response_register_image.Error) {
+                    ShowAlert({ title: 'Error', text: 'No pudo ser registrada la imagen.', buttonOk: 'Ok', onConfirm: () => void {} });
+
+                }
+
             }
             else if (data.Error) {
 
@@ -162,6 +219,15 @@ export const AdminWallpapers = () => {
     
     INSERT INTO Tiene_Etiqueta(id_imagen, id_etiqueta) VALUES(1, 1), (1, 8);
      */
+
+
+    const defaultImage = "https://media.istockphoto.com/id/2221915585/vector/grey-avatar-icon-user-avatar-photo-icon-social-media-user-icon-vector.jpg?s=612x612&w=0&k=20&c=9CObBqL8r65oVfHE4hyEqpyb8FwK7VfDqF1qXD5YMz4=";
+
+    const urlImage = (typeof image === "string" && image.trim() !== "")
+        ? image
+        : defaultImage;
+
+
     return (
         <ScrollView style={[/* stylesAppTheme.container,  */dynamicStyles.dynamicScrollViewStyle]}>
             <View style={[/* stylesAppTheme.container,  */{ marginTop: 20 }]}>
@@ -171,7 +237,7 @@ export const AdminWallpapers = () => {
                     </Text>
                     <Text></Text>
                     {
-                        !isEditing && (
+                        !isAddingWallpaper && (
                             <><TextInputComponent value={idCharacter?.toString() || ''} action={(text) => setIdCharacter(Number(text))} placeholderText='id waifu' verified={false} isPassword={false} />
                                 <Text></Text>
                                 <ButtonComponent active={true} funcion={Buscar_Personaje} title='Buscar waifu' />
@@ -191,33 +257,64 @@ export const AdminWallpapers = () => {
                         padding: 10,
                     }}
                 >
-                    {wallpapersWaifu ? (
-                        wallpapersWaifu.map((item) => (
-                            <Image
-                                key={item.id}
-                                source={{ uri: item.url }}
-                                style={{
-                                    width: 110,
-                                    aspectRatio: 9 / 16,
-                                    borderRadius: 14,
-                                    resizeMode: 'cover',
-                                }}
-                            />
 
-                        ))
-                    ) : (
-                        <Text style={dynamicStyles.dynamicText}>No hay wallpapers Bv</Text>
-                    )}
+                    {!isAddingWallpaper &&
+
+                        <>
+                            {wallpapersWaifu ? (
+                                wallpapersWaifu.map((item) => (
+                                    <Image
+                                        key={item.id}
+                                        source={{ uri: item.url }}
+                                        style={{
+                                            width: 110,
+                                            aspectRatio: 9 / 16,
+                                            borderRadius: 14,
+                                            resizeMode: 'cover',
+                                        }}
+                                    />
+
+                                ))
+                            ) : (
+                                <Text style={dynamicStyles.dynamicText}>No hay wallpapers Bv</Text>
+                            )}
+                            {wallpapersWaifu &&
+                                <ButtonComponent title='Agregar Wallpaper' active={true} funcion={() => setIsAddingWallpaper(true)} />
+
+                            }
+
+                        </>
+                    }
+
+                    {isAddingWallpaper &&
+                        <>
+
+                            <TouchableOpacity onPress={pickImage} >
+                                <Image source={{ uri: urlImage }}
+                                    style={styles.image} />
+                            </TouchableOpacity>
+
+                            <ButtonComponent title='regresar' active={true} funcion={
+                                () => ShowAlert({ title: "Regresar", text: "Se descartaran los cambios realizados", buttonCancel: "Cancelar", onCancel: () => void {}, buttonOk: "Regresar", onConfirm: () => setIsAddingWallpaper(false) })
+                            } />
+                        </>
+                    }
+
                 </View>
-                {wallpapersWaifu &&
-                    <Button title="Pick an image from camera roll" onPress={pickImage} />
-                }
                 {image && <>
-                    <Image source={{ uri: image }} style={styles.image} />
-                    <Text style={{ color: "aqua" }}> imagen = {image}</Text>
+                    {/* <Image source={{ uri: image }} style={styles.image} />
+                    <Text style={{ color: "aqua" }}> imagen = {image}</Text> */}
+                    {/* INSERT INTO Imagen(url, semilla, imagen_listada, id_modelo_base) VALUES
+            ('freya_dance.png', '77889900', true, 2); */}
+                    <TextInputComponent value={seed} action={setSeed} placeholderText='Semilla' verified={false} isPassword={false} />
+                    <Text></Text>
+                    <TextInputComponent value={publicImage?.toString() || ''} action={(text) => setPublicImage(Number(text))} placeholderText='Imagen listada' verified={false} isPassword={false} />
+                    <Text></Text>
+                    <TextInputComponent value={idBaseModel?.toString() || ''} action={(text) => setIdBaseModel(Number(text))} placeholderText='Id modelo base' verified={false} isPassword={false} />
+                    <Text></Text>
 
-
-                    <Button title="registrar" onPress={Registrar} />
+                    <ButtonComponent title='registrar imagen' active={true} funcion={
+                        () => ShowAlert({ title: "Subir imagen", text: "¿Seguro que quieres subir la imagen al servidor?", buttonCancel: "Cancelar", onCancel: () => void {}, buttonOk: "Subir", onConfirm: Registrar })} />
 
 
                 </>}

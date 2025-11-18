@@ -14,6 +14,8 @@ const character_path = `${api_path}/personaje`;
 const token_path = `${api_path}/token`;
 const email_path = `${api_path}/email`;
 const recovery_token_path = `${api_path}/token_recuperacion`;
+const relational_path = `${api_path}/relaciones`;
+const manage_image_path = `${api_path}/gestor_imagenes`;
 
 export const login_path = `${user_path}/iniciar_sesion.php`;
 export const consult_favorite = `${user_path}/consultar_favorito.php`;
@@ -51,3 +53,9 @@ export const send_email = `${email_path}/enviar_email.php`;
 
 export const generate_recovery_token = `${recovery_token_path}/generar_token.php`;
 export const validate_recovery_token = `${recovery_token_path}/validar_token.php`;
+
+export const register_image_tag = `${relational_path}/registrar_imagen_etiqueta.php`;
+export const register_image_lora_model = `${relational_path}/registrar_imagen_modelo_lora.php`;
+export const register_image_character = `${relational_path}/registrar_imagen_personaje.php`;
+
+export const upload_image_to_server = `${manage_image_path}/subir_imagen.php`;
