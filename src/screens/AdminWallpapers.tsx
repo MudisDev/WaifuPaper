@@ -152,6 +152,7 @@ export const AdminWallpapers = () => {
 
     /*      INSERT INTO Imagen(url, semilla, imagen_listada, id_modelo_base) VALUES
             ('freya_dance.png', '77889900', true, 2);
+            
     INSERT INTO Usa_Modelo_Lora(id_imagen, id_modelo_lora, prompt, fuerza) VALUES
             (12, 2, 'battle dancer girl in glowing arena, cyber costume, dynamic pose', 1.2);
     
