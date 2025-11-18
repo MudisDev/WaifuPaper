@@ -72,7 +72,7 @@ export const AdminWallpapers = () => {
         let result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ['images', 'videos'],
             allowsEditing: true,
-            aspect: [4, 3],
+            /* aspect: [9, 16], */
             quality: 1,
         });
 
@@ -85,7 +85,7 @@ export const AdminWallpapers = () => {
 
 
 
-    const Registrar = () => {
+    const Registrar = async () => {
         const formData = new FormData();
         /* formData.append('username', username);
         formData.append('password', password);
@@ -115,20 +115,30 @@ export const AdminWallpapers = () => {
             } as any);  // Añadimos 'as any' para evitar el error de 'Blob'
         }
 
-        fetch(`https://mudisdev.com/subir_imagen.php`, {
-            method: 'POST',
-            body: formData,
+        try {
+            const response = await fetch(`https://mudisdev.com/waifupaper/src/php/api/gestor_imagenes/subir_imagen.php`, {
+                method: 'POST',
+                body: formData,
 
-        })
-            .then(response => response.text())
-            .then(data => {
+            });
+
+            const data = await response.json();
+
+            if (data.Success) {
+
                 console.log('success', data);
                 ShowAlert({ title: 'Subida exitosa', text: '¡Imagen subida correctamente!', buttonOk: 'Ok', onConfirm: () => void {} });
-            })
-            .catch(error => {
-                console.warn('error', error);
+            }
+            else if (data.Error) {
+
+                console.warn('error', data);
                 ShowAlert({ title: 'Error', text: 'Ocurrió un error durante el registro.', buttonOk: 'Ok', onConfirm: () => void {} });
-            });
+            }
+        }
+        catch (e) {
+            console.log(`Error al subir imagen al servidor => ${e}`);
+        }
+
     };
 
     /*  const selectImage = () => {
