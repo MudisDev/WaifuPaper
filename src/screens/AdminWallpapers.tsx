@@ -150,8 +150,17 @@ export const AdminWallpapers = () => {
      }; */
 
 
-
-
+    /*      INSERT INTO Imagen(url, semilla, imagen_listada, id_modelo_base) VALUES
+            ('freya_dance.png', '77889900', true, 2);
+    INSERT INTO Usa_Modelo_Lora(id_imagen, id_modelo_lora, prompt, fuerza) VALUES
+            (12, 2, 'battle dancer girl in glowing arena, cyber costume, dynamic pose', 1.2);
+    
+    INSERT INTO Aparece_En(id_imagen, id_personaje) VALUES
+            (3, 3), (4, 4), (5, 5), (6, 6), (7, 7),
+            (8, 8), (9, 9), (10, 10), (11, 11), (12, 12);
+    
+    INSERT INTO Tiene_Etiqueta(id_imagen, id_etiqueta) VALUES(1, 1), (1, 8);
+     */
     return (
         <ScrollView style={[/* stylesAppTheme.container,  */dynamicStyles.dynamicScrollViewStyle]}>
             <View style={[/* stylesAppTheme.container,  */{ marginTop: 20 }]}>
