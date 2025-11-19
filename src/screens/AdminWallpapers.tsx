@@ -21,8 +21,14 @@ export const AdminWallpapers = () => {
     const [image, setImage] = useState<string>("");
 
     const [seed, setSeed] = useState<string>("");
-    const [publicImage, setPublicImage] = useState<number>(0);
-    const [idBaseModel, setIdBaseModel] = useState<number>(0);
+    const [publicImage, setPublicImage] = useState<number>();
+    const [idBaseModel, setIdBaseModel] = useState<number>();
+    //id_modelo_lora=1&prompt=prompt&fuerza=1.1etiqueta
+    const [idLoraModel, setIdLoraModel] = useState<number>();
+    const [prompt, setPrompt] = useState<string>('');
+    const [strength, setStrength] = useState<number>();
+    const [idTag, setIdTag] = useState<number>();
+
 
 
 
@@ -137,13 +143,15 @@ export const AdminWallpapers = () => {
                             ('freya_dance.png', '77889900', true, 2); */
                 console.log('IMAGEN SUBIDA => ', data);
 
-                const response_register_image = await fetch(`${register_image}?url=${data.url}&semilla=${seed}&imagen_lista=${publicImage}&id_modelo_base=${idBaseModel}`)
+                /* const booleanPublicImage = Boolean(publicImage); */
+
+                const response_register_image = await fetch(`${register_image}?url=${data.url}&semilla=${seed}&imagen_listada=${publicImage}&id_modelo_base=${idBaseModel}`)
                 const data_response_register_image = await response_register_image.json();
                 const id_imagen = data_response_register_image.id_generado;
                 if (data_response_register_image.Success) {
                     console.log('IMAGEN REGISTRADA => ', data_response_register_image);
-                    const response_register_image_lora_model = await fetch(`${register_image_lora_model}?id_imagen=${id_imagen}&id_modelo_lora=1&prompt=prompt&fuerza=1.1`)
-                    //id_imagen=134&id_modelo_lora=1&prompt=ejmplo de fuerza Bv&fuerza=0.8
+                    const response_register_image_lora_model = await fetch(`${register_image_lora_model}?id_imagen=${id_imagen}&id_modelo_lora=${idLoraModel}&prompt=${prompt}&fuerza=${strength}`)
+
 
                     const data_response_register_image_lora_model = await response_register_image_lora_model.json();
 
@@ -155,7 +163,7 @@ export const AdminWallpapers = () => {
                         if (data_response_register_image_character.Success) {
 
 
-                            const response_register_image_tag = await fetch(`${register_image_tag}?id_imagen=${id_imagen}&id_etiqueta=1`)
+                            const response_register_image_tag = await fetch(`${register_image_tag}?id_imagen=${id_imagen}&id_etiqueta=${idTag}`)
                             const data_response_register_image_tag = await response_register_image_tag.json();
 
                             if (data_response_register_image_tag.Success) {
@@ -227,6 +235,19 @@ export const AdminWallpapers = () => {
         ? image
         : defaultImage;
 
+    /*     const [image, setImage] = useState<string>("");
+    
+        const [seed, setSeed] = useState<string>("");
+        const [publicImage, setPublicImage] = useState<number>(0);
+        const [idBaseModel, setIdBaseModel] = useState<number>(0);
+        //id_modelo_lora=1&prompt=prompt&fuerza=1.1etiqueta
+        const [idLoraModel, setIdLoraModel] = useState<number>(0);
+        const [prompt, setPrompt] = useState<string>('');
+        const [strength, setStrength] = useState<number>(0);
+        const [idTag, setIdTag] = useState<number>(0); */
+
+    const activeButton = ((publicImage || !publicImage) && image && seed && idBaseModel && idLoraModel && prompt && strength && idTag) ? true : false;
+
 
     return (
         <ScrollView style={[/* stylesAppTheme.container,  */dynamicStyles.dynamicScrollViewStyle]}>
@@ -279,6 +300,8 @@ export const AdminWallpapers = () => {
                                 <Text style={dynamicStyles.dynamicText}>No hay wallpapers Bv</Text>
                             )}
                             {wallpapersWaifu &&
+
+
                                 <ButtonComponent title='Agregar Wallpaper' active={true} funcion={() => setIsAddingWallpaper(true)} />
 
                             }
@@ -301,21 +324,32 @@ export const AdminWallpapers = () => {
                     }
 
                 </View>
-                {image && <>
+                {image && isAddingWallpaper && <>
                     {/* <Image source={{ uri: image }} style={styles.image} />
                     <Text style={{ color: "aqua" }}> imagen = {image}</Text> */}
                     {/* INSERT INTO Imagen(url, semilla, imagen_listada, id_modelo_base) VALUES
             ('freya_dance.png', '77889900', true, 2); */}
-                    <TextInputComponent value={seed} action={setSeed} placeholderText='Semilla' verified={false} isPassword={false} />
-                    <Text></Text>
-                    <TextInputComponent value={publicImage?.toString() || ''} action={(text) => setPublicImage(Number(text))} placeholderText='Imagen listada' verified={false} isPassword={false} />
-                    <Text></Text>
-                    <TextInputComponent value={idBaseModel?.toString() || ''} action={(text) => setIdBaseModel(Number(text))} placeholderText='Id modelo base' verified={false} isPassword={false} />
-                    <Text></Text>
+                    <View style={{/* backgroundColor: 'red', */ alignItems:'center'}}>
+                        <TextInputComponent value={seed} action={setSeed} placeholderText='Semilla' verified={false} isPassword={false} />
+                        <Text></Text>
+                        <TextInputComponent value={prompt} action={setPrompt} placeholderText='Prompt' verified={false} isPassword={false} />
+                        <Text></Text>
+                        <View style={styles.numericContainer} >
+                            <TextInputComponent value={publicImage?.toString() || ''} action={(text) => setPublicImage(Number(text))} placeholderText='Imagen listada' verified={false} isPassword={false} isNumericKeybordType />
+                            <TextInputComponent value={idBaseModel?.toString() || ''} action={(text) => setIdBaseModel(Number(text))} placeholderText='Id modelo base' verified={false} isPassword={false} isNumericKeybordType />
+                            <TextInputComponent value={idLoraModel?.toString() || ''} action={(text) => setIdLoraModel(Number(text))} placeholderText='Id modelo lora' verified={false} isPassword={false} isNumericKeybordType />
+                        </View>
+                        <Text></Text>
 
-                    <ButtonComponent title='registrar imagen' active={true} funcion={
-                        () => ShowAlert({ title: "Subir imagen", text: "¿Seguro que quieres subir la imagen al servidor?", buttonCancel: "Cancelar", onCancel: () => void {}, buttonOk: "Subir", onConfirm: Registrar })} />
+                        <View style={styles.numericContainer} >
+                            <TextInputComponent value={strength?.toString() || ''} action={(text) => setStrength(Number(text))} placeholderText='Fuerza' verified={false} isPassword={false} isNumericKeybordType />
+                            <TextInputComponent value={idTag?.toString() || ''} action={(text) => setIdTag(Number(text))} placeholderText='Id etiqueta' verified={false} isPassword={false} isNumericKeybordType />
+                        </View>
+                        <Text></Text>
 
+                        <ButtonComponent title='registrar imagen' active={activeButton} funcion={
+                            () => ShowAlert({ title: "Subir imagen", text: "¿Seguro que quieres subir la imagen al servidor?", buttonCancel: "Cancelar", onCancel: () => void {}, buttonOk: "Subir", onConfirm: Registrar })} />
+                    </View>
 
                 </>}
                 <Text></Text>
@@ -336,4 +370,11 @@ const styles = StyleSheet.create({
         width: 200,
         height: 200,
     },
+    numericContainer: {
+        width: '100%',
+        /* backgroundColor: "red", */
+        flexDirection: 'row',
+        justifyContent: 'center',
+        gap: 4
+    }
 });
