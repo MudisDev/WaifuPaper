@@ -1,4 +1,4 @@
-package com.martin_b44.NekoPaper
+package com.martin_b44.WaifuPaper
 
 import android.app.Application
 import android.content.res.Configuration

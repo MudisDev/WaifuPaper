@@ -39,3 +39,6 @@ src/php/config/
 *.tsbuildinfo
 
 src/php/vendor
+
+**/*.keystore
+keystore.properties
