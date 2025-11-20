@@ -20,7 +20,12 @@ class Gestor_Imagenes
     private function Normalizar_Ruta()
     {
         $this->docRoot = rtrim($_SERVER['DOCUMENT_ROOT'], '/\\');
-        $this->uploadDir = $this->docRoot . "/waifupaper/wallpapers/" . $this->id_personaje . "/";
+        if ($this->id_personaje == 0) {
+            $this->uploadDir = $this->docRoot . "/waifupaper/wallpapers/imagen-perfil/";
+
+        } else {
+            $this->uploadDir = $this->docRoot . "/waifupaper/wallpapers/" . $this->id_personaje . "/";
+        }
     }
 
     public function Crear_Directorio()
@@ -60,8 +65,13 @@ class Gestor_Imagenes
             chmod($uploadFile, 0644);
 
             // Construir URL pública desde config.php
-            $urlPublica = BASE_URL_PUBLICA . intval($this->id_personaje) . "/" . $uniqueName;
+            if ($this->id_personaje == 0) {
+                $urlPublica = BASE_URL_PUBLICA . "imagen-perfil/" . $uniqueName;
 
+            } else {
+                $urlPublica = BASE_URL_PUBLICA . intval($this->id_personaje) . "/" . $uniqueName;
+            }
+            
 
 
             return [

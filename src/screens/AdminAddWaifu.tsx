@@ -1,10 +1,12 @@
 import React, { useState } from 'react'
-import { View, Text, Image, StyleSheet, ScrollView } from 'react-native'
+import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity } from 'react-native'
 import { useTheme } from '../hooks/UseTheme';
 import { stylesAppTheme } from '../theme/AppTheme';
 import { TextInputComponent } from '../components/TextInputComponent';
 import { assign_personality, register_character } from '../const/UrlConfig';
 import { ButtonComponent } from '../components/ButtonComponent';
+import * as ImagePicker from 'expo-image-picker';
+import { ShowAlert } from '../helpers/ShowAlert';
 
 /* import { Picker } from '@react-native-picker/picker'; */
 
@@ -24,11 +26,14 @@ export const AdminAddWaifu = () => {
     const [profilePhoto, setProfilePhoto] = useState<string>('');
     const [idPersonality, setIdPersonality] = useState<number>();
 
+    const [image, setImage] = useState<string>("");
+
+
 
     /* const [selectedLanguage, setSelectedLanguage] = useState(); */
 
 
-    const Registrar_Personaje = async () => {
+    const Registrar_Personaje = async (imageUrl) => {
 
         try {
 
@@ -46,7 +51,7 @@ export const AdminAddWaifu = () => {
                 mes=${month}&
                 edad=${age}&
                 id_especie=${idKind}&
-                imagen_perfil=${profilePhoto}`);
+                imagen_perfil=${imageUrl}`);
 
             const data = await response.json();
             // Retorna los datos para ser usados en el componente
@@ -81,6 +86,8 @@ export const AdminAddWaifu = () => {
             if (!data.Error) {
                 console.log("Parece que se asigno exitosamente la personalidad");
 
+                ShowAlert({ title: 'Registro exitoso', text: 'La waifu fue registrada en la BD.', buttonOk: 'Ok', onConfirm: () => void {} });
+
             }
 
 
@@ -88,6 +95,128 @@ export const AdminAddWaifu = () => {
             console.error(`error asignar personalidad: ${e}`);
         }
     }
+
+
+    const pickImage = async () => {
+        // No permissions request is necessary for launching the image library
+        let result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ['images', 'videos'],
+            allowsEditing: true,
+            /* aspect: [9, 16], */
+            quality: 1,
+        });
+
+        console.log(result);
+
+        if (!result.canceled) {
+            setImage(result.assets[0].uri);
+        }
+    };
+
+    const Subir_Imagen = async () => {
+        const formData = new FormData();
+        /* formData.append('username', username);
+        formData.append('password', password);
+        formData.append('name', name);
+        formData.append('phone', phoneNumber);
+        formData.append('email', email); */
+
+        formData.append('id_personaje', 0);
+
+
+        if (image /* && profilePhoto.uri */) {
+            //const localUri = profilePhoto.uri;
+            const localUri = image;
+            const filename = localUri.split('/').pop();
+            const match = /\.(\w+)$/.exec(filename || '');
+            const type = match ? `image/${match[1]}` : `image`;
+
+            console.log(`localUri => ${localUri}`);
+            console.log(`filename => ${filename}`);
+            console.log(`match => ${match}`);
+            console.log(`type => ${type}`);
+
+            formData.append('imagen_perfil', {
+                uri: localUri,
+                name: filename || 'image',
+                type: type,
+            } as any);  // Añadimos 'as any' para evitar el error de 'Blob'
+        }
+
+        try {
+
+            const response = await fetch(`https://mudisdev.com/waifupaper/src/php/api/gestor_imagenes/subir_imagen.php`, {
+                //const response = await fetch(`${upload_image_to_server}`, {
+                method: 'POST',
+                body: formData,
+
+            });
+
+            const data = await response.json();
+
+            if (data.Success) {
+                /* INSERT INTO Imagen(url, semilla, imagen_listada, id_modelo_base) VALUES
+                            ('freya_dance.png', '77889900', true, 2); */
+                console.log('IMAGEN SUBIDA => ', data);
+
+                Registrar_Personaje(data.url);
+                /* const booleanPublicImage = Boolean(publicImage); */
+
+
+            }
+            else if (data.Error) {
+
+                console.warn('error', data);
+                ShowAlert({ title: 'Error', text: 'Ocurrió un error durante el registro.', buttonOk: 'Ok', onConfirm: () => void {} });
+            }
+        }
+        catch (e) {
+            console.log(`Error al subir imagen al servidor => ${e}`);
+        }
+
+    };
+
+    /*  const selectImage = () => {
+         launchImageLibrary({ mediaType: 'photo' }, (response) => {
+             if (response.assets && response.assets.length > 0) {
+                 setProfilePhoto(response.assets[0]);
+             }
+         });
+     }; */
+
+
+    /*      INSERT INTO Imagen(url, semilla, imagen_listada, id_modelo_base) VALUES
+            ('freya_dance.png', '77889900', true, 2);
+            
+    INSERT INTO Usa_Modelo_Lora(id_imagen, id_modelo_lora, prompt, fuerza) VALUES
+            (12, 2, 'battle dancer girl in glowing arena, cyber costume, dynamic pose', 1.2);
+    
+    INSERT INTO Aparece_En(id_imagen, id_personaje) VALUES
+            (3, 3), (4, 4), (5, 5), (6, 6), (7, 7),
+            (8, 8), (9, 9), (10, 10), (11, 11), (12, 12);
+    
+    INSERT INTO Tiene_Etiqueta(id_imagen, id_etiqueta) VALUES(1, 1), (1, 8);
+     */
+
+
+    const defaultImage = "https://media.istockphoto.com/id/2221915585/vector/grey-avatar-icon-user-avatar-photo-icon-social-media-user-icon-vector.jpg?s=612x612&w=0&k=20&c=9CObBqL8r65oVfHE4hyEqpyb8FwK7VfDqF1qXD5YMz4=";
+
+    const urlImage = (typeof image === "string" && image.trim() !== "")
+        ? image
+        : defaultImage;
+
+    /*     const [image, setImage] = useState<string>("");
+    
+        const [seed, setSeed] = useState<string>("");
+        const [publicImage, setPublicImage] = useState<number>(0);
+        const [idBaseModel, setIdBaseModel] = useState<number>(0);
+        //id_modelo_lora=1&prompt=prompt&fuerza=1.1etiqueta
+        const [idLoraModel, setIdLoraModel] = useState<number>(0);
+        const [prompt, setPrompt] = useState<string>('');
+        const [strength, setStrength] = useState<number>(0);
+        const [idTag, setIdTag] = useState<number>(0); */
+
+    const activeButton = name && alias && description && history && occupation && hobbies && day && month && age && idKind && idPersonality && image;
 
     return (
         <ScrollView style={[/* stylesAppTheme.container, */ dynamicStyles.dynamicScrollViewStyle,]}>
@@ -160,7 +289,7 @@ export const AdminAddWaifu = () => {
                 {/* <TextInputComponent value={month} action={setMonth} placeholderText='Mes' verified={false} isPassword={false} />
             <TextInputComponent value={age} action={setAge} placeholderText='Edad' verified={false} isPassword={false} />
             <TextInputComponent value={idKind} action={setIdKind} placeholderText='Especie' verified={false} isPassword={false} /> */}
-                <TextInputComponent value={profilePhoto} action={setProfilePhoto} placeholderText='Imagen perfil Url' verified={false} isPassword={false} />
+                {/* <TextInputComponent value={profilePhoto} action={setProfilePhoto} placeholderText='Imagen perfil Url' verified={false} isPassword={false} /> */}
                 {/* <TextInputComponent value={idPersonality} action={setIdPersonality} placeholderText='Personalidad' verified={false} isPassword={false} /> */}
 
                 {/* <View style={{ backgroundColor: "red", width: 200 }}>
@@ -174,18 +303,15 @@ export const AdminAddWaifu = () => {
                     <Picker.Item label="JavaScript" value="js" />
                 </Picker>
             </View> */}
-                <Image
-                    /*  key={item.id} */
-                    source={{ uri: profilePhoto }}
-                    style={{
-                        //width: width * 0.25, // un poco más grande
-                        width: 50,
-                        aspectRatio: 9 / 16,
-                        borderRadius: 14,
-                        resizeMode: 'cover', // importante: evita que se estire raro
-                    }}
-                />
-                <ButtonComponent active={true} funcion={() => Registrar_Personaje()} title='Registrar Waifu' />
+                <TouchableOpacity onPress={pickImage} >
+                    <Image source={{ uri: urlImage }}
+                        style={style.image} />
+                </TouchableOpacity>
+                <Text></Text>
+                <ButtonComponent active={activeButton} funcion={
+                    () => ShowAlert({ title: "Registrar Waifu", text: "¿Seguro que quieres registrar esta waifu?", buttonCancel: "Cancelar", onCancel: () => void {}, buttonOk: "Subir", onConfirm: Subir_Imagen })
+
+                } title='Registrar Waifu' />
             </View>
         </ScrollView>
     )
@@ -198,5 +324,9 @@ const style = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'center',
         gap: 4
-    }
+    },
+    image: {
+        width: 200,
+        height: 200,
+    },
 });
