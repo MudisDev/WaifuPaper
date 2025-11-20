@@ -1,10 +1,13 @@
 import React, { StrictMode, useEffect, useState } from 'react'
-import { View, Text, Image, ScrollView, StyleSheet } from 'react-native'
+import { View, Text, Image, ScrollView, StyleSheet, TouchableOpacity } from 'react-native'
 import { useTheme } from '../hooks/UseTheme';
 import { stylesAppTheme } from '../theme/AppTheme';
 import { TextInputComponent } from '../components/TextInputComponent';
 import { ButtonComponent } from '../components/ButtonComponent';
 import { edit_profile, search_character } from '../const/UrlConfig';
+import * as ImagePicker from 'expo-image-picker';
+import { ShowAlert } from '../helpers/ShowAlert';
+
 
 
 interface WaifuData {
@@ -31,7 +34,19 @@ export const AdminEditWaifu = () => {
     const [dataWaifu, setDataWaifu] = useState<WaifuData>();
     const [editWaifu, setEditWaifu] = useState<WaifuData>();
     const [isEditing, setIsEditing] = useState<boolean>(false);
-    const isModified = JSON.stringify(dataWaifu) != JSON.stringify(editWaifu);
+
+    const [image, setImage] = useState<string>();
+    const [imageTemp, setImageTemp] = useState<string>();
+
+    const imageWasModified = (image != imageTemp) ? true : false;
+
+    const isModified = (JSON.stringify(dataWaifu) != JSON.stringify(editWaifu) || imageWasModified);
+
+
+
+    const [newImage, setNewImage] = useState<string>();
+
+
 
     const Buscar_Personaje = async () => {
 
@@ -93,6 +108,7 @@ export const AdminEditWaifu = () => {
     const Editar_Perfil = async () => {
 
         try {
+            const waifuProfilePhoto = (imageWasModified) ? image : imageTemp;
 
             const params = new URLSearchParams({
                 id_personaje: String(idCharacter),
@@ -105,7 +121,8 @@ export const AdminEditWaifu = () => {
                 dia: String(editWaifu?.day) || '',
                 mes: String(editWaifu?.month || ''),
                 edad: String(editWaifu?.age || ''),
-                imagen_perfil: editWaifu?.profilePhoto || ''
+                //imagen_perfil: editWaifu?.profilePhoto || ''
+                imagen_perfil: waifuProfilePhoto || ''
 
             });
             //console.log("Path login -> ", login_path)
@@ -168,6 +185,108 @@ export const AdminEditWaifu = () => {
         }
     }
 
+
+    const pickImage = async () => {
+        // No permissions request is necessary for launching the image library
+        let result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ['images', 'videos'],
+            allowsEditing: true,
+            /* aspect: [9, 16], */
+            quality: 1,
+        });
+
+        console.log(result);
+
+        if (!result.canceled) {
+            setImage(result.assets[0].uri);
+        }
+    };
+
+
+
+
+
+
+    const Subir_Imagen = async () => {
+        const formData = new FormData();
+        /* formData.append('username', username);
+        formData.append('password', password);
+        formData.append('name', name);
+        formData.append('phone', phoneNumber);
+        formData.append('email', email); */
+
+        formData.append('id_personaje', 0);
+
+
+        if (image /* && profilePhoto.uri */) {
+            //const localUri = profilePhoto.uri;
+            const localUri = image;
+            const filename = localUri.split('/').pop();
+            const match = /\.(\w+)$/.exec(filename || '');
+            const type = match ? `image/${match[1]}` : `image`;
+
+            console.log(`localUri => ${localUri}`);
+            console.log(`filename => ${filename}`);
+            console.log(`match => ${match}`);
+            console.log(`type => ${type}`);
+
+            formData.append('imagen_perfil', {
+                uri: localUri,
+                name: filename || 'image',
+                type: type,
+            } as any);  // Añadimos 'as any' para evitar el error de 'Blob'
+        }
+
+        try {
+
+            const response = await fetch(`https://mudisdev.com/waifupaper/src/php/api/gestor_imagenes/subir_imagen.php`, {
+                //const response = await fetch(`${upload_image_to_server}`, {
+                method: 'POST',
+                body: formData,
+
+            });
+
+            const data = await response.json();
+
+
+
+
+            if (data.Success) {
+                /* INSERT INTO Imagen(url, semilla, imagen_listada, id_modelo_base) VALUES
+                            ('freya_dance.png', '77889900', true, 2); */
+                console.log('IMAGEN SUBIDA => ', data);
+                await setNewImage(data.url);
+
+                /* const booleanPublicImage = Boolean(publicImage); */
+
+
+            }
+            else if (data.Error) {
+
+                console.warn('error', data);
+                ShowAlert({ title: 'Error', text: 'Ocurrió un error durante el registro.', buttonOk: 'Ok', onConfirm: () => void {} });
+            }
+        }
+        catch (e) {
+            console.log(`Error al subir imagen al servidor => ${e}`);
+        }
+
+    };
+
+
+
+
+
+
+
+    const Control_Edicion_Perfil = () => {
+
+        if (imageWasModified) {
+            Subir_Imagen();
+        }
+        Editar_Perfil();
+
+    }
 
     return (
         <ScrollView style={[/* stylesAppTheme.container,  */dynamicStyles.dynamicScrollViewStyle]}>
@@ -265,7 +384,12 @@ export const AdminEditWaifu = () => {
                                         {/* <TextInputComponent value={editWaifu?.idKind ? String(editWaifu.idKind) : ''} action={(text) => setEditWaifu(pre => ({ ...pre!, idKind: Number(text) }))} placeholderText='Id Especie' verified={false} isPassword={false} />
                                         <TextInputComponent value={editWaifu?.idPersonality ? String(editWaifu.idPersonality) : ''} action={(text) => setEditWaifu(pre => ({ ...pre!, idPersonality: Number(text) }))} placeholderText='Id Personalidad' verified={false} isPassword={false} /> */}
                                         <Text style={[dynamicStyles.dynamicText, style.text]}>Url imagen de perfil:</Text>
-                                        <TextInputComponent value={editWaifu?.profilePhoto || ''} action={(text) => setEditWaifu(pre => ({ ...pre!, profilePhoto: text }))} placeholderText='Url Imagen Perfil' verified={false} isPassword={false} />
+                                        {/* <TextInputComponent value={editWaifu?.profilePhoto || ''} action={(text) => setEditWaifu(pre => ({ ...pre!, profilePhoto: text }))} placeholderText='Url Imagen Perfil' verified={false} isPassword={false} />
+                                        <Text></Text> */}
+                                        <TouchableOpacity onPress={pickImage} >
+                                            <Image source={{ uri: image }}
+                                                style={style.image} />
+                                        </TouchableOpacity>
                                         <Text></Text>
 
                                         {/* 
@@ -285,7 +409,7 @@ export const AdminEditWaifu = () => {
 
                                         {isModified ?
 
-                                            <ButtonComponent active={true} funcion={() => { Editar_Perfil() }} title='Guardar cambios' />
+                                            <ButtonComponent active={true} funcion={() => { Control_Edicion_Perfil() }} title='Guardar cambios' />
 
                                             :
                                             <ButtonComponent active={true} funcion={() => { setIsEditing(false) }} title='Volver' />
@@ -318,5 +442,9 @@ const style = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'center',
         gap: 4
+    },
+    image: {
+        width: 200,
+        height: 200,
     }
 })
