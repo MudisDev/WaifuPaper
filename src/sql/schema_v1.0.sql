@@ -230,8 +230,7 @@ SELECT
     te.id_imagen AS id_imagen_etiqueta,
     te.id_etiqueta,
     i.url,
-    i.id_imagen AS id_imagen_real,
-    i.clasificacion
+    i.id_imagen AS id_imagen_real
 FROM tiene_etiqueta te
     JOIN imagen i ON te.id_imagen = i.id_imagen;
 

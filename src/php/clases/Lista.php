@@ -37,7 +37,7 @@ class Lista
 
     public function Consultar_Imagenes_Por_Etiqueta($id_etiqueta)
     {
-        $condicion = "id_etiqueta = '$id_etiqueta' AND clasificacion = 'safe'";
+        $condicion = "id_etiqueta = '$id_etiqueta'";
         $conexion = new Conexion();
         $resultado = $conexion->SetSelect("Vista_Mostrar_Imagen_Por_Etiqueta", ["*"], $condicion);
         //$resultado = $conexion->SetSelect("Vista_Mostrar_Imagen_Por_Etiqueta_Segura", ["*"], $condicion);
