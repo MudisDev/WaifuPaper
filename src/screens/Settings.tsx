@@ -184,8 +184,11 @@ export const Settings = () => {
       <Text></Text>
 
       {/* <ButtonComponent title='eliminar cuenta' funcion={DeleteProfile} active={true} /> */}
-      <ButtonComponent title='eliminar cuenta' funcion={() => ShowAlert({ title: 'Eliminar Cuenta', text: '¿Seguro que deseas eliminar la cuenta? (No se puede deshacer)', buttonOk: 'Ok', onConfirm: DeleteProfile, buttonCancel: 'Cancelar', onCancel: () => void {} })} active={true} />
-
+      {(userData?.idUser == 1) ?
+        <ButtonComponent title='eliminar cuenta' funcion={() => ShowAlert({ title: 'Eliminar Cuenta', text: '¿Seguro que deseas eliminar la cuenta? (No se puede deshacer)', buttonOk: 'Ok', onConfirm: DeleteProfile, buttonCancel: 'Cancelar', onCancel: () => void {} })} active={false} />
+        :
+        <ButtonComponent title='eliminar cuenta' funcion={() => ShowAlert({ title: 'Eliminar Cuenta', text: '¿Seguro que deseas eliminar la cuenta? (No se puede deshacer)', buttonOk: 'Ok', onConfirm: DeleteProfile, buttonCancel: 'Cancelar', onCancel: () => void {} })} active={true} />
+      }
       <Text></Text>
       <Text></Text>
       <Text></Text>

@@ -21,8 +21,10 @@ class Email
         $this->mail->isSMTP();
         $this->mail->Host = EMAIL_HOST;
         $this->mail->Port = EMAIL_PORT;
-        $this->mail->SMTPAuth = EMAIL_SMTAUTH;
+        $this->mail->SMTPAuth = EMAIL_SMTPAUTH;
         $this->mail->SMTPSecure = EMAIL_SMTPSECURE;
+        $this->mail->Password = EMAIL_PASSWORDEMAIL;
+        $this->mail->Username = EMAIL_FROMEMAIL;
 
     }
 

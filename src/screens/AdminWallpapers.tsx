@@ -4,7 +4,7 @@ import { useTheme } from '../hooks/UseTheme';
 
 import { TextInputComponent } from '../components/TextInputComponent';
 import { ButtonComponent } from '../components/ButtonComponent';
-import { register_image, register_image_character, register_image_lora_model, register_image_tag, show_images_for_character, upload_image_to_server } from '../const/UrlConfig';
+import { register_image, register_image_character, register_image_lora_model, register_image_tag, search_character, show_images_for_character, upload_image_to_server } from '../const/UrlConfig';
 import { NekoImageData } from '../helpers/Interfaces';
 import * as ImagePicker from 'expo-image-picker';
 import { ShowAlert } from '../helpers/ShowAlert';
@@ -18,6 +18,7 @@ export const AdminWallpapers = () => {
     const [wallpapersWaifu, setWallpapersWaifu] = useState<NekoImageData[]>();
 
     const [isAddingWallpaper, setIsAddingWallpaper] = useState<boolean>(false);
+    const [characterExist, setCharacterExist] = useState<boolean>(false);
     const [image, setImage] = useState<string>("");
 
     const [seed, setSeed] = useState<string>("");
@@ -40,34 +41,49 @@ export const AdminWallpapers = () => {
             //console.log("Path login -> ", login_path)
             //const response = await fetch(`http://localhost/nekopaper/api/usuario/iniciar_sesion.php?username=${username}&password=${password}`);
             //const response = await fetch(`http://192.168.18.5/nekopaper/api/usuario/iniciar_sesion.php?username=${username}&password=${password}`);
-            const response = await fetch(`${show_images_for_character}?id_personaje=${idCharacter}`);
+            const response_character = await fetch(`${search_character}?id_personaje=${idCharacter}`);
+            const data_character = await response_character.json();
+            if (!data_character.Error) {
+                console.log("Al parecer si encontro waifu Bv");
+                setCharacterExist(true);
 
-            const data = await response.json();
-            // Retorna los datos para ser usados en el componente
+                const response = await fetch(`${show_images_for_character}?id_personaje=${idCharacter}`);
+
+                const data = await response.json();
+                // Retorna los datos para ser usados en el componente
 
 
 
 
-            if (!data.Error) {
-                console.log("Al parecer si encotro wallpapers Bv");
-                /* for (let i = 0; i < data.length; i++) {
-                    console.log(`Wallpapers => ${data[i].url}`);
-                } */
+                if (!data.Error) {
+                    console.log("Al parecer si encotro wallpapers Bv");
+                    /* for (let i = 0; i < data.length; i++) {
+                        console.log(`Wallpapers => ${data[i].url}`);
+                    } */
 
-                const wallpaperMapeados: NekoImageData[] = data.map((item: any) => ({
-                    id: item.id_imagen,
-                    id_character: item.id_personaje,
-                    url: item.url,
-                    /* seed: item.string,
-                    public_image: item.boolean,
-                    id_base_model: item.number, */
-                }));
+                    const wallpaperMapeados: NekoImageData[] = data.map((item: any) => ({
+                        id: item.id_imagen,
+                        id_character: item.id_personaje,
+                        url: item.url,
+                        /* seed: item.string,
+                        public_image: item.boolean,
+                        id_base_model: item.number, */
+                    }));
 
-                setWallpapersWaifu(wallpaperMapeados);
+                    setWallpapersWaifu(wallpaperMapeados);
+
+                }
+                else
+                    console.log("No encontro wallpapers Bv");
+            }
+            else {
+                setCharacterExist(false);
+                console.log("no encontro waifu Bv");
 
             }
-            else
-                console.log("No encontro wallpapers Bv");
+
+
+
 
 
 
@@ -250,115 +266,224 @@ export const AdminWallpapers = () => {
 
 
     return (
-        <ScrollView style={[/* stylesAppTheme.container,  */dynamicStyles.dynamicScrollViewStyle]}>
-            <View style={[/* stylesAppTheme.container,  */{ marginTop: 20 }]}>
-                <View style={{ alignItems: 'center'/* , backgroundColor: 'red' */ }}>
+        <ScrollView style={dynamicStyles.dynamicScrollViewStyle}>
+            <View style={{ marginTop: 20 }}>
+
+                {/* TÍTULO Y BUSCADOR */}
+                <View style={{ alignItems: 'center' }}>
                     <Text style={[dynamicStyles.dynamicText, { fontSize: 25 }]}>
                         Administrar Wallpapers Bv
                     </Text>
+
                     <Text></Text>
-                    {
-                        !isAddingWallpaper && (
-                            <><TextInputComponent value={idCharacter?.toString() || ''} action={(text) => setIdCharacter(Number(text))} placeholderText='id waifu' verified={false} isPassword={false} />
-                                <Text></Text>
-                                <ButtonComponent active={true} funcion={Buscar_Personaje} title='Buscar waifu' />
-                                <Text></Text>
 
-                            </>
-                        )
-                    }
-                </View>
-                <View
-                    style={{
-                        flexDirection: 'row',
-                        flexWrap: 'wrap',
-                        justifyContent: 'center', // centra horizontalmente las filas
-                        alignItems: 'center', // centra verticalmente los elementos de cada fila
-                        gap: 10, // separa las imágenes
-                        padding: 10,
-                    }}
-                >
-
-                    {!isAddingWallpaper &&
-
+                    {!isAddingWallpaper && (
                         <>
-                            {wallpapersWaifu ? (
-                                wallpapersWaifu.map((item) => (
-                                    <Image
-                                        key={item.id}
-                                        source={{ uri: item.url }}
-                                        style={{
-                                            width: 110,
-                                            aspectRatio: 9 / 16,
-                                            borderRadius: 14,
-                                            resizeMode: 'cover',
-                                        }}
+                            <TextInputComponent
+                                value={idCharacter?.toString() || ''}
+                                action={(text) => setIdCharacter(Number(text))}
+                                placeholderText='id waifu'
+                                verified={false}
+                                isPassword={false}
+                            />
+
+                            <Text></Text>
+
+                            <ButtonComponent
+                                active={true}
+                                funcion={Buscar_Personaje}
+                                title='Buscar waifu'
+                            />
+
+                            <Text></Text>
+                        </>
+                    )}
+                </View>
+
+                {/* GALERIA O MENSAJE VACÍO */}
+                {!isAddingWallpaper && (
+                    <>
+                        {wallpapersWaifu && wallpapersWaifu.length > 0 ? (
+                            // ----- GALERIA -----
+                            <View style={{ width: '100%', alignItems: 'center' }}>
+                                <View
+                                    style={{
+                                        flexDirection: 'row',
+                                        flexWrap: 'wrap',
+                                        justifyContent: 'center',
+                                        alignItems: 'center',
+                                        gap: 10,
+                                        padding: 10,
+                                    }}
+                                >
+                                    {wallpapersWaifu.map((item) => (
+                                        <Image
+                                            key={item.id}
+                                            source={{ uri: item.url }}
+                                            style={{
+                                                width: 110,
+                                                aspectRatio: 9 / 16,
+                                                borderRadius: 14,
+                                                resizeMode: 'cover',
+                                            }}
+                                        />
+                                    ))}
+                                </View>
+
+                                {/* --- BOTÓN AÚN SI EXISTEN WALLPAPERS --- */}
+                                {characterExist && (
+                                    <View style={{ marginVertical: 20 }}>
+                                        <ButtonComponent
+                                            title='Agregar Wallpaper'
+                                            active={true}
+                                            funcion={() => setIsAddingWallpaper(true)}
+                                        />
+                                    </View>
+                                )}
+                            </View>
+                        ) : (
+                            // ----- MENSAJE VACÍO -----
+                            <View style={{ width: '100%', alignItems: 'center', marginVertical: 20 }}>
+                                <Text style={dynamicStyles.dynamicText}>No hay wallpapers Bv</Text>
+
+                                {characterExist && (
+                                    <>
+                                        <Text></Text>
+
+                                        <ButtonComponent
+                                            title='Agregar Wallpaper'
+                                            active={true}
+                                            funcion={() => setIsAddingWallpaper(true)}
+                                        />
+                                    </>
+                                )}
+                            </View>
+                        )}
+                    </>
+                )}
+
+
+                {/* SECCIÓN PARA AGREGAR WALLPAPER */}
+                {isAddingWallpaper && (
+                    <>
+                        <TouchableOpacity onPress={pickImage}>
+                            <Image source={{ uri: urlImage }} style={styles.image} />
+                        </TouchableOpacity>
+
+                        <ButtonComponent
+                            title='regresar'
+                            active={true}
+                            funcion={() =>
+                                ShowAlert({
+                                    title: "Regresar",
+                                    text: "Se descartarán los cambios realizados",
+                                    buttonCancel: "Cancelar",
+                                    onCancel: () => { },
+                                    buttonOk: "Regresar",
+                                    onConfirm: () => setIsAddingWallpaper(false),
+                                })
+                            }
+                        />
+
+                        {/* FORMULARIO PARA SUBIR IMAGEN */}
+                        {image && (
+                            <View style={{ alignItems: 'center' }}>
+                                <TextInputComponent
+                                    value={seed}
+                                    action={setSeed}
+                                    placeholderText='Semilla'
+                                    verified={false}
+                                    isPassword={false}
+                                />
+                                <Text></Text>
+
+                                <TextInputComponent
+                                    value={prompt}
+                                    action={setPrompt}
+                                    placeholderText='Prompt'
+                                    verified={false}
+                                    isPassword={false}
+                                />
+                                <Text></Text>
+
+                                <View style={styles.numericContainer}>
+                                    <TextInputComponent
+                                        value={publicImage?.toString() || ''}
+                                        action={(text) => setPublicImage(Number(text))}
+                                        placeholderText='Imagen listada'
+                                        verified={false}
+                                        isPassword={false}
+                                        isNumericKeybordType
                                     />
 
-                                ))
-                            ) : (
-                                <Text style={dynamicStyles.dynamicText}>No hay wallpapers Bv</Text>
-                            )}
-                            {wallpapersWaifu &&
+                                    <TextInputComponent
+                                        value={idBaseModel?.toString() || ''}
+                                        action={(text) => setIdBaseModel(Number(text))}
+                                        placeholderText='Id modelo base'
+                                        verified={false}
+                                        isPassword={false}
+                                        isNumericKeybordType
+                                    />
 
+                                    <TextInputComponent
+                                        value={idLoraModel?.toString() || ''}
+                                        action={(text) => setIdLoraModel(Number(text))}
+                                        placeholderText='Id modelo lora'
+                                        verified={false}
+                                        isPassword={false}
+                                        isNumericKeybordType
+                                    />
+                                </View>
 
-                                <ButtonComponent title='Agregar Wallpaper' active={true} funcion={() => setIsAddingWallpaper(true)} />
+                                <Text></Text>
 
-                            }
+                                <View style={styles.numericContainer}>
+                                    <TextInputComponent
+                                        value={strength?.toString() || ''}
+                                        action={(text) => setStrength(Number(text))}
+                                        placeholderText='Fuerza'
+                                        verified={false}
+                                        isPassword={false}
+                                        isNumericKeybordType
+                                    />
 
-                        </>
-                    }
+                                    <TextInputComponent
+                                        value={idTag?.toString() || ''}
+                                        action={(text) => setIdTag(Number(text))}
+                                        placeholderText='Id etiqueta'
+                                        verified={false}
+                                        isPassword={false}
+                                        isNumericKeybordType
+                                    />
+                                </View>
 
-                    {isAddingWallpaper &&
-                        <>
+                                <Text></Text>
 
-                            <TouchableOpacity onPress={pickImage} >
-                                <Image source={{ uri: urlImage }}
-                                    style={styles.image} />
-                            </TouchableOpacity>
+                                <ButtonComponent
+                                    title='registrar imagen'
+                                    active={activeButton}
+                                    funcion={() =>
+                                        ShowAlert({
+                                            title: "Subir imagen",
+                                            text: "¿Seguro que quieres subir la imagen al servidor?",
+                                            buttonCancel: "Cancelar",
+                                            onCancel: () => { },
+                                            buttonOk: "Subir",
+                                            onConfirm: Registrar,
+                                        })
+                                    }
+                                />
+                            </View>
+                        )}
+                    </>
+                )}
 
-                            <ButtonComponent title='regresar' active={true} funcion={
-                                () => ShowAlert({ title: "Regresar", text: "Se descartaran los cambios realizados", buttonCancel: "Cancelar", onCancel: () => void {}, buttonOk: "Regresar", onConfirm: () => setIsAddingWallpaper(false) })
-                            } />
-                        </>
-                    }
-
-                </View>
-                {image && isAddingWallpaper && <>
-                    {/* <Image source={{ uri: image }} style={styles.image} />
-                    <Text style={{ color: "aqua" }}> imagen = {image}</Text> */}
-                    {/* INSERT INTO Imagen(url, semilla, imagen_listada, id_modelo_base) VALUES
-            ('freya_dance.png', '77889900', true, 2); */}
-                    <View style={{/* backgroundColor: 'red', */ alignItems:'center'}}>
-                        <TextInputComponent value={seed} action={setSeed} placeholderText='Semilla' verified={false} isPassword={false} />
-                        <Text></Text>
-                        <TextInputComponent value={prompt} action={setPrompt} placeholderText='Prompt' verified={false} isPassword={false} />
-                        <Text></Text>
-                        <View style={styles.numericContainer} >
-                            <TextInputComponent value={publicImage?.toString() || ''} action={(text) => setPublicImage(Number(text))} placeholderText='Imagen listada' verified={false} isPassword={false} isNumericKeybordType />
-                            <TextInputComponent value={idBaseModel?.toString() || ''} action={(text) => setIdBaseModel(Number(text))} placeholderText='Id modelo base' verified={false} isPassword={false} isNumericKeybordType />
-                            <TextInputComponent value={idLoraModel?.toString() || ''} action={(text) => setIdLoraModel(Number(text))} placeholderText='Id modelo lora' verified={false} isPassword={false} isNumericKeybordType />
-                        </View>
-                        <Text></Text>
-
-                        <View style={styles.numericContainer} >
-                            <TextInputComponent value={strength?.toString() || ''} action={(text) => setStrength(Number(text))} placeholderText='Fuerza' verified={false} isPassword={false} isNumericKeybordType />
-                            <TextInputComponent value={idTag?.toString() || ''} action={(text) => setIdTag(Number(text))} placeholderText='Id etiqueta' verified={false} isPassword={false} isNumericKeybordType />
-                        </View>
-                        <Text></Text>
-
-                        <ButtonComponent title='registrar imagen' active={activeButton} funcion={
-                            () => ShowAlert({ title: "Subir imagen", text: "¿Seguro que quieres subir la imagen al servidor?", buttonCancel: "Cancelar", onCancel: () => void {}, buttonOk: "Subir", onConfirm: Registrar })} />
-                    </View>
-
-                </>}
                 <Text></Text>
                 <Text></Text>
                 <Text></Text>
-            </View >
-        </ScrollView >
-    )
-
+            </View>
+        </ScrollView>
+    );
 }
 const styles = StyleSheet.create({
     /* container: {

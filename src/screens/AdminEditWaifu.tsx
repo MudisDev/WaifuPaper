@@ -61,7 +61,8 @@ export const AdminEditWaifu = () => {
             // Retorna los datos para ser usados en el componente
             const waifu = data[0];
 
-
+            setImage(waifu.imagen_perfil);
+            setImageTemp(waifu.imagen_perfil);
 
             if (!data.Error) {
                 console.log("Al parecer si encotro waifu Bv");
@@ -151,6 +152,7 @@ export const AdminEditWaifu = () => {
 
             if (!data.Error) {
                 console.log("Al parecer si edito a la waifu Bv");
+                ShowAlert({ title: 'Edicion exitosa', text: 'El perfil de la waifu fue modificado exitosamente', buttonOk: 'Ok', onConfirm: () => void {} })
 
                 /* Asignar_Personalidad(data.id_generado); */
 

@@ -206,7 +206,7 @@ export const LogIn = () => {
                 } catch (e) {
                     setIsLoading(false);
 
-                    console.error(`Error al llamar a delete token -> ${e}`);
+                    console.log(`Error al llamar a delete token -> ${e}`);
                 }
             }
         }
