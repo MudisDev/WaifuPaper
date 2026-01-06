@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react'
-import { View, Text, TouchableOpacity, Alert } from 'react-native'
+import { View, Text } from 'react-native'
 import { stylesAppTheme } from '../theme/AppTheme'
 import { useNavigation } from '@react-navigation/native'
 import { UserContext } from '../context/UserContext'
@@ -18,12 +18,12 @@ export const Settings = () => {
   const { userData, setUserData } = useContext(UserContext) || { setUserData: () => { } }; // Maneja el caso de que el contexto no esté definido
 
 
-  const noFunction = () => { }
+  //const noFunction = () => { }
 
 
 
 
-  const [temaClaro, setTemaClaro] = useState(true);
+  //const [temaClaro, setTemaClaro] = useState(true);
   const [selectedTheme, setSelectedTheme] = useState('claro00'); // Estado para el tema seleccionado en el picker
 
 
@@ -128,7 +128,7 @@ export const Settings = () => {
     navigation.replace('LogIn');
   }
 
-  const Alert_Eliminar_Cuenta = () =>
+  /* const Alert_Eliminar_Cuenta = () =>
     Alert.alert(
       'Eliminar cuenta',
       '¿Seguro que deseas eliminar tu cuenta?',
@@ -147,13 +147,13 @@ export const Settings = () => {
       ],
       {
         cancelable: true,
-        /* onDismiss: () =>
+        onDismiss: () =>
           Alert.alert(
             'This alert was dismissed by tapping outside of the alert dialog.',
-          ), */
+          ),
       },
     );
-
+ */
 
 
 
@@ -165,7 +165,7 @@ export const Settings = () => {
         <Text style={[stylesAppTheme.textButton, dynamicStyles.dynamicText]} >DevTool Bv</Text>
       </TouchableOpacity> */}
 
-      {(userData?.idUser == 1) ?
+      {(userData?.idUser === 1) ?
         <ButtonComponent title='DevTool Bv' funcion={() => navigation.navigate("TopTabNavigator")} active={true} />
         :
         <ButtonComponent title='DevTool Bv' funcion={() => { }} active={false} />
@@ -184,7 +184,7 @@ export const Settings = () => {
       <Text></Text>
 
       {/* <ButtonComponent title='eliminar cuenta' funcion={DeleteProfile} active={true} /> */}
-      {(userData?.idUser == 1) ?
+      {(userData?.idUser === 1) ?
         <ButtonComponent title='eliminar cuenta' funcion={() => ShowAlert({ title: 'Eliminar Cuenta', text: '¿Seguro que deseas eliminar la cuenta? (No se puede deshacer)', buttonOk: 'Ok', onConfirm: DeleteProfile, buttonCancel: 'Cancelar', onCancel: () => void {} })} active={false} />
         :
         <ButtonComponent title='eliminar cuenta' funcion={() => ShowAlert({ title: 'Eliminar Cuenta', text: '¿Seguro que deseas eliminar la cuenta? (No se puede deshacer)', buttonOk: 'Ok', onConfirm: DeleteProfile, buttonCancel: 'Cancelar', onCancel: () => void {} })} active={true} />

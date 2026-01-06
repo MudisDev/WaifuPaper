@@ -1,43 +1,25 @@
-import React, { useContext, useEffect, useCallback, useState } from 'react'
+import React, { useContext, useCallback, useState } from 'react'
 import { View, Text, TouchableOpacity, Image } from 'react-native'
 import { FlatList, } from 'react-native-gesture-handler';
-
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
-
 import { stylesAppTheme } from '../theme/AppTheme'
 import { UserContext } from '../context/UserContext';
 import { show_favorites_images } from '../const/UrlConfig';
 import { useTheme } from '../hooks/UseTheme';
-
-export interface NekoImageData {
-  id: number;
-  url: string;
-  //rating: 'safe' | 'suggestive' | 'explicit' | 'xxx';
-  rating: string;
-  artist_name: string | null;
-  source_url: string | null;
-  api_source: string;
-  api_id: string;
-  insertion_date: string;
-  update_date: string;
-}
+import { ListImageData } from '../helpers/Interfaces';
 
 export const Favorites = () => {
-  const [imageUrl, setImageUrl] = useState<string | null>(null);
+  //const [imageUrl, setImageUrl] = useState<string | null>(null);
 
-  const [dataArray, setDataArray] = useState<NekoImageData[] | null>(null);
+  const [dataArray, setDataArray] = useState<ListImageData[] | null>(null);
   const { userData } = useContext(UserContext) || { setUserData: () => { } }; // Maneja el caso de que el contexto no esté definido
-  const { themeData, dynamicStyles } = useTheme();
-
+  const { dynamicStyles } = useTheme();
   const [noFavorites, setNoFavorites] = useState<boolean>(false);
-
-
   const navigation = useNavigation();
 
   //useEffect(() => {
   useFocusEffect(
     useCallback(() => {
-      //fetch(`http://192.168.18.5/nekopaper/api/lista/mostrar_imagenes_favoritas.php?id_usuario=${userData?.idUser}`)
       fetch(`${show_favorites_images}?id_usuario=${userData?.idUser}`)
         .then((res) => res.json())
         .then((data) => {
@@ -45,21 +27,15 @@ export const Favorites = () => {
           console.log("TRAYENDO RESULTADOS DE BD Bv");
           console.log("Imagenes -> ", data);
           if (Array.isArray(data) && data.length > 0) {
-            const mappedData: NekoImageData[] = data.map((item: any) => ({
-              id: parseInt(item.id_imagen),
+            const mappedData: ListImageData[] = data.map((item: any) => ({
+              id_image: parseInt(item.id_imagen),
               url: item.url,
-              rating: item.clasificacion,
-              artist_name: item.artista === "null" ? null : item.artista,
-              source_url: item.url_fuente === "null" ? null : item.url_fuente,
-              api_source: item.api_origen,
-              api_id: item.id_imagen_api,
-              insertion_date: item.fecha_insercion,
-              update_date: item.fecha_actualizacion,
-
+              //date_favorite: item.fecha_favorito,
             }));
             data.forEach(element => {
               console.log(`Data mapeada -> ${element['id_imagen']}`);
               console.log(`Data mapeada -> ${element['url']}`);
+              console.log(`Data mapeada fecha favorito -> ${element['date_favorite']}`);
 
             });
             setDataArray(mappedData);
@@ -73,10 +49,10 @@ export const Favorites = () => {
         .catch((err) => console.error("Error al traer imagen:", err));
     }, []));
 
-  const renderItem = ({ item }: { item: NekoImageData }) => (
+  const renderItem = ({ item }: { item: ListImageData }) => (
     <TouchableOpacity
       //style={stylesAppTheme.animeCell}
-      onPress={() => navigation.navigate("Wallpaper", { url: item?.url, /* tags: item?.tags, */ artist_name: item?.artist_name, id: item?.id })}
+      onPress={() => navigation.navigate("Wallpaper", { url: item?.url, /* tags: item?.tags, */ /* artist_name: item?.artist_name, */ id: item?.id_image })}
     >
       <Image
         source={{ uri: item.url }}
@@ -91,7 +67,7 @@ export const Favorites = () => {
     <View style={[stylesAppTheme.container, dynamicStyles.dynamicScrollViewStyle]}>
       <FlatList
         data={dataArray}
-        keyExtractor={(item) => item.id.toString()}
+        keyExtractor={(item) => item.id_image.toString()}
         renderItem={renderItem}
         numColumns={2}
 
@@ -100,7 +76,7 @@ export const Favorites = () => {
         ListHeaderComponent={() => (
           <>
             {noFavorites &&
-              <View style={{justifyContent:'center'}}>
+              <View style={{ justifyContent: 'center' }}>
                 <Text style={dynamicStyles.dynamicText}>No hay Wallpapers favoritos Bv</Text>
               </View>}
           </>

@@ -5,41 +5,11 @@ import { useNavigation } from '@react-navigation/native';
 import { stylesAppTheme } from '../theme/AppTheme';
 import { show_characters } from '../const/UrlConfig';
 import { useTheme } from '../hooks/UseTheme';
-import { NekoImageData } from '../helpers/Interfaces';
-
-
-/* export interface NekoImageData {
-    id: number;
-    url: string;
-    rating: string;
-    color_dominant: number[];
-    color_palette: number[][];
-    artist_name: string | null;
-    tags: string[];
-    source_url: string | null;
-} */
-
-/* export interface NekoImageData {
-    id: number;
-    name: string; */
-    /* alias: string;
-    description: string;
-    history: string;
-    hobbie: string;
-    occupation: string;
-    day: number;
-    month: number;
-    age: number;
-    kind: number; */
-    /* profile_photo: string;
-} */
+import { ListWaifusData } from '../helpers/Interfaces';
 
 export const Characters = () => {
-
-   
-
-    const [dataArray, setDataArray] = useState<NekoImageData[] | null>(null);
-    const {  dynamicStyles } = useTheme();
+    const [dataArray, setDataArray] = useState<ListWaifusData[] | null>(null);
+    const { dynamicStyles } = useTheme();
 
     const [noImages, setNoImages] = useState(false);
 
@@ -47,32 +17,17 @@ export const Characters = () => {
     const navigation = useNavigation();
 
     useEffect(() => {
-        //fetch("http://192.168.18.5/nekopaper/api/lista/mostrar_imagenes.php")
         fetch(`${show_characters}`)
 
             .then((res) => res.json())
             .then((data) => {
-                //const items = data?.items;
-                //const items = data[0];
-
-                //setDataArray(data);
-                console.log("data => ", data);
-                console.log("TRAYENDO RESULTADOS DE BD Bv");
+                
+                //console.log("data => ", data);
                 if (Array.isArray(data) && data.length > 0) {
-                    const mappedData: NekoImageData[] = data.map((item: any) => ({
+                    const mappedData: ListWaifusData[] = data.map((item: any) => ({
                         id: parseInt(item.id_personaje),
                         name: item.nombre,
-                        /* alias: item.alias,
-                        description: item.descripcion,
-                        history: item.historia,
-                        hobbie: item.pasatiempo,
-                        occupation: item.ocupacion,
-                        day: parseInt(item.dia),
-                        month: parseInt(item.mes),
-                        age: parseInt(item.edad),
-                        kind: parseInt(item.id_especie), */
                         profile_photo: item.imagen_perfil,
-
                     }));
 
                     setDataArray(mappedData);
@@ -81,15 +36,11 @@ export const Characters = () => {
                     console.warn("No se encontraron imágenes en la respuesta.");
                     setNoImages(true);
                 }
-
-
-
             })
             .catch((err) => console.error("Error al traer imagen:", err));
     }, []);
 
-
-    const renderItem = ({ item }: { item: NekoImageData }) => (
+    const renderItem = ({ item }: { item: ListWaifusData }) => (
         <TouchableOpacity
             //style={stylesAppTheme.animeCell}
             onPress={() => navigation.navigate("ProfileCharacter", { id: item?.id })}

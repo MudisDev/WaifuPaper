@@ -1,9 +1,9 @@
 import { useNavigation } from '@react-navigation/native'
-import React, { useState, useContext, use, useEffect } from 'react'
-import { View, Text, TouchableOpacity, TextInput, StyleSheet } from 'react-native'
+import React, { useState, useContext, useEffect } from 'react'
+import { View, Text } from 'react-native'
 import { stylesAppTheme } from '../theme/AppTheme'
 import { UserContext } from '../context/UserContext'
-import { consult_token, delete_token, generate_token, login_path } from '../const/UrlConfig'
+import { consult_token, generate_token, login_path } from '../const/UrlConfig'
 import { useTheme } from '../hooks/UseTheme'
 import { TextInputComponent } from '../components/TextInputComponent'
 import { ButtonComponent } from '../components/ButtonComponent'
@@ -11,7 +11,7 @@ import { TextLinkComponent } from '../components/TextLinkComponent'
 import { ThemeContext } from '../context/ThemeContext'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { ShowAlert } from '../helpers/ShowAlert'
-import { InitialLoadingIndicator, LoadingIndicator } from '../components/LoadingIndicator'
+import { InitialLoadingIndicator } from '../components/LoadingIndicator'
 
 
 export const LogIn = () => {

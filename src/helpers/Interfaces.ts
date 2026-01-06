@@ -1,18 +1,13 @@
-//ExportInterfaces.tsx
-//characters
-export interface NekoImageData {
+export interface ListWaifusData {
     id: number;
     name: string;
-    /* alias: string;
-    description: string;
-    history: string;
-    hobbie: string;
-    occupation: string;
-    day: number;
-    month: number;
-    age: number;
-    kind: number; */
     profile_photo: string;
+}
+
+export interface ListImageData {
+    id_image: number;
+    //date_favorite: string;
+    url: string
 }
 
 
@@ -43,6 +38,7 @@ export interface ImageData {
     id_character: string;
     url: string;
     seed: string;
-    public_image: boolean;
+    //public_image: boolean;
+    public_image: number;
     id_base_model: number;
 }

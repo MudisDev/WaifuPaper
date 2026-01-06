@@ -5,7 +5,7 @@ import { View, Image, Dimensions, ScrollView, Text, TouchableOpacity } from 'rea
 import { search_character, show_images_for_character } from '../const/UrlConfig';
 
 import { useTheme } from '../hooks/UseTheme';
-import { WaifuData } from '../helpers/Interfaces';
+import { WaifuData, ImageData } from '../helpers/Interfaces';
 
 export const ProfileCharacter = ({ route }) => {
     const navigation = useNavigation();
