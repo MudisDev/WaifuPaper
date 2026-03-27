@@ -165,7 +165,7 @@ export const Settings = () => {
         <Text style={[stylesAppTheme.textButton, dynamicStyles.dynamicText]} >DevTool Bv</Text>
       </TouchableOpacity> */}
 
-      {(userData?.idUser === 1) ?
+      {(userData?.idUser == 1) ?
         <ButtonComponent title='DevTool Bv' funcion={() => navigation.navigate("TopTabNavigator")} active={true} />
         :
         <ButtonComponent title='DevTool Bv' funcion={() => { }} active={false} />
@@ -184,7 +184,7 @@ export const Settings = () => {
       <Text></Text>
 
       {/* <ButtonComponent title='eliminar cuenta' funcion={DeleteProfile} active={true} /> */}
-      {(userData?.idUser === 1) ?
+      {(userData?.idUser == 1) ?
         <ButtonComponent title='eliminar cuenta' funcion={() => ShowAlert({ title: 'Eliminar Cuenta', text: '¿Seguro que deseas eliminar la cuenta? (No se puede deshacer)', buttonOk: 'Ok', onConfirm: DeleteProfile, buttonCancel: 'Cancelar', onCancel: () => void {} })} active={false} />
         :
         <ButtonComponent title='eliminar cuenta' funcion={() => ShowAlert({ title: 'Eliminar Cuenta', text: '¿Seguro que deseas eliminar la cuenta? (No se puede deshacer)', buttonOk: 'Ok', onConfirm: DeleteProfile, buttonCancel: 'Cancelar', onCancel: () => void {} })} active={true} />

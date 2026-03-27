@@ -3,6 +3,8 @@
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL); */
 require_once '../../clases/Imagen.php';
+require_once __DIR__ . '/../../utils/debug.php';
+
 
 //?url=urlBv&api_origen=nekospi&artista=Bv&clasificacion=xxx&url_fuente=null&id_imagen_api=Bv
 //fecha_insercion=&fecha_actualizacion=&

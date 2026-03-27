@@ -4,10 +4,9 @@ require_once '../../clases/Lista.php';
 
 require_once __DIR__ . '/../../utils/debug.php';
 
-
+$tabla = $_GET['tabla'];
 $lista = new Lista();
-$lista->Consultar_Personajes();
-$resultado = $lista->Get_Lista();
+$resultado = $lista->Consultar_Total($tabla);
 echo json_encode($resultado);
 
 ?>

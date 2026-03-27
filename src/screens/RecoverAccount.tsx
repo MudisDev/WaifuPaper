@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { View, Text, TextInput, TouchableOpacity } from 'react-native'
-import { stylesAppTheme } from '../theme/AppTheme'
+import { View, Text } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import { generate_recovery_token, search_email, send_email, update_password, validate_recovery_token } from '../const/UrlConfig'
 import { useTheme } from '../hooks/UseTheme'
@@ -10,28 +9,17 @@ import { RegexFormValidator } from '../utils/RegexFormValidator'
 import { ButtonComponent } from '../components/ButtonComponent'
 import { ShowAlert } from '../helpers/ShowAlert'
 
-
 export const RecoverAccount = () => {
-
     const navigation = useNavigation();
-    const { themeData, dynamicStyles } = useTheme();
-
+    const { dynamicStyles } = useTheme();
     const [username, setUsername] = useState('');
-
-    const [NameIcon, setNameIcon] = useState(false);
     const [UsernameIcon, setUsernameIcon] = useState(false);
-    const [PasswordIcon, setPasswordIcon] = useState(false);
-    const [EmailIcon, setEmailIcon] = useState(false);
-    const [PhoneIcon, setPhoneIcon] = useState(false);
-
     const [isValidating, setIsValidating] = useState<boolean>(false);
     const [validToken, setValidToken] = useState<boolean>(false);
     const [securityCode, setSecurityCode] = useState<string>('');
     const [idUser, setIdUser] = useState<number>(0);
     const [newPassword, setNewPassword] = useState<string>('');
     const [newPasswordTemp, setNewPasswordTemp] = useState<string>('');
-
-
 
     useEffect(() => {
 
@@ -42,14 +30,8 @@ export const RecoverAccount = () => {
 
     const activeButton = (/* NameIcon && PasswordIcon && */ UsernameIcon /* && EmailIcon */ /* && PhoneIcon */) ? true : false;
 
-    const noFunction = () => { };
-
-
     const Search_Email = async ( /* username */) => {
         try {
-            //console.log("Path login -> ", login_path)
-            //const response = await fetch(`http://localhost/nekopaper/api/usuario/iniciar_sesion.php?username=${username}&password=${password}`);
-            //const response = await fetch(`http://192.168.18.5/nekopaper/api/usuario/iniciar_sesion.php?username=${username}&password=${password}`);
             const response = await fetch(`${search_email}?username=${username}`);
             const data = await response.json();
             // Retorna los datos para ser usados en el componente
@@ -67,7 +49,7 @@ export const RecoverAccount = () => {
                 Generar_Token(data[0].email, data[0].id_usuario);
             }
             else
-                ShowAlert({title: 'Error', text: 'Usuario no encontrado', buttonOk: 'Ok', onConfirm: () => void {}})
+                ShowAlert({ title: 'Error', text: 'Usuario no encontrado', buttonOk: 'Ok', onConfirm: () => void {} })
 
 
         } catch (e) {
@@ -79,9 +61,6 @@ export const RecoverAccount = () => {
         console.log(`${username} + ${email}`);
         try {
 
-            //console.log("Path login -> ", login_path)
-            //const response = await fetch(`http://localhost/nekopaper/api/usuario/iniciar_sesion.php?username=${username}&password=${password}`);
-            //const response = await fetch(`http://192.168.18.5/nekopaper/api/usuario/iniciar_sesion.php?username=${username}&password=${password}`);
             const response = await fetch(`${generate_recovery_token}?id_usuario=${id_usuario}`);
             const data = await response.json();
             // Retorna los datos para ser usados en el componente
@@ -118,8 +97,6 @@ export const RecoverAccount = () => {
             /* console.log(`Data[0] => ${data[0].token}`); */
             console.log(`Data => ${data.token}`);
 
-
-
             if (!data.Error && !data.Warning) {
 
                 console.log("Se valido el token");
@@ -129,7 +106,7 @@ export const RecoverAccount = () => {
             }
             else {
                 console.warn("El token no pudo ser validado Bv");
-                ShowAlert({title: 'Error', text: 'Token invalido', buttonOk: 'Ok', onConfirm: () => void {}})
+                ShowAlert({ title: 'Error', text: 'Token invalido', buttonOk: 'Ok', onConfirm: () => void {} })
             }
 
 
@@ -151,16 +128,10 @@ export const RecoverAccount = () => {
             // Retorna los datos para ser usados en el componente
             console.log(data);
 
-
-
             if (!data.Error) {
-
-
-
                 console.log("Email enviado al parecer Bv");
                 setIsValidating(true);
             }
-
 
         } catch (e) {
             console.error(`error al enviar el email: ${e}`);
@@ -172,15 +143,11 @@ export const RecoverAccount = () => {
         setValidToken(false);
     }
 
-    const isNewPasswordValid = (newPassword == newPasswordTemp) && newPassword != ''; 
+    const isNewPasswordValid = (newPassword === newPasswordTemp) && newPassword !== '';
 
     const Actualizar_Password = async () => {
 
         try {
-
-            //console.log("Path login -> ", login_path)
-            //const response = await fetch(`http://localhost/nekopaper/api/usuario/iniciar_sesion.php?username=${username}&password=${password}`);
-            //const response = await fetch(`http://192.168.18.5/nekopaper/api/usuario/iniciar_sesion.php?username=${username}&password=${password}`);
             console.log("ENtro al try de UPDATE PASSWORD Bv");
             const response = await fetch(`${update_password}?id_usuario=${idUser}&password=${newPassword}`);
             const data = await response.json();
@@ -189,19 +156,17 @@ export const RecoverAccount = () => {
             /* console.log(`Data[0] => ${data[0].token}`); */
             console.log(`Data => ${data.token}`);
 
-
-
             if (!data.Error && !data.Warning) {
 
                 console.log("Se actualizo la contrasenia");
-                ShowAlert({title: 'Exito', text: 'Cambio de contraseña correcto', buttonOk: 'Ok', onConfirm: () => void {}})
+                ShowAlert({ title: 'Exito', text: 'Cambio de contraseña correcto', buttonOk: 'Ok', onConfirm: () => void {} })
                 /* setValidToken(true); */
 
                 /* Enviar_Email(email, id_usuario, data.token); */
             }
             else {
                 console.warn("La contrasenia no pudo ser actualizada Bv");
-                ShowAlert({title: 'Error', text: 'No se pudo cambiar la contraseña', buttonOk: 'Ok', onConfirm: () => void {}})
+                ShowAlert({ title: 'Error', text: 'No se pudo cambiar la contraseña', buttonOk: 'Ok', onConfirm: () => void {} })
             }
             Reset();
 

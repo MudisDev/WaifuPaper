@@ -227,6 +227,27 @@ class Conexion
         }
 
     }
+
+
+
+    public function SetCount(string $tabla, string $condiciones = '')
+    {
+        $this->sql = "SELECT COUNT(*) AS total FROM $tabla";
+
+        if (!empty($condiciones)) {
+            $this->sql .= " WHERE $condiciones";
+        }
+
+        $resultado = $this->conn->query($this->sql);
+
+        if ($resultado) {
+            return $resultado->fetch_assoc();
+        }
+
+        return ["Error" => "No se pudo obtener el conteo"];
+    }
+
+
 }
 
 ?>

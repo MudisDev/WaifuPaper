@@ -52,10 +52,10 @@ class Imagen
                 $this->semilla,
                 $this->imagen_listada,
                 $this->id_modelo_base,
-                
+
                 /*  $this->fecha_insercion,
                  $this->fecha_actualizacion, */
-               
+
             ]
         );
         return $resultado;
@@ -74,6 +74,25 @@ class Imagen
     {
         $conexion = new Conexion();
         $resultado = $conexion->SetSelect("Vista_Tiene_Etiqueta", ["id_etiqueta", "nombre_etiqueta"], "id_imagen = '$this->id_imagen'");
+        return $resultado;
+    }
+
+    public function Buscar_Imagen()
+    {
+        $conexion = new Conexion();
+        $condiciones = "id_imagen = '$this->id_imagen'";
+        $resultado = $conexion->SetSelect("Imagen", ["*"], $condiciones);
+
+        return $resultado;
+    }
+
+    public function editar_imagen()
+    {
+        $conexion = new Conexion();
+        $condiciones = "id_imagen = '$this->id_imagen'";
+        $columnas_actualizar = "url = '$this->url', semilla = '$this->semilla', imagen_listada = '$this->imagen_listada', id_modelo_base = '$this->id_modelo_base'";
+        $resultado = $conexion->SetUpdate("Imagen", $columnas_actualizar, $condiciones);
+
         return $resultado;
     }
 

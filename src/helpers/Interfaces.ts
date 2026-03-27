@@ -42,3 +42,9 @@ export interface ImageData {
     public_image: number;
     id_base_model: number;
 }
+
+export interface ListWallpapers {
+    id: number,
+    id_character: string,
+    url: string,
+}

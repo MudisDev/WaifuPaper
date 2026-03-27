@@ -1,6 +1,6 @@
 <?php
 require_once '../../clases/Personaje.php';
-require_once '../../utils/debug.php';
+require_once __DIR__ . '/../../utils/debug.php';
 
 $personaje = new Personaje($_GET);
 $resultado = $personaje->Buscar_Personaje();

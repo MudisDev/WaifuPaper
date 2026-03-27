@@ -68,6 +68,32 @@ class Lista
     public function Get_Lista(){
         return $this->lista;
     }
+
+    public function Consultar_Especies()
+    {
+        $conexion = new Conexion();
+        $resultado = $conexion->SetSelect("Especie", ["*"]);
+        $this->Set_Lista($resultado);
+    }
+
+    public function Consultar_Personalidades()
+    {
+        $conexion = new Conexion();
+        $resultado = $conexion->SetSelect("Personalidad", ["*"]);
+        $this->Set_Lista($resultado);
+    }
+
+    public function Consultar_Total($tabla){
+        $conexion = new Conexion();
+        $resultado = $conexion->SetCount($tabla );
+        return $resultado;  
+    }
+    public function Consultar_Modelos_Base(){
+        $conexion = new Conexion();
+        $resultado = $conexion->SetSelect("modelo_base", ["*"]);
+        $this->Set_Lista($resultado);
+    }
+    
 }
 
 ?>

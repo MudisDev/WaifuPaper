@@ -1,6 +1,8 @@
 <?php
 
 require_once '../../clases/Token.php';
+require_once __DIR__ . '/../../utils/debug.php';
+
 
 $id_usuario = $_GET['id_usuario'];
 

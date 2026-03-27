@@ -336,3 +336,11 @@ SELECT * from usa_modelo_lora;
 SELECT * FROM modelo_lora;
 
 SELECT * FROM modelo_base;
+
+
+
+
+select * from especie;
+
+select * from imagen;
+select count(*) as total from personaje;

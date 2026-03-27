@@ -1,7 +1,8 @@
 <?php
 
 require_once '../../clases/Usuario.php';
-require_once '../../utils/debug.php';
+require_once __DIR__ . '/../../utils/debug.php';
+
 
 //?nombre=mudisBv2&username=mudis2&email=martin2@rocketmail.com&password=Kazo2&genero=masculino&telefono=4571051235&foto_perfil=FotoBv
 

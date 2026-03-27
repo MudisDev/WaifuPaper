@@ -1,21 +1,20 @@
 import React, { useState } from 'react'
-import { View, Text, ScrollView, Image, Button, StyleSheet, TouchableOpacity } from 'react-native'
+import { View, Text, ScrollView, Image, StyleSheet, TouchableOpacity } from 'react-native'
 import { useTheme } from '../hooks/UseTheme';
 
 import { TextInputComponent } from '../components/TextInputComponent';
 import { ButtonComponent } from '../components/ButtonComponent';
 import { register_image, register_image_character, register_image_lora_model, register_image_tag, search_character, show_images_for_character, upload_image_to_server } from '../const/UrlConfig';
-import { NekoImageData } from '../helpers/Interfaces';
+import { ListWallpapers } from '../helpers/Interfaces';
 import * as ImagePicker from 'expo-image-picker';
 import { ShowAlert } from '../helpers/ShowAlert';
-import { stylesAppTheme } from '../theme/AppTheme';
 
 
 
 export const AdminWallpapers = () => {
     const { dynamicStyles } = useTheme();
     const [idCharacter, setIdCharacter] = useState<number>();
-    const [wallpapersWaifu, setWallpapersWaifu] = useState<NekoImageData[]>();
+    const [wallpapersWaifu, setWallpapersWaifu] = useState<ListWallpapers[]>();
 
     const [isAddingWallpaper, setIsAddingWallpaper] = useState<boolean>(false);
     const [characterExist, setCharacterExist] = useState<boolean>(false);
@@ -38,9 +37,6 @@ export const AdminWallpapers = () => {
 
         try {
 
-            //console.log("Path login -> ", login_path)
-            //const response = await fetch(`http://localhost/nekopaper/api/usuario/iniciar_sesion.php?username=${username}&password=${password}`);
-            //const response = await fetch(`http://192.168.18.5/nekopaper/api/usuario/iniciar_sesion.php?username=${username}&password=${password}`);
             const response_character = await fetch(`${search_character}?id_personaje=${idCharacter}`);
             const data_character = await response_character.json();
             if (!data_character.Error) {
@@ -61,7 +57,7 @@ export const AdminWallpapers = () => {
                         console.log(`Wallpapers => ${data[i].url}`);
                     } */
 
-                    const wallpaperMapeados: NekoImageData[] = data.map((item: any) => ({
+                    const wallpaperMapeados: ListWallpapers[] = data.map((item: any) => ({
                         id: item.id_imagen,
                         id_character: item.id_personaje,
                         url: item.url,
