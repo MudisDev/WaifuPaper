@@ -247,7 +247,20 @@ class Conexion
         return ["Error" => "No se pudo obtener el conteo"];
     }
 
-
+    public function BeginTransaction()
+    {
+        $this->conn->begin_transaction();
+    }
+    public function Commit()
+    {
+        $this->conn->commit();
+    }
+    public function Rollback()
+    {
+        $this->conn->rollback();
+    }
 }
+
+
 
 ?>
