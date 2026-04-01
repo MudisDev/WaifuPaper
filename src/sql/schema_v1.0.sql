@@ -344,3 +344,5 @@ select * from especie;
 
 select * from imagen;
 select count(*) as total from personaje;
+
+select * from etiqueta;

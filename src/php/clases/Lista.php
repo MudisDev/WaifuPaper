@@ -65,7 +65,8 @@ class Lista
         $this->lista = $datos;
     }
 
-    public function Get_Lista(){
+    public function Get_Lista()
+    {
         return $this->lista;
     }
 
@@ -83,17 +84,35 @@ class Lista
         $this->Set_Lista($resultado);
     }
 
-    public function Consultar_Total($tabla){
+    public function Consultar_Total($tabla)
+    {
         $conexion = new Conexion();
-        $resultado = $conexion->SetCount($tabla );
-        return $resultado;  
+        $resultado = $conexion->SetCount($tabla);
+        return $resultado;
     }
-    public function Consultar_Modelos_Base(){
+    public function Consultar_Modelos_Base()
+    {
         $conexion = new Conexion();
         $resultado = $conexion->SetSelect("modelo_base", ["*"]);
         $this->Set_Lista($resultado);
     }
-    
+
+    public function Consultar_Modelos_Lora()
+    {
+        $conexion = new Conexion();
+        //$condiciones = "id_imagen = '$id_imagen'";
+        $resultado = $conexion->SetSelect("modelo_lora", ["*"], /* $condiciones */);
+        $this->Set_Lista($resultado);
+    }
+
+    public function Consultar_Modelos_Lora_Por_Imagen($id_imagen)
+    {
+        $conexion = new Conexion();
+        $condiciones = "id_imagen = '$id_imagen'";
+        $resultado = $conexion->SetSelect("usa_modelo_lora", ["*"], $condiciones);
+        $this->Set_Lista($resultado);
+    }
+
 }
 
 ?>
