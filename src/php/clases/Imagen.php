@@ -102,12 +102,13 @@ class Imagen
     }
 
 
-    public function Actualizacion_Imagen_Completa($ids_etiquetas, $ids_modelos_lora, $prompts_modelos_lora, $fuerza_modelos_lora)
+    public function Actualizacion_Imagen_Completa($ids_etiquetas, $ids_modelos_lora, $prompts_modelos_lora, $fuerza_modelos_lora, $ids_personajes)
     {
 
         $conexion = new Conexion();
         $imagen_etiqueta = new Imagen_Etiqueta(["id_imagen" => $this->id_imagen, "ids_etiquetas" => $ids_etiquetas]);
         $imagen_modelo_lora = new Imagen_Modelo_Lora(["id_imagen" => $this->id_imagen, "ids_modelos_lora" => $ids_modelos_lora, "prompts_modelos_lora" => $prompts_modelos_lora, "fuerza_modelos_lora" => $fuerza_modelos_lora]);
+        $imagen_personaje = new Imagen_Personaje(["id_imagen" => $this->id_imagen, "ids_personajes" => $ids_personajes]);
 
         try {
 
@@ -118,6 +119,7 @@ class Imagen
             $imagen_etiqueta->Actualizar_Etiquetas($conexion);
 
             //actualizar personajes
+            $imagen_personaje->Actualizar_Personajes($conexion);
 
             //actualizar loras
             $imagen_modelo_lora->Actualizar_Modelos_Lora($conexion);
@@ -144,7 +146,8 @@ class Imagen
         }
     }
 
-    public function Mostrar_Personajes_En_Imagen(){
+    public function Mostrar_Personajes_En_Imagen()
+    {
         $condiciones = "id_imagen = '$this->id_imagen'";
         $conexion = new Conexion();
         $resultado = $conexion->SetSelect("vista_aparece_en", ["*"], $condiciones);
