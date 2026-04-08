@@ -346,3 +346,20 @@ select * from imagen;
 select count(*) as total from personaje;
 
 select * from etiqueta;
+
+SELECT * FROM usa_modelo_lora;
+SELECT * FROM modelo_lora;
+
+CREATE VIEW Vista_Modelo_Lora_Imagen AS
+SELECT
+    ml.id_modelo_lora,
+    ml.nombre,
+    uml.id_imagen
+FROM usa_modelo_lora uml
+    JOIN modelo_lora ml ON uml.id_modelo_lora = ml.id_modelo_lora;
+
+DROP View vista_modelo_lora_imagen;
+
+SELECT * FROM vista_modelo_lora_imagen WHERE id_imagen = 1;
+
+INSERT INTO usa_modelo_lora (id_imagen, id_modelo_lora, prompt, fuerza) VALUES (1,2,"modelo lora 2 Bv", 0.9);

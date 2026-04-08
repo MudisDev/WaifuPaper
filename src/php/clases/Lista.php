@@ -109,7 +109,7 @@ class Lista
     {
         $conexion = new Conexion();
         $condiciones = "id_imagen = '$id_imagen'";
-        $resultado = $conexion->SetSelect("usa_modelo_lora", ["*"], $condiciones);
+        $resultado = $conexion->SetSelect("vista_modelo_lora_imagen", ["*"], $condiciones);
         $this->Set_Lista($resultado);
     }
 

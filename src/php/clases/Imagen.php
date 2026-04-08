@@ -1,6 +1,10 @@
 <?php
 require_once 'Conexion.php';
 
+require_once __DIR__ . "/Imagen_Etiqueta.php";
+require_once __DIR__ . "/Imagen_Modelo_Lora.php";
+require_once __DIR__ . "/Imagen_Personaje.php";
+
 class Imagen
 {
 
@@ -86,14 +90,57 @@ class Imagen
         return $resultado;
     }
 
-    public function editar_imagen()
+    public function editar_imagen($conexion)
     {
-        $conexion = new Conexion();
+        //$conexion = new Conexion();
         $condiciones = "id_imagen = '$this->id_imagen'";
         $columnas_actualizar = "url = '$this->url', semilla = '$this->semilla', imagen_listada = '$this->imagen_listada', id_modelo_base = '$this->id_modelo_base'";
         $resultado = $conexion->SetUpdate("Imagen", $columnas_actualizar, $condiciones);
 
-        return $resultado;
+        //return $resultado;
+        $this->CheckResultado($resultado);
     }
 
+
+    public function Actualizacion_Imagen_Completa($ids_etiquetas, $ids_modelos_lora, $prompts_modelos_lora, $fuerza_modelos_lora)
+    {
+
+        $conexion = new Conexion();
+        $imagen_etiqueta = new Imagen_Etiqueta(["id_imagen" => $this->id_imagen, "ids_etiquetas" => $ids_etiquetas]);
+        $imagen_modelo_lora = new Imagen_Modelo_Lora(["id_imagen" => $this->id_imagen, "ids_modelos_lora" => $ids_modelos_lora, "prompts_modelos_lora" => $prompts_modelos_lora, "fuerza_modelos_lora" => $fuerza_modelos_lora]);
+
+        try {
+
+            $conexion->BeginTransaction();
+            $this->editar_imagen($conexion);
+
+            //actualizar etiquetas
+            $imagen_etiqueta->Actualizar_Etiquetas($conexion);
+
+            //actualizar personajes
+
+            //actualizar loras
+            $imagen_modelo_lora->Actualizar_Modelos_Lora($conexion);
+
+            /*  foreach ($this->ids_etiquetas as $id_etiqueta) {
+                 $this->Insertar_Etiqueta($conexion, $id_etiqueta);
+             } */
+
+            $conexion->Commit();
+
+            return true;
+
+        } catch (Throwable $th) {
+            $conexion->Rollback();
+            return false;
+        }
+
+
+    }
+    private function CheckResultado($resultado)
+    {
+        if (isset($resultado["Error"])) {
+            throw new Exception($resultado["Error"]);
+        }
+    }
 }

@@ -24,27 +24,27 @@ class Imagen_Etiqueta
         return $resultado;
     }
 
-    public function Actualizar_Etiquetas()
+    public function Actualizar_Etiquetas($conexion)
     {
-        $conexion = new Conexion();
+        //$conexion = new Conexion();
 
-        try {
+        /* try { */
 
-            $conexion->BeginTransaction();
+            //$conexion->BeginTransaction();
             $this->Borrar_Etiquetas($conexion);
 
             foreach ($this->ids_etiquetas as $id_etiqueta) {
                 $this->Insertar_Etiqueta($conexion, $id_etiqueta);
             }
 
-            $conexion->Commit();
+            //$conexion->Commit();
 
-            return true;
+            //return true;
 
-        } catch (Throwable $th) {
+        /* } catch (Throwable $th) {
             $conexion->Rollback();
             return false;
-        }
+        } */
     }
 
     public function Borrar_Etiquetas($conexion)
