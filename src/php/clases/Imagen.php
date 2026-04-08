@@ -143,4 +143,12 @@ class Imagen
             throw new Exception($resultado["Error"]);
         }
     }
+
+    public function Mostrar_Personajes_En_Imagen(){
+        $condiciones = "id_imagen = '$this->id_imagen'";
+        $conexion = new Conexion();
+        $resultado = $conexion->SetSelect("vista_aparece_en", ["*"], $condiciones);
+
+        return $resultado;
+    }
 }

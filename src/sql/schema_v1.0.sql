@@ -363,3 +363,21 @@ DROP View vista_modelo_lora_imagen;
 SELECT * FROM vista_modelo_lora_imagen WHERE id_imagen = 1;
 
 INSERT INTO usa_modelo_lora (id_imagen, id_modelo_lora, prompt, fuerza) VALUES (1,2,"modelo lora 2 Bv", 0.9);
+
+SELECT * FROM imagen WHERE id_imagen = 1;
+SELECT * FROM tiene_etiqueta WHERE id_imagen = 1;
+
+SELECT * FROM etiqueta;
+
+SELECT * FROM usa_modelo_lora;
+
+SELECT * FROM aparece_en WHERE id_personaje = 1;
+
+INSERT INTO aparece_en (id_imagen, id_personaje) VALUES (1,2);
+
+CREATE VIEW Vista_Aparece_En AS
+SELECT ae.id_imagen, ae.id_personaje, p.nombre
+FROM aparece_en ae
+    JOIN personaje p ON ae.id_personaje = p.id_personaje;
+
+SELECT * FROM vista_aparece_en WHERE id_imagen = 1;
