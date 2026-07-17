@@ -354,7 +354,9 @@ CREATE VIEW Vista_Modelo_Lora_Imagen AS
 SELECT
     ml.id_modelo_lora,
     ml.nombre,
-    uml.id_imagen
+    uml.id_imagen,
+    uml.prompt,
+    uml.fuerza
 FROM usa_modelo_lora uml
     JOIN modelo_lora ml ON uml.id_modelo_lora = ml.id_modelo_lora;
 
@@ -381,3 +383,28 @@ FROM aparece_en ae
     JOIN personaje p ON ae.id_personaje = p.id_personaje;
 
 SELECT * FROM vista_aparece_en WHERE id_imagen = 1;
+SELECT * FROM imagen;
+
+CREATE VIEW vista_imagen_datos AS
+SELECT i.id_imagen, i.url, i.semilla, i.imagen_listada, i.fecha_insercion, i.fecha_actualizacion, i.id_modelo_base, mb.nombre AS nombre_modelo_base
+FROM imagen i
+JOIN modelo_base mb ON mb.id_modelo_base = i.id_modelo_base;
+
+SELECT * FROM vista_imagen_datos;
+SELECT * FROM vista_imagen_datos WHERE id_imagen = 1;
+
+SELECT * FROM aparece_en;
+
+SELECT * FROM modelo_lora;
+INSERT INTO aparece_en (id_imagen, id_personaje) VALUES (1,2);
+
+DELETE FROM aparece_en WHERE id_imagen = 1 AND id_personaje = 2;
+
+select * FROM usa_modelo_lora;
+
+INSERT INTO usa_modelo_lora (id_imagen, id_modelo_lora, prompt, fuerza)
+VALUES (1, 1, "Prompt de ejemplo Bv", 0.2);
+
+SELECT * from usa_modelo_lora;
+
+SELECT * FROM imagen WHERE id_imagen = 1;

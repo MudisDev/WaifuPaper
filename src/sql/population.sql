@@ -23,6 +23,10 @@ INSERT INTO Modelo_Lora (nombre, descripcion, credito_autor, url, imagen_referen
 ('CatQueen_LoRA', 'Afina detalles en waifus felinas reinas.', true, 'https://civitai.com/lora/345', 'catqueen_ref.png', 1, 1),
 ('CyberSister_LoRA', 'Ajuste para waifus con estética cibernética.', true, 'https://civitai.com/lora/777', 'cybersister_ref.png', 2, 2);
 
+INSERT INTO Modelo_Lora (nombre, descripcion, credito_autor, url, imagen_referencia, id_autor, id_modelo_base) VALUES
+('ElfQueen_LoRA', 'Afina detalles en waifus elfas reinas.', true, 'https://civitai.com/lora/346', 'elfqueen_ref.png', 1, 1),
+('Beach_LoRA', 'Ajuste detalles para ambientacion en playa.', true, 'https://civitai.com/lora/770', 'beach_ref.png', 2, 2);
+
 
 INSERT INTO Usuario (nombre, username, email, password, genero, telefono, foto_perfil) VALUES
 ('Kurama', 'kuramax', 'kurama@waifupaper.dev', 'hashed_password', 'Masculino', '5551234567', 'kurama_avatar.png');

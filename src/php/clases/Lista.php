@@ -52,6 +52,14 @@ class Lista
         $this->Set_Lista($resultado);
     }
 
+    public function Consultar_Personajes_Por_Imagen($id_imagen)
+    {
+        $conexion = new Conexion();
+        $condicion = "id_imagen = '$id_imagen'";
+        $resultado = $conexion->SetSelect("vista_aparece_en", ["*"], $condicion);
+        $this->Set_Lista($resultado);
+    }
+
     public function Consultar_Personajes()
     {
         $conexion = new Conexion();

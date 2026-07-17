@@ -90,6 +90,15 @@ class Imagen
         return $resultado;
     }
 
+    public function Buscar_Imagen_Vista()
+    {
+        $conexion = new Conexion();
+        $condiciones = "id_imagen = '$this->id_imagen'";
+        $resultado = $conexion->SetSelect("vista_imagen_datos", ["*"], $condiciones);
+
+        return $resultado;
+    }
+
     public function editar_imagen($conexion)
     {
         //$conexion = new Conexion();

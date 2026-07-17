@@ -139,11 +139,11 @@ El proyecto fue desarrollado como una aplicación full stack experimental para e
 WaifuPaper utiliza una arquitectura **cliente-servidor**, separando frontend móvil, API backend y base de datos.
 
 ```text
-React Native App
+  React Native App
         ↓
-   API REST (PHP)
+  API REST (PHP)
         ↓
-     MySQL Database
+  MySQL Database
 ```
 
 La aplicación implementa una estructura modular separando responsabilidades entre:
