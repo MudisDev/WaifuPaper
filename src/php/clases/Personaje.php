@@ -1,5 +1,7 @@
 <?php
 
+use PHPUnit\Framework\TestStatus\Success;
+
 require_once 'Conexion.php';
 class Personaje
 {
@@ -37,10 +39,12 @@ class Personaje
 
     }
 
-    public function Registrar_Personaje()
+    public function Registrar_Personaje($conexion_compartida)
     {
-        $conexion = new Conexion();
-        $resultado = $conexion->SetInsert(
+        //$conexion = new Conexion();
+
+        //$resultado = $conexion->SetInsert(
+        $resultado = $conexion_compartida->SetInsert(
             "Personaje",
             ["nombre", "alias", "descripcion", "historia", "pasatiempo", "ocupacion", "dia", "mes", "edad", "id_especie", "imagen_perfil"],
             [
@@ -80,7 +84,7 @@ class Personaje
     public function Asignar_Personalidad($id_personalidad)
     {
 
-        $conexion = new Conexion();
+       $conexion = new Conexion();
         $resultado = $conexion->SetInsert(
             "Tiene_Personalidad",
             ["id_personaje", "id_personalidad"],
@@ -139,6 +143,101 @@ class Personaje
             ];
             return $datos;
         } */
+
+
+    public function Transaccion_Registro_Personaje($ids_personalidades)
+    {
+
+        $conexion = new Conexion();
+
+
+
+
+        try {
+
+            $conexion->BeginTransaction();
+
+            $resultado = $this->Registrar_Personaje($conexion);
+            if (isset($resultado['Success']))
+                $this->id_personaje = $resultado['id_generado'];
+            
+
+            //actualizar etiquetas
+            $this->Actualizar_Personalidades($conexion, $ids_personalidades);
+
+            //actualizar personajes
+            //$imagen_personaje->Actualizar_Personajes($conexion);
+
+            //actualizar loras
+            //$imagen_modelo_lora->Actualizar_Modelos_Lora($conexion);
+
+            /*  foreach ($this->ids_etiquetas as $id_etiqueta) {
+                 $this->Insertar_Etiqueta($conexion, $id_etiqueta);
+             } */
+
+            $conexion->Commit();
+
+            return true;
+
+        } catch (Throwable $th) {
+            $conexion->Rollback();
+            return false;
+        }
+
+
+    }
+
+
+
+public function Actualizar_Personalidades($conexion, $ids_personalidades)
+    {
+        //$conexion = new Conexion();
+
+        /* try { */
+
+            //$conexion->BeginTransaction();
+            $this->Borrar_Personalidades($conexion);
+
+            foreach ($ids_personalidades as $id_personalidad) {
+                $this->Asignar_Personalidades($conexion, $id_personalidad);
+            }
+
+            //$conexion->Commit();
+
+            //return true;
+
+        /* } catch (Throwable $th) {
+            $conexion->Rollback();
+            return false;
+        } */
+    }
+
+    public function Borrar_Personalidades($conexion)
+    {
+        $condiciones = "id_personaje = '$this->id_personaje'";
+        $resultado = $conexion->SetDelete("Tiene_Personalidad", $condiciones);
+        $this->CheckResultado($resultado);
+        
+    }
+
+    public function Asignar_Personalidades($conexion, $id_personalidad)
+    {
+        $resultado = $conexion->SetInsert("Tiene_Personalidad", ["id_personaje", "id_personalidad"], [$this->id_personaje, $id_personalidad]);
+        $this->CheckResultado($resultado);
+    }
+
+    private function CheckResultado($resultado)
+    {
+        if (isset($resultado["Error"])) {
+            throw new Exception($resultado["Error"]);
+        }
+    }
+
+
+
 }
+
+
+
 
 ?>

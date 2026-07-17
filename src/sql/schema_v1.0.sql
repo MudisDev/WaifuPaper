@@ -204,13 +204,30 @@ DELETE FROM tiene_etiqueta;
 
 DELETE FROM favorito; */
 
-CREATE VIEW Vista_Perfil_Personaje AS
+/* CREATE VIEW Vista_Perfil_Personaje AS
 SELECT p.*, e.nombre AS especie, GROUP_CONCAT(pe.nombre, ', ') AS personalidades
 FROM
     personaje p
     JOIN especie e ON p.id_especie = e.id_especie
     JOIN tiene_personalidad tp ON p.id_personaje = tp.id_personaje
     JOIN personalidad pe ON tp.id_personalidad = pe.id_personalidad
+GROUP BY
+    p.id_personaje,
+    p.nombre,
+    e.nombre; */
+
+    CREATE VIEW Vista_Perfil_Personaje AS
+SELECT
+    p.*,
+    e.nombre AS especie,
+    GROUP_CONCAT(pe.nombre SEPARATOR ', ') AS personalidades
+FROM personaje p
+JOIN especie e
+    ON p.id_especie = e.id_especie
+JOIN tiene_personalidad tp
+    ON p.id_personaje = tp.id_personaje
+JOIN personalidad pe
+    ON tp.id_personalidad = pe.id_personalidad
 GROUP BY
     p.id_personaje,
     p.nombre,
@@ -408,3 +425,8 @@ VALUES (1, 1, "Prompt de ejemplo Bv", 0.2);
 SELECT * from usa_modelo_lora;
 
 SELECT * FROM imagen WHERE id_imagen = 1;
+SELECT * FROM personaje;
+
+SELECT * FROM tiene_personalidad WHERE id_personaje = 19;
+
+SELECT * FROM vista_perfil_personaje;
