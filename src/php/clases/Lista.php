@@ -121,6 +121,14 @@ class Lista
         $this->Set_Lista($resultado);
     }
 
+    public function Consultar_Personalidades_Por_Personaje($id_personaje)
+    {
+        $conexion = new Conexion();
+        $condiciones = "id_personaje = '$id_personaje'";
+        $resultado = $conexion->SetSelect("vista_personaje_personalidad", ["*"], $condiciones);
+        $this->Set_Lista($resultado);
+    }
+
 }
 
 ?>

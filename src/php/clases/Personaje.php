@@ -84,7 +84,7 @@ class Personaje
     public function Asignar_Personalidad($id_personalidad)
     {
 
-       $conexion = new Conexion();
+        $conexion = new Conexion();
         $resultado = $conexion->SetInsert(
             "Tiene_Personalidad",
             ["id_personaje", "id_personalidad"],
@@ -108,6 +108,28 @@ class Personaje
                 dia = '$this->dia',
                 mes = '$this->mes',
                 edad = '$this->edad',
+                imagen_perfil = '$this->imagen_perfil'",
+            $condiciones
+        );
+        return $resultado;
+    }
+
+    public function Editar_Personaje($conexion_compartida)
+    {
+        $condiciones = "id_personaje = '$this->id_personaje'";
+        //$conexion = new Conexion();
+        $resultado = $conexion_compartida->SetUpdate(
+            "Personaje",
+            "nombre = '$this->nombre',
+                alias = '$this->alias',
+                descripcion = '$this->descripcion',
+                historia = '$this->historia',
+                pasatiempo = '$this->pasatiempo',
+                ocupacion = '$this->ocupacion',
+                dia = '$this->dia',
+                mes = '$this->mes',
+                edad = '$this->edad',
+                id_especie = '$this->id_especie',
                 imagen_perfil = '$this->imagen_perfil'",
             $condiciones
         );
@@ -160,7 +182,7 @@ class Personaje
             $resultado = $this->Registrar_Personaje($conexion);
             if (isset($resultado['Success']))
                 $this->id_personaje = $resultado['id_generado'];
-            
+
 
             //actualizar etiquetas
             $this->Actualizar_Personalidades($conexion, $ids_personalidades);
@@ -187,24 +209,62 @@ class Personaje
 
     }
 
+    public function Transaccion_Editar_Personaje($ids_personalidades)
+    {
+        $conexion = new Conexion();
 
 
-public function Actualizar_Personalidades($conexion, $ids_personalidades)
+
+
+        try {
+
+            $conexion->BeginTransaction();
+
+            $this->Editar_Personaje($conexion);
+            /* if (isset($resultado['Success']))
+                $this->id_personaje = $resultado['id_generado']; */
+
+
+            //actualizar etiquetas
+            $this->Actualizar_Personalidades($conexion, $ids_personalidades);
+
+            //actualizar personajes
+            //$imagen_personaje->Actualizar_Personajes($conexion);
+
+            //actualizar loras
+            //$imagen_modelo_lora->Actualizar_Modelos_Lora($conexion);
+
+            /*  foreach ($this->ids_etiquetas as $id_etiqueta) {
+                 $this->Insertar_Etiqueta($conexion, $id_etiqueta);
+             } */
+
+            $conexion->Commit();
+
+            return true;
+
+        } catch (Throwable $th) {
+            $conexion->Rollback();
+            return false;
+        }
+    }
+
+
+    public function Actualizar_Personalidades($conexion, $ids_personalidades)
     {
         //$conexion = new Conexion();
 
         /* try { */
 
-            //$conexion->BeginTransaction();
-            $this->Borrar_Personalidades($conexion);
+        //$conexion->BeginTransaction();
+        $this->Borrar_Personalidades($conexion);
 
-            foreach ($ids_personalidades as $id_personalidad) {
-                $this->Asignar_Personalidades($conexion, $id_personalidad);
-            }
+        foreach ($ids_personalidades as $id_personalidad) {
+            $this->Asignar_Personalidades($conexion, $id_personalidad);
+        }
 
-            //$conexion->Commit();
+        //$conexion->Commit();
 
-            //return true;
+        //return true;
 
         /* } catch (Throwable $th) {
             $conexion->Rollback();
@@ -217,7 +277,7 @@ public function Actualizar_Personalidades($conexion, $ids_personalidades)
         $condiciones = "id_personaje = '$this->id_personaje'";
         $resultado = $conexion->SetDelete("Tiene_Personalidad", $condiciones);
         $this->CheckResultado($resultado);
-        
+
     }
 
     public function Asignar_Personalidades($conexion, $id_personalidad)

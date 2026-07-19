@@ -207,27 +207,22 @@ DELETE FROM favorito; */
 /* CREATE VIEW Vista_Perfil_Personaje AS
 SELECT p.*, e.nombre AS especie, GROUP_CONCAT(pe.nombre, ', ') AS personalidades
 FROM
+personaje p
+JOIN especie e ON p.id_especie = e.id_especie
+JOIN tiene_personalidad tp ON p.id_personaje = tp.id_personaje
+JOIN personalidad pe ON tp.id_personalidad = pe.id_personalidad
+GROUP BY
+p.id_personaje,
+p.nombre,
+e.nombre; */
+
+CREATE VIEW Vista_Perfil_Personaje AS
+SELECT p.*, e.nombre AS especie, GROUP_CONCAT(pe.nombre SEPARATOR ', ') AS personalidades
+FROM
     personaje p
     JOIN especie e ON p.id_especie = e.id_especie
     JOIN tiene_personalidad tp ON p.id_personaje = tp.id_personaje
     JOIN personalidad pe ON tp.id_personalidad = pe.id_personalidad
-GROUP BY
-    p.id_personaje,
-    p.nombre,
-    e.nombre; */
-
-    CREATE VIEW Vista_Perfil_Personaje AS
-SELECT
-    p.*,
-    e.nombre AS especie,
-    GROUP_CONCAT(pe.nombre SEPARATOR ', ') AS personalidades
-FROM personaje p
-JOIN especie e
-    ON p.id_especie = e.id_especie
-JOIN tiene_personalidad tp
-    ON p.id_personaje = tp.id_personaje
-JOIN personalidad pe
-    ON tp.id_personalidad = pe.id_personalidad
 GROUP BY
     p.id_personaje,
     p.nombre,
@@ -354,36 +349,39 @@ SELECT * FROM modelo_lora;
 
 SELECT * FROM modelo_base;
 
-
-
-
 select * from especie;
 
 select * from imagen;
+
 select count(*) as total from personaje;
 
 select * from etiqueta;
 
 SELECT * FROM usa_modelo_lora;
+
 SELECT * FROM modelo_lora;
 
 CREATE VIEW Vista_Modelo_Lora_Imagen AS
-SELECT
-    ml.id_modelo_lora,
-    ml.nombre,
-    uml.id_imagen,
-    uml.prompt,
-    uml.fuerza
-FROM usa_modelo_lora uml
+SELECT ml.id_modelo_lora, ml.nombre, uml.id_imagen, uml.prompt, uml.fuerza
+FROM
+    usa_modelo_lora uml
     JOIN modelo_lora ml ON uml.id_modelo_lora = ml.id_modelo_lora;
 
 DROP View vista_modelo_lora_imagen;
 
 SELECT * FROM vista_modelo_lora_imagen WHERE id_imagen = 1;
 
-INSERT INTO usa_modelo_lora (id_imagen, id_modelo_lora, prompt, fuerza) VALUES (1,2,"modelo lora 2 Bv", 0.9);
+INSERT INTO
+    usa_modelo_lora (
+        id_imagen,
+        id_modelo_lora,
+        prompt,
+        fuerza
+    )
+VALUES (1, 2, "modelo lora 2 Bv", 0.9);
 
 SELECT * FROM imagen WHERE id_imagen = 1;
+
 SELECT * FROM tiene_etiqueta WHERE id_imagen = 1;
 
 SELECT * FROM etiqueta;
@@ -392,7 +390,7 @@ SELECT * FROM usa_modelo_lora;
 
 SELECT * FROM aparece_en WHERE id_personaje = 1;
 
-INSERT INTO aparece_en (id_imagen, id_personaje) VALUES (1,2);
+INSERT INTO aparece_en (id_imagen, id_personaje) VALUES (1, 2);
 
 CREATE VIEW Vista_Aparece_En AS
 SELECT ae.id_imagen, ae.id_personaje, p.nombre
@@ -400,33 +398,64 @@ FROM aparece_en ae
     JOIN personaje p ON ae.id_personaje = p.id_personaje;
 
 SELECT * FROM vista_aparece_en WHERE id_imagen = 1;
+
 SELECT * FROM imagen;
 
 CREATE VIEW vista_imagen_datos AS
-SELECT i.id_imagen, i.url, i.semilla, i.imagen_listada, i.fecha_insercion, i.fecha_actualizacion, i.id_modelo_base, mb.nombre AS nombre_modelo_base
+SELECT
+    i.id_imagen,
+    i.url,
+    i.semilla,
+    i.imagen_listada,
+    i.fecha_insercion,
+    i.fecha_actualizacion,
+    i.id_modelo_base,
+    mb.nombre AS nombre_modelo_base
 FROM imagen i
-JOIN modelo_base mb ON mb.id_modelo_base = i.id_modelo_base;
+    JOIN modelo_base mb ON mb.id_modelo_base = i.id_modelo_base;
 
 SELECT * FROM vista_imagen_datos;
+
 SELECT * FROM vista_imagen_datos WHERE id_imagen = 1;
 
 SELECT * FROM aparece_en;
 
 SELECT * FROM modelo_lora;
-INSERT INTO aparece_en (id_imagen, id_personaje) VALUES (1,2);
+
+INSERT INTO aparece_en (id_imagen, id_personaje) VALUES (1, 2);
 
 DELETE FROM aparece_en WHERE id_imagen = 1 AND id_personaje = 2;
 
 select * FROM usa_modelo_lora;
 
-INSERT INTO usa_modelo_lora (id_imagen, id_modelo_lora, prompt, fuerza)
-VALUES (1, 1, "Prompt de ejemplo Bv", 0.2);
+INSERT INTO
+    usa_modelo_lora (
+        id_imagen,
+        id_modelo_lora,
+        prompt,
+        fuerza
+    )
+VALUES (
+        1,
+        1,
+        "Prompt de ejemplo Bv",
+        0.2
+    );
 
 SELECT * from usa_modelo_lora;
 
 SELECT * FROM imagen WHERE id_imagen = 1;
+
 SELECT * FROM personaje;
 
 SELECT * FROM tiene_personalidad WHERE id_personaje = 19;
 
 SELECT * FROM vista_perfil_personaje;
+
+CREATE VIEW vista_personaje_personalidad AS
+SELECT tp.id_personaje, tp.id_personalidad, p.nombre AS nombre_personalidad
+FROM
+    tiene_personalidad tp
+    JOIN personalidad p ON p.id_personalidad = tp.id_personalidad;
+
+SELECT * FROM vista_personaje_personalidad WHERE id_personaje = 1;
