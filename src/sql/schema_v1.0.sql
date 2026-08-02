@@ -68,6 +68,9 @@ CREATE TABLE Imagen (
     FOREIGN KEY (id_modelo_base) REFERENCES Modelo_Base (id_modelo_base)
 );
 
+ALTER TABLE imagen ADD prompt_positivo_general TEXT NOT NULL;
+ALTER TABLE imagen ADD prompt_negativo_general TEXT NOT NULL;
+
 CREATE TABLE Favorito (
     id_favorito INT AUTO_INCREMENT PRIMARY KEY,
     id_usuario INT NOT NULL,
@@ -151,6 +154,9 @@ CREATE TABLE Usa_Modelo_Lora (
     FOREIGN KEY (id_imagen) REFERENCES Imagen (id_imagen) ON DELETE CASCADE,
     FOREIGN KEY (id_modelo_lora) REFERENCES Modelo_Lora (id_modelo_lora) ON DELETE CASCADE
 );
+
+ALTER TABLE usa_modelo_lora ADD prompt_negativo TEXT NOT NULL;
+ALTER TABLE usa_modelo_lora RENAME COLUMN prompt TO prompt_positivo;
 
 SHOW TABLES;
 
@@ -362,7 +368,7 @@ SELECT * FROM usa_modelo_lora;
 SELECT * FROM modelo_lora;
 
 CREATE VIEW Vista_Modelo_Lora_Imagen AS
-SELECT ml.id_modelo_lora, ml.nombre, uml.id_imagen, uml.prompt, uml.fuerza
+SELECT ml.id_modelo_lora, ml.nombre, uml.id_imagen, uml.prompt_positivo, uml.fuerza, uml.prompt_negativo
 FROM
     usa_modelo_lora uml
     JOIN modelo_lora ml ON uml.id_modelo_lora = ml.id_modelo_lora;
@@ -410,9 +416,12 @@ SELECT
     i.fecha_insercion,
     i.fecha_actualizacion,
     i.id_modelo_base,
+    i.prompt_positivo_general,
+    i.prompt_negativo_general,
     mb.nombre AS nombre_modelo_base
 FROM imagen i
     JOIN modelo_base mb ON mb.id_modelo_base = i.id_modelo_base;
+
 
 SELECT * FROM vista_imagen_datos;
 
@@ -459,3 +468,5 @@ FROM
     JOIN personalidad p ON p.id_personalidad = tp.id_personalidad;
 
 SELECT * FROM vista_personaje_personalidad WHERE id_personaje = 1;
+
+SELECT * FROM vista_perfil_personaje WHERE id_personaje = 1;

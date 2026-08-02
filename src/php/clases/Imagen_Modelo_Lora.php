@@ -9,7 +9,8 @@ class Imagen_Modelo_Lora
     private $prompt = null;
     private $fuerza = null;
     private $ids_modelos_lora = null;
-    private $prompts_modelos_lora = null;
+    private $prompts_positivos_modelos_lora = null;
+    private $prompts_negativos_modelos_lora = null;
     private $fuerza_modelos_lora = null;
 
     public function __construct($datos)
@@ -47,7 +48,7 @@ class Imagen_Modelo_Lora
         } */
         $i = null;
         for ($i = 0; $i < count($this->ids_modelos_lora); $i++) {
-            $this->Insertar_Modelo_Lora($conexion, $this->ids_modelos_lora[$i], $this->prompts_modelos_lora[$i], $this->fuerza_modelos_lora[$i]);
+            $this->Insertar_Modelo_Lora($conexion, $this->ids_modelos_lora[$i], $this->prompts_positivos_modelos_lora[$i], $this->fuerza_modelos_lora[$i], $this->prompts_negativos_modelos_lora[$i]);
         }
 
         //$conexion->Commit();
@@ -68,9 +69,9 @@ class Imagen_Modelo_Lora
 
     }
 
-    public function Insertar_Modelo_Lora($conexion, $id_modelo, $prompt, $fuerza)
+    public function Insertar_Modelo_Lora($conexion, $id_modelo, $prompt_positivo, $fuerza, $prompt_negativo)
     {
-        $resultado = $conexion->SetInsert("Usa_Modelo_Lora", ["id_imagen", "id_modelo_lora", "prompt", "fuerza"], [$this->id_imagen, $id_modelo, $prompt, $fuerza]);
+        $resultado = $conexion->SetInsert("Usa_Modelo_Lora", ["id_imagen", "id_modelo_lora", "prompt_positivo", "fuerza", "prompt_negativo"], [$this->id_imagen, $id_modelo, $prompt_positivo, $fuerza, $prompt_negativo]);
         $this->CheckResultado($resultado);
     }
 

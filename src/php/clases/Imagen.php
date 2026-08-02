@@ -25,13 +25,16 @@ class Imagen
     private $id_modelo_base = null;
     private $fecha_insercion = null;
     private $fecha_actualizacion = null;
+    private $prompt_positivo_general;
+    private $prompt_negativo_general;
 
     private $array_insert = [
         "url",
         "semilla",
         "imagen_listada",
         "id_modelo_base",
-
+        "prompt_positivo_general",
+        "prompt_negativo_general",
         /* "fecha_insercion",
         "fecha_actualizacion", */
     ];
@@ -56,7 +59,8 @@ class Imagen
                 $this->semilla,
                 $this->imagen_listada,
                 $this->id_modelo_base,
-
+                $this->prompt_positivo_general,
+                $this->prompt_negativo_general,
                 /*  $this->fecha_insercion,
                  $this->fecha_actualizacion, */
 
@@ -103,7 +107,7 @@ class Imagen
     {
         //$conexion = new Conexion();
         $condiciones = "id_imagen = '$this->id_imagen'";
-        $columnas_actualizar = "url = '$this->url', semilla = '$this->semilla', imagen_listada = '$this->imagen_listada', id_modelo_base = '$this->id_modelo_base'";
+        $columnas_actualizar = "url = '$this->url', semilla = '$this->semilla', imagen_listada = '$this->imagen_listada', id_modelo_base = '$this->id_modelo_base', prompt_positivo_general = '$this->prompt_positivo_general', prompt_negativo_general = '$this->prompt_negativo_general' ";
         $resultado = $conexion->SetUpdate("Imagen", $columnas_actualizar, $condiciones);
 
         //return $resultado;
@@ -111,12 +115,12 @@ class Imagen
     }
 
 
-    public function Actualizacion_Imagen_Completa($ids_etiquetas, $ids_modelos_lora, $prompts_modelos_lora, $fuerza_modelos_lora, $ids_personajes)
+    public function Actualizacion_Imagen_Completa($ids_etiquetas, $ids_modelos_lora, $prompts_positivos_modelos_lora, $prompts_negativos_modelos_lora, $fuerza_modelos_lora, $ids_personajes)
     {
 
         $conexion = new Conexion();
         $imagen_etiqueta = new Imagen_Etiqueta(["id_imagen" => $this->id_imagen, "ids_etiquetas" => $ids_etiquetas]);
-        $imagen_modelo_lora = new Imagen_Modelo_Lora(["id_imagen" => $this->id_imagen, "ids_modelos_lora" => $ids_modelos_lora, "prompts_modelos_lora" => $prompts_modelos_lora, "fuerza_modelos_lora" => $fuerza_modelos_lora]);
+        $imagen_modelo_lora = new Imagen_Modelo_Lora(["id_imagen" => $this->id_imagen, "ids_modelos_lora" => $ids_modelos_lora, "prompts_positivos_modelos_lora" => $prompts_positivos_modelos_lora, "fuerza_modelos_lora" => $fuerza_modelos_lora, "prompts_negativos_modelos_lora" => $prompts_negativos_modelos_lora]);
         $imagen_personaje = new Imagen_Personaje(["id_imagen" => $this->id_imagen, "ids_personajes" => $ids_personajes]);
 
         try {
