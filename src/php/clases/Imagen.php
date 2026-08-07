@@ -48,9 +48,9 @@ class Imagen
         }
     }
 
-    public function Registrar_Imagen()
+    public function Registrar_Imagen($conexion)
     {
-        $conexion = new Conexion();
+        //$conexion = new Conexion();
         $resultado = $conexion->SetInsert(
             "Imagen",
             $this->array_insert,
@@ -119,14 +119,29 @@ class Imagen
     {
 
         $conexion = new Conexion();
-        $imagen_etiqueta = new Imagen_Etiqueta(["id_imagen" => $this->id_imagen, "ids_etiquetas" => $ids_etiquetas]);
+        /* $imagen_etiqueta = new Imagen_Etiqueta(["id_imagen" => $this->id_imagen, "ids_etiquetas" => $ids_etiquetas]);
         $imagen_modelo_lora = new Imagen_Modelo_Lora(["id_imagen" => $this->id_imagen, "ids_modelos_lora" => $ids_modelos_lora, "prompts_positivos_modelos_lora" => $prompts_positivos_modelos_lora, "fuerza_modelos_lora" => $fuerza_modelos_lora, "prompts_negativos_modelos_lora" => $prompts_negativos_modelos_lora]);
-        $imagen_personaje = new Imagen_Personaje(["id_imagen" => $this->id_imagen, "ids_personajes" => $ids_personajes]);
+        $imagen_personaje = new Imagen_Personaje(["id_imagen" => $this->id_imagen, "ids_personajes" => $ids_personajes]); */
 
         try {
 
             $conexion->BeginTransaction();
-            $this->editar_imagen($conexion);
+
+            if ($this->id_imagen == null) {
+                $resultado = $this->Registrar_Imagen($conexion);
+                if (!isset($resultado["Success"])) {
+                    throw new Exception("No se pudo registrar la imagen.");
+                }
+                $this->id_imagen = $resultado["id_generado"];
+
+            } else {
+                $this->editar_imagen($conexion);
+            }
+
+
+            $imagen_etiqueta = new Imagen_Etiqueta(["id_imagen" => $this->id_imagen, "ids_etiquetas" => $ids_etiquetas]);
+            $imagen_modelo_lora = new Imagen_Modelo_Lora(["id_imagen" => $this->id_imagen, "ids_modelos_lora" => $ids_modelos_lora, "prompts_positivos_modelos_lora" => $prompts_positivos_modelos_lora, "fuerza_modelos_lora" => $fuerza_modelos_lora, "prompts_negativos_modelos_lora" => $prompts_negativos_modelos_lora]);
+            $imagen_personaje = new Imagen_Personaje(["id_imagen" => $this->id_imagen, "ids_personajes" => $ids_personajes]);
 
             //actualizar etiquetas
             $imagen_etiqueta->Actualizar_Etiquetas($conexion);
@@ -143,11 +158,16 @@ class Imagen
 
             $conexion->Commit();
 
-            return true;
+            //return true;
+            return ["Success" => "Transaccion Exitosa"];
 
         } catch (Throwable $th) {
+            /* $conexion->Rollback();
+            return false; */
             $conexion->Rollback();
-            return false;
+            return [
+                "Error" => $th->getMessage()
+            ];
         }
 
 
