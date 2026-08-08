@@ -25,8 +25,8 @@ class Imagen
     private $id_modelo_base = null;
     private $fecha_insercion = null;
     private $fecha_actualizacion = null;
-    private $prompt_positivo_general;
-    private $prompt_negativo_general;
+    private $prompt_positivo_general = null;
+    private $prompt_negativo_general = null;
 
     private $array_insert = [
         "url",
