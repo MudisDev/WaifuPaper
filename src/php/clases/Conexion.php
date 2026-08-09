@@ -40,7 +40,7 @@ class Conexion
         return "Conexión cerrada.";
     }
 
-    public function SetSelect(string $tabla, array $columnas = ['*'], string $condiciones = '', bool $is_login = false, string $password = '')
+    /* public function SetSelect(string $tabla, array $columnas = ['*'], string $condiciones = '', bool $is_login = false, string $password = '')
     {
         $cols = implode(", ", $columnas);
         $this->sql = "SELECT $cols FROM $tabla";
@@ -86,31 +86,60 @@ class Conexion
         }
 
         return $resultados;
-    }
+    } */
 
-    /* public function IniciarSesion(string $tabla, array $columnas = ['*'], $columna_usuario, $username, $password)
+    public function SetSelect(string $tabla, array $columnas = ['*'], string $condiciones = '')
     {
         $cols = implode(", ", $columnas);
-        $username = $this->conn->real_escape_string($username); // para prevenir inyecciones básicas
+        $this->sql = "SELECT $cols FROM $tabla";
 
-        $band = false;
+        if (!empty($condiciones)) {
+            $this->sql .= " WHERE $condiciones";
+        }
 
-        $this->sql = "SELECT $cols FROM $tabla WHERE $columna_usuario = '$username'";
         $resultados = [];
         $resultado = $this->conn->query($this->sql);
 
         if ($resultado && $resultado->num_rows > 0) {
             while ($fila = $resultado->fetch_assoc()) {
-                if ($password == $fila['password']) {
-                    $band = true;
+                $resultados[] = $fila; // Cada fila es un diccionario (asociativo)
+            }
+        }
+
+        if (empty($resultados)) {
+            return ["Error" => "No hubo coincidencias"];
+        }
+
+        return $resultados;
+    }
+
+    public function Login(string $tabla, array $columnas = ['*'], string $condiciones, string $password = '')
+    {
+        $cols = implode(", ", $columnas);
+        $this->sql = "SELECT $cols FROM $tabla WHERE $condiciones";
+
+        /* if (!empty($condiciones)) {
+            $this->sql .= " WHERE $condiciones";
+        } */
+
+        $resultados = [];
+        $resultado = $this->conn->query($this->sql);
+
+        if ($resultado && $resultado->num_rows > 0) {
+            while ($fila = $resultado->fetch_assoc()) {
+                if (password_verify($password, $fila['password'])) {
                     $resultados[] = $fila; // Cada fila es un diccionario (asociativo)
+                    break;
                 }
             }
-            if (!$band)
-                return ["Error" => "Credenciales incorrectas"];
+        }
+
+        if (empty($resultados)) {
+            return ["Error" => "Contraseña incorrecta o usuario no encontrado"];
         }
         return $resultados;
-    } */
+    }
+
 
     public function SetDelete(string $tabla, string $condiciones/* , $id */)
     {

@@ -76,9 +76,9 @@ class Usuario
         //$resultado = $conexion->IniciarSesion("Usuario", ["*"], "username", $this->username, $this->password);
 
         if ($this->password == null) {
-            $resultado = $conexion->SetSelect("Usuario", ["*"], $condiciones);
+            $resultado = $conexion->Login("Usuario", ["*"], $condiciones);
         } else {
-            $resultado = $conexion->SetSelect("Usuario", ["*"], $condiciones, true, $this->password);
+            $resultado = $conexion->Login("Usuario", ["*"], $condiciones, $this->password);
         }
         //$resultado = $conexion->SetSelect("Usuario", ["*"], $condiciones, true, $this->password);
 

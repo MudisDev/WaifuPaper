@@ -85,6 +85,15 @@ class Imagen
         return $resultado;
     }
 
+    /* public function Buscar_Imagen()
+    {
+        $conexion = new Conexion();
+        $condiciones = "id_imagen = '$this->id_imagen'";
+        $resultado = $conexion->SetSelect("Imagen", ["*"], $condiciones);
+
+        return $resultado;
+    } */
+
     public function Buscar_Imagen()
     {
         $conexion = new Conexion();
@@ -93,6 +102,12 @@ class Imagen
 
         return $resultado;
     }
+    //tabla
+    //condicion
+    //dato condicion
+    //array columnas
+    //array datos
+    //tipos datos
 
     public function Buscar_Imagen_Vista()
     {
