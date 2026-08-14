@@ -48,7 +48,7 @@ class Usuario
             return ["Error" => "Telefono ya existe."];
 
         $conexion = new Conexion();
-        $resultado = $conexion->SetInsert(
+        $resultado = $conexion->RegistrarCuenta(
             "Usuario",
             $this->array_insert,
             [
@@ -59,7 +59,8 @@ class Usuario
                 $this->genero,
                 $this->telefono,
                 $this->foto_perfil
-            ], true
+            ], "sssssss"
+            
         );
         return $resultado;
     }
@@ -166,24 +167,26 @@ class Usuario
         return $resultado;
     }
 
-    public function Buscar_Email(){
+    public function Buscar_Email()
+    {
         $condiciones = "username = '$this->username'";
         $conexion = new Conexion();
         $resultado = $conexion->SetSelect('Usuario', ["email", "id_usuario"], $condiciones);
         return $resultado;
     }
 
-    public function Actualizar_Password(){
+    public function Actualizar_Password()
+    {
 
-        if(!$this->password){
+        if (!$this->password) {
             return ["Error" => "Contraseña nula"];
         }
-        $hashed_password = password_hash($this->password, PASSWORD_DEFAULT );
+        $hashed_password = password_hash($this->password, PASSWORD_DEFAULT);
 
         $columnas_actualizar = "password = '$hashed_password'";
         $condiciones = "id_usuario = '$this->id_usuario'";
-        $conexion  = new Conexion();
-        $resultado = $conexion->SetUpdate("Usuario",$columnas_actualizar, $condiciones);
+        $conexion = new Conexion();
+        $resultado = $conexion->SetUpdate("Usuario", $columnas_actualizar, $condiciones);
         return $resultado;
 
     }

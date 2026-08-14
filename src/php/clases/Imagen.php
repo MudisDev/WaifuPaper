@@ -48,6 +48,27 @@ class Imagen
         }
     }
 
+    /* public function Registrar_Imagen($conexion)
+    {
+        //$conexion = new Conexion();
+        $resultado = $conexion->SetInsert(
+            "Imagen",
+            $this->array_insert,
+            [
+                $this->url,
+                $this->semilla,
+                $this->imagen_listada,
+                $this->id_modelo_base,
+                $this->prompt_positivo_general,
+                $this->prompt_negativo_general,
+               //   $this->fecha_insercion,
+               //  $this->fecha_actualizacion, 
+
+            ]
+        );
+        return $resultado;
+    } */
+
     public function Registrar_Imagen($conexion)
     {
         //$conexion = new Conexion();
@@ -64,10 +85,18 @@ class Imagen
                 /*  $this->fecha_insercion,
                  $this->fecha_actualizacion, */
 
-            ]
+            ],
+            "ssiiss"
         );
         return $resultado;
     }
+
+    //tabla
+    //condicion
+    //dato condicion
+    //array columnas
+    //array datos
+    //tipos datos
 
     public function Imagen_Existe()
     {
@@ -85,15 +114,6 @@ class Imagen
         return $resultado;
     }
 
-    /* public function Buscar_Imagen()
-    {
-        $conexion = new Conexion();
-        $condiciones = "id_imagen = '$this->id_imagen'";
-        $resultado = $conexion->SetSelect("Imagen", ["*"], $condiciones);
-
-        return $resultado;
-    } */
-
     public function Buscar_Imagen()
     {
         $conexion = new Conexion();
@@ -102,6 +122,17 @@ class Imagen
 
         return $resultado;
     }
+
+    /*    public function Buscar_Imagen()
+       {
+           $conexion = new Conexion();
+           $condicion = "id_imagen = ?";
+           $datoCondicion = $this->id_imagen;
+           $tipoDatos = "i";
+           $resultado = $conexion->SetSelect("Imagen", ["*"], $condicion);
+
+           return $resultado;
+       } */
     //tabla
     //condicion
     //dato condicion
@@ -118,12 +149,36 @@ class Imagen
         return $resultado;
     }
 
+    /*     public function editar_imagen($conexion)
+        {
+            //$conexion = new Conexion();
+            $condiciones = "id_imagen = '$this->id_imagen'";
+            $columnas_actualizar = "url = '$this->url', semilla = '$this->semilla', imagen_listada = '$this->imagen_listada', id_modelo_base = '$this->id_modelo_base', prompt_positivo_general = '$this->prompt_positivo_general', prompt_negativo_general = '$this->prompt_negativo_general' ";
+            $resultado = $conexion->SetUpdate("Imagen", $columnas_actualizar, $condiciones);
+
+            //return $resultado;
+            $this->CheckResultado($resultado);
+        } */
+    //tabla
+    //condicion
+    //dato condicion
+    //array columnas
+    //array datos
+    //tipos datos
     public function editar_imagen($conexion)
     {
         //$conexion = new Conexion();
-        $condiciones = "id_imagen = '$this->id_imagen'";
-        $columnas_actualizar = "url = '$this->url', semilla = '$this->semilla', imagen_listada = '$this->imagen_listada', id_modelo_base = '$this->id_modelo_base', prompt_positivo_general = '$this->prompt_positivo_general', prompt_negativo_general = '$this->prompt_negativo_general' ";
-        $resultado = $conexion->SetUpdate("Imagen", $columnas_actualizar, $condiciones);
+        $condicion = "id_imagen = ?";
+        $datoCondicion = $this->id_imagen;
+        $tipoDatoCondicion = 'i';
+        $columnas = ["url", "semilla", "imagen_listada", "id_modelo_base", "prompt_positivo_general", "prompt_negativo_general"];
+        $datos = [$this->url, $this->semilla, $this->imagen_listada, $this->id_modelo_base, $this->prompt_positivo_general, $this->prompt_negativo_general];
+        $tiposDatos = "ssiiss";
+
+        $datos[] = $datoCondicion;
+        $tiposDatos .= $tipoDatoCondicion;
+
+        $resultado = $conexion->SetUpdate("Imagen", $condicion, $columnas, $datos, $tiposDatos);
 
         //return $resultado;
         $this->CheckResultado($resultado);

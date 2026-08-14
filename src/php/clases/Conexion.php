@@ -88,8 +88,41 @@ class Conexion
         return $resultados;
     } */
 
+    /* public function SetSelect(string $tabla, array $columnas = ['*'], string $condiciones = '')
+    {
+        $cols = implode(", ", $columnas);
+        $this->sql = "SELECT $cols FROM $tabla";
+
+        if (!empty($condiciones)) {
+            $this->sql .= " WHERE $condiciones";
+        }
+
+        $resultados = [];
+        $resultado = $this->conn->query($this->sql);
+
+        if ($resultado && $resultado->num_rows > 0) {
+            while ($fila = $resultado->fetch_assoc()) {
+                $resultados[] = $fila; // Cada fila es un diccionario (asociativo)
+            }
+        }
+
+        if (empty($resultados)) {
+            return ["Error" => "No hubo coincidencias"];
+        }
+
+        return $resultados;
+    } */
+
+    //tabla
+    //condicion
+    //dato condicion
+    //array columnas
+    //array datos
+    //tipos datos
+
     public function SetSelect(string $tabla, array $columnas = ['*'], string $condiciones = '')
     {
+
         $cols = implode(", ", $columnas);
         $this->sql = "SELECT $cols FROM $tabla";
 
@@ -158,47 +191,95 @@ class Conexion
         }
     }
 
-    public function SetInsert(string $tabla, array $columnas, array $datos, bool $is_register = false)
+
+
+
+
+    /*     public function SetInsert(string $tabla, array $columnas, array $datos, bool $is_register = false)
+        {
+
+            if ($is_register) {
+                $hashed_password = password_hash($datos[3], PASSWORD_DEFAULT);
+                $datos[3] = $hashed_password;
+            }
+            //echo "Entro a set insert en conexion";
+
+            $valores = [];
+            foreach ($datos as $dato) {
+                if ($dato === '' || is_null($dato)) {
+                    $valores[] = "NULL"; // sin comillas
+
+                } elseif (strtoupper($dato) === 'CURDATE()') {
+                    $valores[] = "CURDATE()"; // sin comillas, es una función SQL
+                } else {
+                    // Escapa y coloca comillas simples
+                    $dato_escapado = $this->conn->real_escape_string($dato);
+                    $valores[] = "'$dato_escapado'";
+                }
+            }
+
+            $columnas = implode(", ", $columnas);
+            $datos = implode(", ", $valores);
+
+
+            $this->sql = "INSERT INTO $tabla($columnas) VALUES($datos)";
+
+
+            $resultado = $this->conn->query($this->sql);
+            if ($resultado) {
+                if ($this->conn->affected_rows > 0) {
+
+                    // Obtener el ID generado
+                    $lastId = $this->conn->insert_id;
+
+                    return ["Success" => "Registro exitoso en tabla $tabla.", "id_generado" => $lastId];
+                } else {
+                    return ["Warning" => "La consulta se ejecutó, pero no se insertó ninguna fila en $tabla."];
+                }
+            } else {
+                return ["Error" => "Registro fallido en tabla $tabla."];
+            }
+        } */
+
+    /*        // SQL query template
+   $sql = "INSERT INTO MyGuests (firstname, lastname, email) VALUES (?, ?, ?)";
+
+   // Prepare the SQL query template
+   if ($stmt = $conn->prepare($sql)) {
+       // Bind parameters
+       $stmt->bind_param("sss", $firstname, $lastname, $email);
+
+       // Set parameters and execute
+       $firstname = "John";
+       $lastname = "Doe";
+       $email = "john@example.com";
+       $stmt->execute();
+
+   } */
+
+    public function SetInsert(string $tabla, array $columnas, array $datos, string $tiposDatos)
     {
 
-        if ($is_register) {
-            $hashed_password = password_hash($datos[3], PASSWORD_DEFAULT);
-            $datos[3] = $hashed_password;
+        if (count($columnas) !== count($datos) || count($datos) !== strlen($tiposDatos)) {
+            return ["Error" => "No coincide el numero de parametros recibidos"];
         }
-        //echo "Entro a set insert en conexion";
-
-        $valores = [];
-        foreach ($datos as $dato) {
-            if ($dato === '' || is_null($dato)) {
-                $valores[] = "NULL"; // sin comillas
-
-            } elseif (strtoupper($dato) === 'CURDATE()') {
-                $valores[] = "CURDATE()"; // sin comillas, es una función SQL
-            } else {
-                // Escapa y coloca comillas simples
-                $dato_escapado = $this->conn->real_escape_string($dato);
-                $valores[] = "'$dato_escapado'";
-            }
-        }
-
-        //echo "paso el foreach";
-
 
         $columnas = implode(", ", $columnas);
-        $datos = implode(", ", $valores);
+        $placeholder = implode(",", array_fill(0, count($datos), "?"));
 
-        /*         echo "tabla -> ", $tabla;
-                echo "<br>";
-                echo json_encode($columnas);
-                echo "<br>";
-                echo json_encode($datos);
-                echo "<br>"; */
+        // SQL query template
+        $this->sql = "INSERT INTO $tabla ($columnas) VALUES ($placeholder)";
 
-        $this->sql = "INSERT INTO $tabla($columnas) VALUES($datos)";
+        // Prepare the SQL query template/*  */
+        $stmt = $this->conn->prepare($this->sql);
 
-        /* echo "SQL -> ", $this->sql;
-        echo "<br>"; */
-        $resultado = $this->conn->query($this->sql);
+        if (!$stmt) {
+            return ["Error" => "No se pudo preparar la consulta"];
+        }
+
+        $stmt->bind_param($tiposDatos, ...$datos);
+        $resultado = $stmt->execute();
+
         if ($resultado) {
             if ($this->conn->affected_rows > 0) {
 
@@ -210,36 +291,50 @@ class Conexion
                 return ["Warning" => "La consulta se ejecutó, pero no se insertó ninguna fila en $tabla."];
             }
         } else {
-            return ["Error" => "Registro fallido en tabla $tabla."];
+            return [
+                "Error" => "Registro fallido en tabla $tabla.",
+                "Mysql_error" => $stmt->error,
+                "Mysql_codigo" => $stmt->errno
+            ];
         }
     }
 
-    /* public function SetActualizarRelacion($tabla, $id_primario, $id_foraneo, $columna_actualizar, $condiciones)
+    public function RegistrarCuenta(string $tabla, array $columnas, array $datos, string $tiposDatos)
     {
-        $this->sql = "UPDATE $tabla SET $columna_actualizar = '$id_foraneo' WHERE $condiciones '$id_primario'";
+        $hashed_password = password_hash($datos[3], PASSWORD_DEFAULT);
+        $datos[3] = $hashed_password;
 
-        $resultado = $this->conn->query($this->sql);
+        return $this->SetInsert($tabla, $columnas, $datos, $tiposDatos);
+    }
 
-        if ($resultado) {
-            if ($this->conn->affected_rows > 0) {
-                return ["Success" => "Update exitoso en tabla $tabla."];
-            } else {
-                return ["Warning" => "La consulta se ejecutó, pero no se actualizo ninguna fila en $tabla."];
-            }
-        } else {
-            return [
-                "error" => "Update fallido en tabla $tabla.",
-                "sql" => $this->sql,
-                "mysql_error" => $this->conn->error
-            ];
+    public function SetUpdate(string $tabla, string $condicion, array $columnas, array $datos, string $tipoDatos /* $columnas_actualizar, $condiciones,  */)
+    {
+
+        if (count($datos) !== strlen($tipoDatos) || count($columnas) <= count($datos)) {
+            return ["Error" => "No coincide el numero de datos con los tipos de datos"];
         }
 
-    } */
-    public function SetUpdate($tabla, $columnas_actualizar, $condiciones, )
-    {
-        $this->sql = "UPDATE $tabla SET $columnas_actualizar WHERE $condiciones";
+        $valores = [];
+        for ($i = 0; $i < count($columnas); $i++) {
+            $valores[$i] = $columnas[$i] . " = ?";
+        }
+        $valores = implode(",", $valores);
 
-        $resultado = $this->conn->query($this->sql);
+        //$datos[] = $datoCondicion;
+        //$tipoDatos .= "i";
+
+        // SQL query template
+        $this->sql = "UPDATE $tabla SET $valores WHERE $condicion";
+
+        // Prepare the SQL query template/*  */
+        $stmt = $this->conn->prepare($this->sql);
+
+        if (!$stmt) {
+            return ["Error" => "No se pudo preparar la consulta"];
+        }
+
+        $stmt->bind_param($tipoDatos, ...$datos);
+        $resultado = $stmt->execute();
 
         if ($resultado) {
             if ($this->conn->affected_rows > 0) {
@@ -251,13 +346,13 @@ class Conexion
             return [
                 "Error" => "Update fallido en tabla $tabla.",
                 "Sql" => $this->sql,
-                "Mysql_error" => $this->conn->error
+                "Mysql_error" => $stmt->error,
+                "Mysql_codigo" => $stmt->errno
             ];
+
         }
 
     }
-
-
 
     public function SetCount(string $tabla, string $condiciones = '')
     {
