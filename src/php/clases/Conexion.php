@@ -7,136 +7,89 @@ class Conexion
     private $user;
     private $passwordb;
     private $bdname;
-    private $conn; // Variable para almacenar la conexión
+    private $conn;
 
     private $sql;
 
-    public function __construct(/* $server, $user, $passwordb, $bdname */)
+    public function __construct()
     {
         $this->server = DB_SERVER;
         $this->user = DB_USER;
         $this->passwordb = DB_PASSWORD;
         $this->bdname = DB_NAME;
 
-        // Intentar conexión a la BD
         $this->conn = new mysqli($this->server, $this->user, $this->passwordb, $this->bdname);
 
-        // Verificar errores en la conexión
         if ($this->conn->connect_error) {
             die("Error de conexión: " . $this->conn->connect_error);
         }
     }
 
-    // Método para obtener información de conexión (solo con fines de prueba)
     public function getInfoConexion()
     {
         return "Conectado a la base de datos '{$this->bdname}' en el servidor '{$this->server}' con el usuario '{$this->user}'.";
     }
 
-    // Método para cerrar la conexión
     public function cerrarConexion()
     {
         $this->conn->close();
         return "Conexión cerrada.";
     }
 
-    /* public function SetSelect(string $tabla, array $columnas = ['*'], string $condiciones = '', bool $is_login = false, string $password = '')
+    public function Select(string $tabla, array $columnas = ['*'], array $condiciones = [], array $datos = [], string $tipoDatos = '', array $operadores = [])
     {
-        $cols = implode(", ", $columnas);
-        $this->sql = "SELECT $cols FROM $tabla";
+        if (count($datos) !== strlen($tipoDatos))
+            return ["Error" => "No coincide el número de datos con los tipos de datos"];
+
+        if (
+            !empty($operadores) &&
+            count($operadores) !== count($condiciones) - 1
+        )
+            return ["Error" => "No coincide la cantidad de condiciones y operadores"];
+
+        $columnas = implode(", ", $columnas);
+
+        $this->sql = "SELECT $columnas FROM $tabla";
 
         if (!empty($condiciones)) {
-            $this->sql .= " WHERE $condiciones";
-        }
-
-
-
-        $coincidenciaBusqueda = false;
-
-        $resultados = [];
-        $resultado = $this->conn->query($this->sql);
-
-        if ($resultado && $resultado->num_rows > 0) {
-            while ($fila = $resultado->fetch_assoc()) {
-
-                if ($is_login) {
-                    //if ($password == $fila['password']) {
-                    if (password_verify($password, $fila['password'])) {
-                        $coincidenciaBusqueda = true;
-                        $resultados[] = $fila; // Cada fila es un diccionario (asociativo)
-                        break;
-                    }
-                } else {
-                    $coincidenciaBusqueda = true;
-                    $resultados[] = $fila; // Cada fila es un diccionario (asociativo)
+            $condicionSQL = $condiciones[0];
+            if (!empty($operadores)) {
+                for ($i = 1; $i < count($condiciones); $i++) {
+                    $condicionSQL .= " " . $operadores[$i - 1] . " " . $condiciones[$i];
                 }
 
-
             }
+            $this->sql .= " WHERE $condicionSQL";
         }
 
-        // Si es login y no hubo coincidencia
-        if ($is_login && empty($resultados)) {
-            return ["Error" => "Contraseña incorrecta o usuario no encontrado"];
+        $stmt = $this->conn->prepare($this->sql);
+
+        if (!$stmt) {
+            return [
+                "Error" => "No se pudo preparar la consulta",
+                "Mysql_error" => $this->conn->error,
+                "Mysql_codigo" => $this->conn->errno
+            ];
         }
 
-        // Si es consulta normal y no hay resultados
-        if (!$is_login && empty($resultados)) {
-            return ["Error" => "No hubo coincidencias"];
+        if (!empty($datos)) {
+            $stmt->bind_param($tipoDatos, ...$datos);
         }
 
-        return $resultados;
-    } */
-
-    /* public function SetSelect(string $tabla, array $columnas = ['*'], string $condiciones = '')
-    {
-        $cols = implode(", ", $columnas);
-        $this->sql = "SELECT $cols FROM $tabla";
-
-        if (!empty($condiciones)) {
-            $this->sql .= " WHERE $condiciones";
+        if (!$stmt->execute()) {
+            return [
+                "Error" => "No se pudo ejecutar la consulta",
+                "Mysql_error" => $stmt->error,
+                "Mysql_codigo" => $stmt->errno
+            ];
         }
+
+        $resultado = $stmt->get_result();
 
         $resultados = [];
-        $resultado = $this->conn->query($this->sql);
 
-        if ($resultado && $resultado->num_rows > 0) {
-            while ($fila = $resultado->fetch_assoc()) {
-                $resultados[] = $fila; // Cada fila es un diccionario (asociativo)
-            }
-        }
-
-        if (empty($resultados)) {
-            return ["Error" => "No hubo coincidencias"];
-        }
-
-        return $resultados;
-    } */
-
-    //tabla
-    //condicion
-    //dato condicion
-    //array columnas
-    //array datos
-    //tipos datos
-
-    public function SetSelect(string $tabla, array $columnas = ['*'], string $condiciones = '')
-    {
-
-        $cols = implode(", ", $columnas);
-        $this->sql = "SELECT $cols FROM $tabla";
-
-        if (!empty($condiciones)) {
-            $this->sql .= " WHERE $condiciones";
-        }
-
-        $resultados = [];
-        $resultado = $this->conn->query($this->sql);
-
-        if ($resultado && $resultado->num_rows > 0) {
-            while ($fila = $resultado->fetch_assoc()) {
-                $resultados[] = $fila; // Cada fila es un diccionario (asociativo)
-            }
+        while ($fila = $resultado->fetch_assoc()) {
+            $resultados[] = $fila;
         }
 
         if (empty($resultados)) {
@@ -146,118 +99,112 @@ class Conexion
         return $resultados;
     }
 
-    public function Login(string $tabla, array $columnas = ['*'], string $condiciones, string $password = '')
+    public function Login(string $tabla, array $columnas = ['*'], array $condiciones = [], array $datos = [], string $tipoDatos = '')
     {
-        $cols = implode(", ", $columnas);
-        $this->sql = "SELECT $cols FROM $tabla WHERE $condiciones";
+        if (empty($condiciones))
+            return ["Error" => "No hay condiciones para el LogIn"];
 
-        /* if (!empty($condiciones)) {
-            $this->sql .= " WHERE $condiciones";
-        } */
+        if (count($datos) !== strlen($tipoDatos))
+            return ["Error" => "No coincide el número de datos con los tipos de datos"];
+
+        $password = $datos[1];
+        $datosSQL = [$datos[0]];
+        $tipoDatosSQL = $tipoDatos[0];
+
+        $columnas = implode(", ", $columnas);
+        $condicionSQL = $condiciones[0];
+
+        $this->sql = "SELECT $columnas FROM $tabla WHERE $condicionSQL";
+
+        $stmt = $this->conn->prepare($this->sql);
+
+        if (!$stmt) {
+            return [
+                "Error" => "No se pudo preparar la consulta",
+                "Mysql_error" => $this->conn->error,
+                "Mysql_codigo" => $this->conn->errno
+            ];
+        }
+
+        $stmt->bind_param($tipoDatosSQL, ...$datosSQL);
+
+        if (!$stmt->execute()) {
+            return [
+                "Error" => "No se pudo ejecutar la consulta",
+                "Mysql_error" => $stmt->error,
+                "Mysql_codigo" => $stmt->errno
+            ];
+        }
+
+        $resultado = $stmt->get_result();
 
         $resultados = [];
-        $resultado = $this->conn->query($this->sql);
 
-        if ($resultado && $resultado->num_rows > 0) {
-            while ($fila = $resultado->fetch_assoc()) {
-                if (password_verify($password, $fila['password'])) {
-                    $resultados[] = $fila; // Cada fila es un diccionario (asociativo)
-                    break;
-                }
+        while ($fila = $resultado->fetch_assoc()) {
+            if (password_verify($password, $fila['password'])) {
+                $resultados[] = $fila;
+                break;
             }
         }
 
-        if (empty($resultados)) {
-            return ["Error" => "Contraseña incorrecta o usuario no encontrado"];
-        }
+        if (empty($resultados))
+            return ["Error" => "No hubo coincidencias"];
+
         return $resultados;
     }
 
 
-    public function SetDelete(string $tabla, string $condiciones/* , $id */)
+    public function Delete(string $tabla, array $condiciones = [], array $operadores = [], array $datos, string $tipoDatos)
     {
-        /* $this->sql = "DELETE FROM $tabla WHERE $condiciones'$id'"; */
-        $this->sql = "DELETE FROM $tabla WHERE $condiciones";
-        $resultado = $this->conn->query($this->sql);
+        if (empty($condiciones))
+            return ["Error" => "No hay condiciones para ejecutar DELETE"];
+
+        if (count($datos) !== strlen($tipoDatos))
+            return ["Error" => "No coincide el numero de datos con los tipos de datos"];
+
+        if (
+            !empty($operadores) &&
+            count($operadores) !== count($condiciones) - 1
+        )
+            return ["Error" => "No coincide la cantidad de condiciones y operadores"];
+
+
+        $condicionSQL = $condiciones[0];
+        if (!empty($operadores)) {
+            for ($i = 1; $i < count($condiciones); $i++) {
+                $condicionSQL .= " " . $operadores[$i - 1] . " " . $condiciones[$i];
+            }
+        }
+        $this->sql = "DELETE FROM $tabla WHERE $condicionSQL";
+
+        // Prepare the SQL query template/*  */
+        $stmt = $this->conn->prepare($this->sql);
+
+        if (!$stmt) {
+            return ["Error" => "No se pudo preparar la consulta"];
+        }
+
+        $stmt->bind_param($tipoDatos, ...$datos);
+        $resultado = $stmt->execute();
 
         if ($resultado) {
             if ($this->conn->affected_rows > 0) {
-                return ["Success" => "DELETE en tabla $tabla exitoso"];
+                return ["Success" => "DELETE exitoso en tabla $tabla."];
             } else {
-                return ["Warning" => "No se elimino ninguna fila en tabla $tabla"];
+                return ["Warning" => "La consulta se ejecutó, pero no se eliminó ninguna fila en $tabla."];
             }
         } else {
-            return ["Error" => "DELETE fallido en tabla $tabla"];
+            return [
+                "Error" => "Delete fallido en tabla $tabla.",
+                "Sql" => $this->sql,
+                "Mysql_error" => $stmt->error,
+                "Mysql_codigo" => $stmt->errno
+            ];
         }
     }
 
 
-
-
-
-    /*     public function SetInsert(string $tabla, array $columnas, array $datos, bool $is_register = false)
-        {
-
-            if ($is_register) {
-                $hashed_password = password_hash($datos[3], PASSWORD_DEFAULT);
-                $datos[3] = $hashed_password;
-            }
-            //echo "Entro a set insert en conexion";
-
-            $valores = [];
-            foreach ($datos as $dato) {
-                if ($dato === '' || is_null($dato)) {
-                    $valores[] = "NULL"; // sin comillas
-
-                } elseif (strtoupper($dato) === 'CURDATE()') {
-                    $valores[] = "CURDATE()"; // sin comillas, es una función SQL
-                } else {
-                    // Escapa y coloca comillas simples
-                    $dato_escapado = $this->conn->real_escape_string($dato);
-                    $valores[] = "'$dato_escapado'";
-                }
-            }
-
-            $columnas = implode(", ", $columnas);
-            $datos = implode(", ", $valores);
-
-
-            $this->sql = "INSERT INTO $tabla($columnas) VALUES($datos)";
-
-
-            $resultado = $this->conn->query($this->sql);
-            if ($resultado) {
-                if ($this->conn->affected_rows > 0) {
-
-                    // Obtener el ID generado
-                    $lastId = $this->conn->insert_id;
-
-                    return ["Success" => "Registro exitoso en tabla $tabla.", "id_generado" => $lastId];
-                } else {
-                    return ["Warning" => "La consulta se ejecutó, pero no se insertó ninguna fila en $tabla."];
-                }
-            } else {
-                return ["Error" => "Registro fallido en tabla $tabla."];
-            }
-        } */
-
-    /*        // SQL query template
-   $sql = "INSERT INTO MyGuests (firstname, lastname, email) VALUES (?, ?, ?)";
-
-   // Prepare the SQL query template
-   if ($stmt = $conn->prepare($sql)) {
-       // Bind parameters
-       $stmt->bind_param("sss", $firstname, $lastname, $email);
-
-       // Set parameters and execute
-       $firstname = "John";
-       $lastname = "Doe";
-       $email = "john@example.com";
-       $stmt->execute();
-
-   } */
-
-    public function SetInsert(string $tabla, array $columnas, array $datos, string $tiposDatos)
+    public function Insert(string $tabla, array $columnas, array $datos, string $tiposDatos)
     {
 
         if (count($columnas) !== count($datos) || count($datos) !== strlen($tiposDatos)) {
@@ -273,9 +220,8 @@ class Conexion
         // Prepare the SQL query template/*  */
         $stmt = $this->conn->prepare($this->sql);
 
-        if (!$stmt) {
+        if (!$stmt)
             return ["Error" => "No se pudo preparar la consulta"];
-        }
 
         $stmt->bind_param($tiposDatos, ...$datos);
         $resultado = $stmt->execute();
@@ -304,15 +250,22 @@ class Conexion
         $hashed_password = password_hash($datos[3], PASSWORD_DEFAULT);
         $datos[3] = $hashed_password;
 
-        return $this->SetInsert($tabla, $columnas, $datos, $tiposDatos);
+        return $this->Insert($tabla, $columnas, $datos, $tiposDatos);
     }
 
-    public function SetUpdate(string $tabla, string $condicion, array $columnas, array $datos, string $tipoDatos /* $columnas_actualizar, $condiciones,  */)
+    public function Update(string $tabla, array $condiciones = [], array $operadores = [], array $columnas, array $datos, string $tipoDatos /* $columnas_actualizar, $condiciones,  */)
     {
 
-        if (count($datos) !== strlen($tipoDatos) || count($columnas) <= count($datos)) {
+        if (count($datos) !== strlen($tipoDatos)) {
             return ["Error" => "No coincide el numero de datos con los tipos de datos"];
         }
+
+        if (empty($condiciones))
+            return ["Error" => "No hay condiciones para realizar la actualizacion de datos"];
+
+        if (!empty($operadores) && count($operadores) !== count($condiciones) - 1)
+            return ["Error" => "No coincide la cantidad de condiciones y operadores"];
+
 
         $valores = [];
         for ($i = 0; $i < count($columnas); $i++) {
@@ -320,18 +273,23 @@ class Conexion
         }
         $valores = implode(",", $valores);
 
-        //$datos[] = $datoCondicion;
-        //$tipoDatos .= "i";
+
+        $condicionSQL = $condiciones[0];
+        if (!empty($operadores)) {
+            for ($i = 1; $i < count($condiciones); $i++) {
+                $condicionSQL .= " " . $operadores[$i - 1] . " " . $condiciones[$i];
+            }
+
+        }
 
         // SQL query template
-        $this->sql = "UPDATE $tabla SET $valores WHERE $condicion";
+        $this->sql = "UPDATE $tabla SET $valores WHERE $condicionSQL";
 
         // Prepare the SQL query template/*  */
         $stmt = $this->conn->prepare($this->sql);
 
-        if (!$stmt) {
+        if (!$stmt)
             return ["Error" => "No se pudo preparar la consulta"];
-        }
 
         $stmt->bind_param($tipoDatos, ...$datos);
         $resultado = $stmt->execute();
@@ -354,21 +312,49 @@ class Conexion
 
     }
 
-    public function SetCount(string $tabla, string $condiciones = '')
+    public function Count(string $tabla, array $condiciones = [], array $datos = [], string $tipoDatos = '', array $operadores = [])
     {
+        if (count($datos) !== strlen($tipoDatos))
+            return ["Error" => "No coincide el número de datos con los tipos de datos"];
+
+
         $this->sql = "SELECT COUNT(*) AS total FROM $tabla";
 
         if (!empty($condiciones)) {
-            $this->sql .= " WHERE $condiciones";
+            $condicionSQL = $condiciones[0];
+            if (!empty($operadores)) {
+                for ($i = 1; $i < count($condiciones); $i++) {
+                    $condicionSQL .= " " . $operadores[$i - 1] . " " . $condiciones[$i];
+                }
+
+            }
+            $this->sql .= " WHERE $condicionSQL";
         }
 
-        $resultado = $this->conn->query($this->sql);
+        $stmt = $this->conn->prepare($this->sql);
 
-        if ($resultado) {
-            return $resultado->fetch_assoc();
+        if (!$stmt) {
+            return [
+                "Error" => "No se pudo preparar la consulta",
+                "Mysql_error" => $this->conn->error,
+                "Mysql_codigo" => $this->conn->errno
+            ];
         }
 
-        return ["Error" => "No se pudo obtener el conteo"];
+        if (!empty($datos)) {
+            $stmt->bind_param($tipoDatos, ...$datos);
+        }
+
+        if (!$stmt->execute()) {
+            return [
+                "Error" => "No se pudo ejecutar la consulta",
+                "Mysql_error" => $stmt->error,
+                "Mysql_codigo" => $stmt->errno
+            ];
+        }
+        $resultado = $stmt->get_result();
+        $fila = $resultado->fetch_assoc();
+        return $fila;
     }
 
     public function BeginTransaction()
@@ -384,7 +370,5 @@ class Conexion
         $this->conn->rollback();
     }
 }
-
-
 
 ?>

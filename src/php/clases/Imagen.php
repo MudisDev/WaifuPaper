@@ -107,12 +107,32 @@ class Imagen
         return $resultado;
     }
 
+    /*     public function Consultar_Etiquetas()
+        {
+            $conexion = new Conexion();
+            $resultado = $conexion->SetSelect("Vista_Tiene_Etiqueta", ["id_etiqueta", "nombre_etiqueta"], "id_imagen = '$this->id_imagen'");
+            return $resultado;
+        } */
+
     public function Consultar_Etiquetas()
     {
         $conexion = new Conexion();
-        $resultado = $conexion->SetSelect("Vista_Tiene_Etiqueta", ["id_etiqueta", "nombre_etiqueta"], "id_imagen = '$this->id_imagen'");
+        $columnas = ["id_etiqueta", "nombre_etiqueta"];
+        $condicion = ["id_imagen = ?"];
+        $datoCondicion = [$this->id_imagen];
+        $tipoDato = "i";
+        
+        $resultado = $conexion->SetSelect("Vista_Tiene_Etiqueta", $columnas, $condicion, $datoCondicion, $tipoDato);
         return $resultado;
     }
+    /* 
+    string $tabla, 
+    array $columnas = ['*'], 
+    array $condiciones = [], 
+    array $datos, 
+    string $tipoDatos, 
+    array $operadores 
+    */
 
     public function Buscar_Imagen()
     {
