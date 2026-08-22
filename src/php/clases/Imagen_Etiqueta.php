@@ -20,44 +20,27 @@ class Imagen_Etiqueta
     public function Insertar_Relacion()
     {
         $conexion = new Conexion();
-        $resultado = $conexion->SetInsert("Tiene_Etiqueta", ["id_imagen", "id_etiqueta"], [$this->id_imagen, $this->id_etiqueta]);
+        $resultado = $conexion->Insert("Tiene_Etiqueta", ["id_imagen", "id_etiqueta"], [$this->id_imagen, $this->id_etiqueta], 'ii');
         return $resultado;
     }
 
     public function Actualizar_Etiquetas($conexion)
     {
-        //$conexion = new Conexion();
-
-        /* try { */
-
-            //$conexion->BeginTransaction();
             $this->Borrar_Etiquetas($conexion);
-
             foreach ($this->ids_etiquetas as $id_etiqueta) {
                 $this->Insertar_Etiqueta($conexion, $id_etiqueta);
             }
-
-            //$conexion->Commit();
-
-            //return true;
-
-        /* } catch (Throwable $th) {
-            $conexion->Rollback();
-            return false;
-        } */
     }
 
     public function Borrar_Etiquetas($conexion)
     {
-        $condiciones = "id_imagen = '$this->id_imagen'";
-        $resultado = $conexion->SetDelete("Tiene_Etiqueta", $condiciones);
+        $resultado = $conexion->Delete("Tiene_Etiqueta", ["id_imagen = ?"], [], [$this->id_imagen], 'i');
         $this->CheckResultado($resultado);
-        
     }
 
     public function Insertar_Etiqueta($conexion, $id_etiqueta)
     {
-        $resultado = $conexion->SetInsert("Tiene_Etiqueta", ["id_imagen", "id_etiqueta"], [$this->id_imagen, $id_etiqueta]);
+        $resultado = $conexion->Insert("Tiene_Etiqueta", ["id_imagen", "id_etiqueta"], [$this->id_imagen, $id_etiqueta], 'ii');
         $this->CheckResultado($resultado);
     }
 

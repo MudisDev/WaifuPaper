@@ -154,7 +154,7 @@ class Conexion
     }
 
 
-    public function Delete(string $tabla, array $condiciones = [], array $operadores = [], array $datos, string $tipoDatos)
+    public function Delete(string $tabla, array $condiciones, array $operadores, array $datos, string $tipoDatos)
     {
         if (empty($condiciones))
             return ["Error" => "No hay condiciones para ejecutar DELETE"];
@@ -253,12 +253,11 @@ class Conexion
         return $this->Insert($tabla, $columnas, $datos, $tiposDatos);
     }
 
-    public function Update(string $tabla, array $condiciones = [], array $operadores = [], array $columnas, array $datos, string $tipoDatos /* $columnas_actualizar, $condiciones,  */)
+    public function Update(string $tabla, array $condiciones, array $operadores, array $columnas, array $datos, string $tipoDatos)
     {
 
-        if (count($datos) !== strlen($tipoDatos)) {
+        if (count($datos) !== strlen($tipoDatos))
             return ["Error" => "No coincide el numero de datos con los tipos de datos"];
-        }
 
         if (empty($condiciones))
             return ["Error" => "No hay condiciones para realizar la actualizacion de datos"];
@@ -266,20 +265,17 @@ class Conexion
         if (!empty($operadores) && count($operadores) !== count($condiciones) - 1)
             return ["Error" => "No coincide la cantidad de condiciones y operadores"];
 
-
         $valores = [];
         for ($i = 0; $i < count($columnas); $i++) {
             $valores[$i] = $columnas[$i] . " = ?";
         }
         $valores = implode(",", $valores);
 
-
         $condicionSQL = $condiciones[0];
         if (!empty($operadores)) {
             for ($i = 1; $i < count($condiciones); $i++) {
                 $condicionSQL .= " " . $operadores[$i - 1] . " " . $condiciones[$i];
             }
-
         }
 
         // SQL query template
@@ -307,16 +303,13 @@ class Conexion
                 "Mysql_error" => $stmt->error,
                 "Mysql_codigo" => $stmt->errno
             ];
-
         }
-
     }
 
     public function Count(string $tabla, array $condiciones = [], array $datos = [], string $tipoDatos = '', array $operadores = [])
     {
         if (count($datos) !== strlen($tipoDatos))
             return ["Error" => "No coincide el número de datos con los tipos de datos"];
-
 
         $this->sql = "SELECT COUNT(*) AS total FROM $tabla";
 
@@ -326,7 +319,6 @@ class Conexion
                 for ($i = 1; $i < count($condiciones); $i++) {
                     $condicionSQL .= " " . $operadores[$i - 1] . " " . $condiciones[$i];
                 }
-
             }
             $this->sql .= " WHERE $condicionSQL";
         }
@@ -370,5 +362,4 @@ class Conexion
         $this->conn->rollback();
     }
 }
-
 ?>

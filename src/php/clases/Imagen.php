@@ -7,17 +7,6 @@ require_once __DIR__ . "/Imagen_Personaje.php";
 
 class Imagen
 {
-
-    /*    CREATE TABLE Imagen (
-       id_imagen INT AUTO_INCREMENT PRIMARY KEY,
-       url TEXT NOT NULL,
-       semilla TEXT NOT NULL,
-       imagen_listada BOOLEAN DEFAULT NULL,
-       id_modelo_base INT NOT NULL,
-       fecha_insercion DATETIME DEFAULT CURRENT_TIMESTAMP,
-       fecha_actualizacion DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-       FOREIGN KEY (id_modelo_base) REFERENCES Modelo_Base (id_modelo_base)
-   ); */
     private $id_imagen = null;
     private $url = null;
     private $semilla = null;
@@ -35,8 +24,6 @@ class Imagen
         "id_modelo_base",
         "prompt_positivo_general",
         "prompt_negativo_general",
-        /* "fecha_insercion",
-        "fecha_actualizacion", */
     ];
 
     public function __construct(array $datos)
@@ -48,171 +35,54 @@ class Imagen
         }
     }
 
-    /* public function Registrar_Imagen($conexion)
-    {
-        //$conexion = new Conexion();
-        $resultado = $conexion->SetInsert(
-            "Imagen",
-            $this->array_insert,
-            [
-                $this->url,
-                $this->semilla,
-                $this->imagen_listada,
-                $this->id_modelo_base,
-                $this->prompt_positivo_general,
-                $this->prompt_negativo_general,
-               //   $this->fecha_insercion,
-               //  $this->fecha_actualizacion, 
-
-            ]
-        );
-        return $resultado;
-    } */
-
     public function Registrar_Imagen($conexion)
     {
-        //$conexion = new Conexion();
-        $resultado = $conexion->SetInsert(
+        $resultado = $conexion->Insert(
             "Imagen",
             $this->array_insert,
-            [
-                $this->url,
-                $this->semilla,
-                $this->imagen_listada,
-                $this->id_modelo_base,
-                $this->prompt_positivo_general,
-                $this->prompt_negativo_general,
-                /*  $this->fecha_insercion,
-                 $this->fecha_actualizacion, */
-
-            ],
+            [$this->url, $this->semilla, $this->imagen_listada, $this->id_modelo_base, $this->prompt_positivo_general, $this->prompt_negativo_general],
             "ssiiss"
         );
         return $resultado;
     }
 
-    //tabla
-    //condicion
-    //dato condicion
-    //array columnas
-    //array datos
-    //tipos datos
-
-    public function Imagen_Existe()
-    {
-        // Escapamos los valores para seguridad
-        $conexion = new Conexion();
-        $resultado = $conexion->SetSelect("Imagen", ["*"], "id_imagen_api = '$this->id_imagen_api' AND api_origen = '$this->api_origen'");
-
-        return $resultado;
-    }
-
-    /*     public function Consultar_Etiquetas()
-        {
-            $conexion = new Conexion();
-            $resultado = $conexion->SetSelect("Vista_Tiene_Etiqueta", ["id_etiqueta", "nombre_etiqueta"], "id_imagen = '$this->id_imagen'");
-            return $resultado;
-        } */
-
     public function Consultar_Etiquetas()
     {
         $conexion = new Conexion();
-        $columnas = ["id_etiqueta", "nombre_etiqueta"];
-        $condicion = ["id_imagen = ?"];
-        $datoCondicion = [$this->id_imagen];
-        $tipoDato = "i";
-        
-        $resultado = $conexion->SetSelect("Vista_Tiene_Etiqueta", $columnas, $condicion, $datoCondicion, $tipoDato);
+        $resultado = $conexion->Select("Vista_Tiene_Etiqueta", ["id_etiqueta", "nombre_etiqueta"], ["id_imagen = ?"], [$this->id_imagen], 'i');
         return $resultado;
     }
-    /* 
-    string $tabla, 
-    array $columnas = ['*'], 
-    array $condiciones = [], 
-    array $datos, 
-    string $tipoDatos, 
-    array $operadores 
-    */
 
     public function Buscar_Imagen()
     {
         $conexion = new Conexion();
-        $condiciones = "id_imagen = '$this->id_imagen'";
-        $resultado = $conexion->SetSelect("Imagen", ["*"], $condiciones);
-
+        $resultado = $conexion->Select("Imagen", ["*"], ["id_imagen = ?"], [$this->id_imagen], 'i');
         return $resultado;
     }
-
-    /*    public function Buscar_Imagen()
-       {
-           $conexion = new Conexion();
-           $condicion = "id_imagen = ?";
-           $datoCondicion = $this->id_imagen;
-           $tipoDatos = "i";
-           $resultado = $conexion->SetSelect("Imagen", ["*"], $condicion);
-
-           return $resultado;
-       } */
-    //tabla
-    //condicion
-    //dato condicion
-    //array columnas
-    //array datos
-    //tipos datos
 
     public function Buscar_Imagen_Vista()
     {
         $conexion = new Conexion();
-        $condiciones = "id_imagen = '$this->id_imagen'";
-        $resultado = $conexion->SetSelect("vista_imagen_datos", ["*"], $condiciones);
-
+        $resultado = $conexion->Select("vista_imagen_datos", ["*"], ["id_imagen = ?"], [$this->id_imagen], 'i');
         return $resultado;
     }
 
-    /*     public function editar_imagen($conexion)
-        {
-            //$conexion = new Conexion();
-            $condiciones = "id_imagen = '$this->id_imagen'";
-            $columnas_actualizar = "url = '$this->url', semilla = '$this->semilla', imagen_listada = '$this->imagen_listada', id_modelo_base = '$this->id_modelo_base', prompt_positivo_general = '$this->prompt_positivo_general', prompt_negativo_general = '$this->prompt_negativo_general' ";
-            $resultado = $conexion->SetUpdate("Imagen", $columnas_actualizar, $condiciones);
-
-            //return $resultado;
-            $this->CheckResultado($resultado);
-        } */
-    //tabla
-    //condicion
-    //dato condicion
-    //array columnas
-    //array datos
-    //tipos datos
     public function editar_imagen($conexion)
     {
-        //$conexion = new Conexion();
-        $condicion = "id_imagen = ?";
-        $datoCondicion = $this->id_imagen;
-        $tipoDatoCondicion = 'i';
-        $columnas = ["url", "semilla", "imagen_listada", "id_modelo_base", "prompt_positivo_general", "prompt_negativo_general"];
-        $datos = [$this->url, $this->semilla, $this->imagen_listada, $this->id_modelo_base, $this->prompt_positivo_general, $this->prompt_negativo_general];
-        $tiposDatos = "ssiiss";
-
-        $datos[] = $datoCondicion;
-        $tiposDatos .= $tipoDatoCondicion;
-
-        $resultado = $conexion->SetUpdate("Imagen", $condicion, $columnas, $datos, $tiposDatos);
-
-        //return $resultado;
+        $resultado = $conexion->Update(
+            "Imagen",
+            ["id_imagen = ?"],
+            [],
+            ["url", "semilla", "imagen_listada", "id_modelo_base", "prompt_positivo_general", "prompt_negativo_general",],
+            [$this->url, $this->semilla, $this->imagen_listada, $this->id_modelo_base, $this->prompt_positivo_general, $this->prompt_negativo_general, $this->id_imagen],
+            "ssiissi"
+        );
         $this->CheckResultado($resultado);
     }
 
-
     public function Actualizacion_Imagen_Completa($ids_etiquetas, $ids_modelos_lora, $prompts_positivos_modelos_lora, $prompts_negativos_modelos_lora, $fuerza_modelos_lora, $ids_personajes)
     {
-
         $conexion = new Conexion();
-        /* $imagen_etiqueta = new Imagen_Etiqueta(["id_imagen" => $this->id_imagen, "ids_etiquetas" => $ids_etiquetas]);
-        $imagen_modelo_lora = new Imagen_Modelo_Lora(["id_imagen" => $this->id_imagen, "ids_modelos_lora" => $ids_modelos_lora, "prompts_positivos_modelos_lora" => $prompts_positivos_modelos_lora, "fuerza_modelos_lora" => $fuerza_modelos_lora, "prompts_negativos_modelos_lora" => $prompts_negativos_modelos_lora]);
-        $imagen_personaje = new Imagen_Personaje(["id_imagen" => $this->id_imagen, "ids_personajes" => $ids_personajes]); */
-
         try {
 
             $conexion->BeginTransaction();
@@ -224,43 +94,26 @@ class Imagen
                 }
                 $this->id_imagen = $resultado["id_generado"];
 
-            } else {
+            } else
                 $this->editar_imagen($conexion);
-            }
-
 
             $imagen_etiqueta = new Imagen_Etiqueta(["id_imagen" => $this->id_imagen, "ids_etiquetas" => $ids_etiquetas]);
             $imagen_modelo_lora = new Imagen_Modelo_Lora(["id_imagen" => $this->id_imagen, "ids_modelos_lora" => $ids_modelos_lora, "prompts_positivos_modelos_lora" => $prompts_positivos_modelos_lora, "fuerza_modelos_lora" => $fuerza_modelos_lora, "prompts_negativos_modelos_lora" => $prompts_negativos_modelos_lora]);
             $imagen_personaje = new Imagen_Personaje(["id_imagen" => $this->id_imagen, "ids_personajes" => $ids_personajes]);
 
-            //actualizar etiquetas
             $imagen_etiqueta->Actualizar_Etiquetas($conexion);
-
-            //actualizar personajes
             $imagen_personaje->Actualizar_Personajes($conexion);
-
-            //actualizar loras
             $imagen_modelo_lora->Actualizar_Modelos_Lora($conexion);
 
-            /*  foreach ($this->ids_etiquetas as $id_etiqueta) {
-                 $this->Insertar_Etiqueta($conexion, $id_etiqueta);
-             } */
-
             $conexion->Commit();
-
-            //return true;
             return ["Success" => "Transaccion Exitosa"];
 
         } catch (Throwable $th) {
-            /* $conexion->Rollback();
-            return false; */
             $conexion->Rollback();
             return [
                 "Error" => $th->getMessage()
             ];
         }
-
-
     }
     private function CheckResultado($resultado)
     {
@@ -271,10 +124,8 @@ class Imagen
 
     public function Mostrar_Personajes_En_Imagen()
     {
-        $condiciones = "id_imagen = '$this->id_imagen'";
         $conexion = new Conexion();
-        $resultado = $conexion->SetSelect("vista_aparece_en", ["*"], $condiciones);
-
+        $resultado = $conexion->Select("vista_aparece_en", ["*"], ["id_imagen = ?"], [$this->id_imagen], 'i');
         return $resultado;
     }
 }

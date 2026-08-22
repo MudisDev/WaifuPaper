@@ -14,9 +14,7 @@ class Token_Recuperacion
     public function Generar_Token()
     {
         $this->token = rand(111111, 999999);
-
     }
-
 
     public function Get_Token()
     {
@@ -26,19 +24,16 @@ class Token_Recuperacion
     public function Insertar_Token()
     {
         $conexion = new Conexion();
-        $resultado = $conexion->SetInsert("Token_Recuperacion", ["id_usuario", "token"], [$this->id_usuario, $this->token]);
+        $resultado = $conexion->Insert("Token_Recuperacion", ["id_usuario", "token"], [$this->id_usuario, $this->token], 'is');
         return $resultado;
     }
 
     public function Validar_Token($token)
     {
         $token_varchar = (string) $token;
-        $columnas_actualizar = "token_usado = 1";
-        $condiciones = "token = '$token_varchar' AND id_usuario = '$this->id_usuario' AND token_usado = 0";
         $conexion = new Conexion();
-        $resultado = $conexion->SetUpdate("Token_Recuperacion", $columnas_actualizar, $condiciones);
+        $resultado = $conexion->Update("Token_Recuperacion", ["token = ?", "id_usuario = ?", "token_usado = ?"], ["AND", "AND"], ["token_usado"], [1, $token_varchar, $this->id_usuario, 0], 'isii');
         return $resultado;
     }
 }
-
 ?>

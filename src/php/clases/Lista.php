@@ -13,58 +13,49 @@ class Lista
     public function Consultar_Imagenes()
     {
         $conexion = new Conexion();
-        $resultado = $conexion->SetSelect("Imagen", ["*"]);
-        //$resultado = $conexion->SetSelect("Vista_Imagenes_Sin_Negativas", ["*"], $condiciones);
-        //$resultado = $conexion->SetSelect("Vista_Imagenes_Sin_Negativas", ["*"]);
+        $resultado = $conexion->Select("Imagen");
         $this->Set_Lista($resultado);
     }
 
     public function Consultar_Imagenes_Favoritas($id_usuario)
     {
-        $condicion = "id_usuario = '$id_usuario'";
         $conexion = new Conexion();
-        $resultado = $conexion->SetSelect("Vista_Favorito", ["*"], $condicion);
+        $resultado = $conexion->Select("Vista_Favorito", ["*"], ["id_usuario = ?"], [$id_usuario], 'i');
         $this->Set_Lista($resultado);
     }
 
     public function Consultar_Imagenes_Personaje($id_personaje)
     {
-        $condicion = "id_personaje = '$id_personaje'";
         $conexion = new Conexion();
-        $resultado = $conexion->SetSelect("Vista_Mostrar_Imagenes_Por_Personaje", ["*"], $condicion);
+        $resultado = $conexion->Select("Vista_Mostrar_Imagenes_Por_Personaje", ["*"], ["id_personaje = ?"], [$id_personaje], 'i');
         $this->Set_Lista($resultado);
     }
 
     public function Consultar_Imagenes_Por_Etiqueta($id_etiqueta)
     {
-        $condicion = "id_etiqueta = '$id_etiqueta'";
         $conexion = new Conexion();
-        $resultado = $conexion->SetSelect("Vista_Mostrar_Imagen_Por_Etiqueta", ["*"], $condicion);
-        //$resultado = $conexion->SetSelect("Vista_Mostrar_Imagen_Por_Etiqueta_Segura", ["*"], $condicion);
-        //$resultado = $conexion->SetSelect("Vista_Mostrar_Imagen_Por_Etiqueta_Segura", ["*"]);
+        $resultado = $conexion->Select("Vista_Mostrar_Imagen_Por_Etiqueta", ["*"], ["id_etiqueta = ?"], [$id_etiqueta], 'i');
         $this->Set_Lista($resultado);
     }
 
     public function Consultar_Etiquetas()
     {
         $conexion = new Conexion();
-        $resultado = $conexion->SetSelect("Etiqueta", ["*"]);
+        $resultado = $conexion->Select("Etiqueta");
         $this->Set_Lista($resultado);
     }
 
     public function Consultar_Personajes_Por_Imagen($id_imagen)
     {
         $conexion = new Conexion();
-        $condicion = "id_imagen = '$id_imagen'";
-        $resultado = $conexion->SetSelect("vista_aparece_en", ["*"], $condicion);
+        $resultado = $conexion->Select("vista_aparece_en", ["*"], ["id_imagen = ?"], [$id_imagen], 'i');
         $this->Set_Lista($resultado);
     }
 
     public function Consultar_Personajes()
     {
         $conexion = new Conexion();
-        $resultado = $conexion->SetSelect("Personaje", ["*"]);
-        //$resultado = $conexion->SetSelect("Vista_Perfil_Personaje", ["*"]);
+        $resultado = $conexion->Select("Personaje");
         $this->Set_Lista($resultado);
     }
 
@@ -81,54 +72,49 @@ class Lista
     public function Consultar_Especies()
     {
         $conexion = new Conexion();
-        $resultado = $conexion->SetSelect("Especie", ["*"]);
+        $resultado = $conexion->Select("Especie");
         $this->Set_Lista($resultado);
     }
 
     public function Consultar_Personalidades()
     {
         $conexion = new Conexion();
-        $resultado = $conexion->SetSelect("Personalidad", ["*"]);
+        $resultado = $conexion->Select("Personalidad");
         $this->Set_Lista($resultado);
     }
 
     public function Consultar_Total($tabla)
     {
         $conexion = new Conexion();
-        $resultado = $conexion->SetCount($tabla);
+        $resultado = $conexion->Count($tabla);
         return $resultado;
     }
     public function Consultar_Modelos_Base()
     {
         $conexion = new Conexion();
-        $resultado = $conexion->SetSelect("modelo_base", ["*"]);
+        $resultado = $conexion->Select("modelo_base");
         $this->Set_Lista($resultado);
     }
 
     public function Consultar_Modelos_Lora()
     {
         $conexion = new Conexion();
-        //$condiciones = "id_imagen = '$id_imagen'";
-        $resultado = $conexion->SetSelect("modelo_lora", ["*"], /* $condiciones */);
+        $resultado = $conexion->Select("modelo_lora");
         $this->Set_Lista($resultado);
     }
 
     public function Consultar_Modelos_Lora_Por_Imagen($id_imagen)
     {
         $conexion = new Conexion();
-        $condiciones = "id_imagen = '$id_imagen'";
-        $resultado = $conexion->SetSelect("vista_modelo_lora_imagen", ["*"], $condiciones);
+        $resultado = $conexion->Select("vista_modelo_lora_imagen", ["*"], ["id_imagen = ?"], [$id_imagen], 'i');
         $this->Set_Lista($resultado);
     }
 
     public function Consultar_Personalidades_Por_Personaje($id_personaje)
     {
         $conexion = new Conexion();
-        $condiciones = "id_personaje = '$id_personaje'";
-        $resultado = $conexion->SetSelect("vista_personaje_personalidad", ["*"], $condiciones);
+        $resultado = $conexion->Select("vista_personaje_personalidad", ["*"], ["id_personaje = ?"], [$id_personaje], 'i');
         $this->Set_Lista($resultado);
     }
-
 }
-
 ?>
