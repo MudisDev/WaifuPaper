@@ -69,6 +69,7 @@ CREATE TABLE Imagen (
 );
 
 ALTER TABLE imagen ADD prompt_positivo_general TEXT NOT NULL;
+
 ALTER TABLE imagen ADD prompt_negativo_general TEXT NOT NULL;
 
 CREATE TABLE Favorito (
@@ -156,7 +157,22 @@ CREATE TABLE Usa_Modelo_Lora (
 );
 
 ALTER TABLE usa_modelo_lora ADD prompt_negativo TEXT NOT NULL;
+
 ALTER TABLE usa_modelo_lora RENAME COLUMN prompt TO prompt_positivo;
+
+CREATE TABLE rol (
+    id_rol int AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(25) NOT NULL,
+    descripcion TEXT NOT NULL
+);
+
+CREATE TABLE tiene_rol (
+    id_usuario INT NOT NULL,
+    id_rol INT NOT NULL,
+    PRIMARY KEY (id_usuario, id_rol),
+    FOREIGN KEY (id_usuario) REFERENCES usuario (id_usuario) ON DELETE CASCADE,
+    FOREIGN KEY (id_rol) REFERENCES rol (id_rol) ON DELETE CASCADE
+);
 
 SHOW TABLES;
 
@@ -422,7 +438,6 @@ SELECT
 FROM imagen i
     JOIN modelo_base mb ON mb.id_modelo_base = i.id_modelo_base;
 
-
 SELECT * FROM vista_imagen_datos;
 
 SELECT * FROM vista_imagen_datos WHERE id_imagen = 1;
@@ -470,3 +485,5 @@ FROM
 SELECT * FROM vista_personaje_personalidad WHERE id_personaje = 1;
 
 SELECT * FROM vista_perfil_personaje WHERE id_personaje = 1;
+
+SELECT * FROM usuario;

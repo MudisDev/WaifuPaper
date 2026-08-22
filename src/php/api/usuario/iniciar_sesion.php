@@ -1,11 +1,29 @@
 <?php
 
-require_once '../../clases/Usuario.php';
 require_once __DIR__ . '/../../utils/debug.php';
+require_once __DIR__ . '/../../utils/headers.php';
+require_once __DIR__ . '/../../clases/Usuario.php';
 
+$accesoControlPanel = $_GET["waifupaperControlPanel"] ?? false;
 
 $usuario = new Usuario($_GET);
 $resultado = $usuario->Iniciar_Sesion();
-echo json_encode($resultado);
+
+if (!$accesoControlPanel) {
+    echo json_encode($resultado);
+    exit;
+}
+
+$rol = $usuario->Consultar_Rol();
+if (isset($rol['Error'])) {
+    echo json_encode(["Error" => "usuario no autorizado"]);
+    exit;
+}
+
+session_start();
+session_regenerate_id(true);
+$_SESSION['id_usuario'] = $rol[0]["id_usuario"];
+$_SESSION['rol'] = $rol[0]["id_rol"];
+echo json_encode(["Success" => "Usuario autorizado"]);
 
 ?>

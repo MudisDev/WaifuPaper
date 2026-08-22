@@ -730,3 +730,6 @@ INSERT INTO Tiene_Etiqueta (id_imagen,id_etiqueta) VALUES
 (126,3),(126,8),(126,14),
 (127,4),(127,9),(128,5),(128,12),(129,11),
 (130,2),(131,6),(131,13),(132,1),(132,8),(133,5),(133,15);
+
+INSERT INTO rol (nombre, descripcion) VALUES ("administrador" , "Privilegios para entrar a WaifuPaper Control Panel Bv");
+INSERT INTO tiene_rol (id_usuario, id_rol) VALUES (1,1);

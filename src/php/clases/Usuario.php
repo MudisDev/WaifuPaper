@@ -147,5 +147,12 @@ class Usuario
         $resultado = $conexion->Update("Usuario", ["id_usuario = ?"], [], ["password"], [$hashed_password, $this->id_usuario], 'si');
         return $resultado;
     }
+
+    public function Consultar_Rol()
+    {
+        $conexion = new Conexion();
+        $resultado = $conexion->Select("tiene_rol", ["*"], ["id_usuario = ?"], [$this->id_usuario], 'i');
+        return $resultado;
+    }
 }
 ?>
