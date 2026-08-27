@@ -4,9 +4,10 @@ require_once __DIR__ . '/../../utils/debug.php';
 require_once __DIR__ . '/../../utils/headers.php';
 require_once __DIR__ . '/../../clases/Usuario.php';
 
-$accesoControlPanel = $_GET["waifupaperControlPanel"] ?? false;
+$data = json_decode(file_get_contents("php://input"), true);
+$accesoControlPanel = $data["waifupaperControlPanel"] ?? false;
 
-$usuario = new Usuario($_GET);
+$usuario = new Usuario($data);
 $resultado = $usuario->Iniciar_Sesion();
 
 if (!$accesoControlPanel) {
