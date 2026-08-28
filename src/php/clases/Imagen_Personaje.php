@@ -26,14 +26,14 @@ class Imagen_Personaje
 
     public function Borrar_Personajes($conexion)
     {
-        $resultado = $conexion->SetDelete("Aparece_En", ["id_imagen = ?"], [], [$this->id_imagen], 'i');
+        $resultado = $conexion->Delete("Aparece_En", ["id_imagen = ?"], [], [$this->id_imagen], 'i');
         $this->CheckResultado($resultado);   
     }
 
 
     public function Insertar_Personaje($conexion, $id_personaje)
     {
-        $resultado = $conexion->SetInsert("Aparece_En", ["id_imagen", "id_personaje"], [$this->id_imagen, $id_personaje], 'ii');
+        $resultado = $conexion->Insert("Aparece_En", ["id_imagen", "id_personaje"], [$this->id_imagen, $id_personaje], 'ii');
         $this->CheckResultado($resultado);
     }
 
