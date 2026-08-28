@@ -1,16 +1,10 @@
 <?php
-header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Headers: Content-Type");
-header("Access-Control-Allow-Methods: POST, OPTIONS");
-
-require_once __DIR__ . "/../../clases/Gestor_Imagenes.php";
-
-
+require_once __DIR__ . '/../../utils/debug.php';
+require_once __DIR__ . '/../../utils/headers.php';
+require_once __DIR__ . '/../../clases/Gestor_Imagenes.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $id_personaje = $_POST['id_personaje'] ?? '';
-
-
 
     $gestor_imagenes = new Gestor_Imagenes($id_personaje, $_FILES['imagen_perfil']);
     $gestor_imagenes->Crear_Directorio();

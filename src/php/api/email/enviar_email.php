@@ -1,9 +1,7 @@
 <?php
-
-require_once __DIR__ . '/../../clases/Email.php';
 require_once __DIR__ . '/../../utils/debug.php';
-
-header('Content-Type: application/json');
+require_once __DIR__ . '/../../utils/headers.php';
+require_once __DIR__ . '/../../clases/Email.php';
 
 $id_usuario = $_GET['id_usuario'];
 $token = $_GET['token'];

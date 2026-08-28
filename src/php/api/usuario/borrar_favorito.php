@@ -1,12 +1,7 @@
 <?php
-
-/* ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL); */
-
-require_once '../../clases/Usuario.php';
 require_once __DIR__ . '/../../utils/debug.php';
-
+require_once __DIR__ . '/../../utils/headers.php';
+require_once __DIR__ . '/../../clases/Usuario.php';
 
 $id_usuario = $_GET['id_usuario'];
 $id_imagen = $_GET['id_imagen'];

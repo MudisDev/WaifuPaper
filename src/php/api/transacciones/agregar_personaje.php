@@ -1,20 +1,16 @@
 <?php
+require_once __DIR__ . '/../../utils/debug.php';
+require_once __DIR__ . '/../../utils/headers.php';
+require_once __DIR__ . '/../../clases/Personaje.php';
 
-require_once __DIR__ . "/../../clases/Personaje.php";
-require_once __DIR__ . "/../../utils/debug.php";
+$data = json_decode(file_get_contents("php://input"), true);
 
-/* ["nombre", "alias", "descripcion", "historia", "pasatiempo", "ocupacion", "dia", "mes", "edad", "id_especie", "imagen_perfil"], */
-
-$ids_personalidades = explode(",", $_GET['ids_personalidades']);
+$ids_personalidades = explode(",", $data['ids_personalidades']);
 $ids_personalidades = array_map("intval", $ids_personalidades);
 
-$personaje = new Personaje($_GET);
+$personaje = new Personaje($data);
 $resultado = $personaje->Transaccion_Registro_Personaje($ids_personalidades);
 
 echo json_encode($resultado);
-
-/*     
-    ID_Especie → "1",
-    IDs_Personalidad → "1,2" */
 
 ?>

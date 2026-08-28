@@ -1,7 +1,7 @@
 <?php
-
-require_once __DIR__ . "/../../clases/Token_Recuperacion.php";
-require_once __DIR__ . "/../../utils/debug.php";
+require_once __DIR__ . '/../../utils/debug.php';
+require_once __DIR__ . '/../../utils/headers.php';
+require_once __DIR__ . '/../../clases/Token_Recuperacion.php';
 
 $id_usuario = $_GET['id_usuario'];
 
@@ -11,5 +11,4 @@ $resultado = $token_recuperacion->Insertar_Token();
 $token = $token_recuperacion->Get_Token();
 $resultado["token"] = $token;
 echo json_encode($resultado);
-
 ?>

@@ -1,8 +1,7 @@
 <?php
-
-require_once '../../clases/Token.php';
 require_once __DIR__ . '/../../utils/debug.php';
-
+require_once __DIR__ . '/../../utils/headers.php';
+require_once __DIR__ . '/../../clases/Token.php';
 
 $id_usuario = $_GET['id_usuario'];
 $token_recibido = $_GET['token'];

@@ -1,9 +1,9 @@
 <?php
 require_once __DIR__ . '/../../utils/debug.php';
-
-require '../../clases/Conexion.php';
-require '../../clases/Imagen.php';
-require '../../clases/Etiqueta.php';
+require_once __DIR__ . '/../../utils/headers.php';
+require_once __DIR__ . '/../../clases/Conexion.php';
+require_once __DIR__ . '/../../clases/Imagen.php';
+require_once __DIR__ . '/../../clases/Etiqueta.php';
 
 $id_imagen_api = $_GET['id_imagen_api'];
 $api_origen = $_GET['api_origen'];

@@ -1,8 +1,7 @@
 <?php
-#require __DIR__ . '/../../utils/debug.php';
-require __DIR__ . '/../../clases/Usuario.php';
 require_once __DIR__ . '/../../utils/debug.php';
-
+require_once __DIR__ . '/../../utils/headers.php';
+require_once __DIR__ . '/../../clases/Usuario.php';
 
 $username = $_GET['username'];
 
