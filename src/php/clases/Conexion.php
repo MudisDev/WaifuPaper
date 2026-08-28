@@ -150,7 +150,70 @@ class Conexion
         if (empty($resultados))
             return ["Error" => "No hubo coincidencias"];
 
-        return $resultados;
+        return $resultados[0];
+    }
+
+        public function SelectOne(string $tabla, array $columnas = ['*'], array $condiciones = [], array $datos = [], string $tipoDatos = '', array $operadores = [])
+    {
+        if (count($datos) !== strlen($tipoDatos))
+            return ["Error" => "No coincide el número de datos con los tipos de datos"];
+
+        if (
+            !empty($operadores) &&
+            count($operadores) !== count($condiciones) - 1
+        )
+            return ["Error" => "No coincide la cantidad de condiciones y operadores"];
+
+        $columnas = implode(", ", $columnas);
+
+        $this->sql = "SELECT $columnas FROM $tabla";
+
+        if (!empty($condiciones)) {
+            $condicionSQL = $condiciones[0];
+            if (!empty($operadores)) {
+                for ($i = 1; $i < count($condiciones); $i++) {
+                    $condicionSQL .= " " . $operadores[$i - 1] . " " . $condiciones[$i];
+                }
+
+            }
+            $this->sql .= " WHERE $condicionSQL";
+        }
+
+        $stmt = $this->conn->prepare($this->sql);
+
+        if (!$stmt) {
+            return [
+                "Error" => "No se pudo preparar la consulta",
+                "Mysql_error" => $this->conn->error,
+                "Mysql_codigo" => $this->conn->errno
+            ];
+        }
+
+        if (!empty($datos)) {
+            $stmt->bind_param($tipoDatos, ...$datos);
+        }
+
+        if (!$stmt->execute()) {
+            return [
+                "Error" => "No se pudo ejecutar la consulta",
+                "Mysql_error" => $stmt->error,
+                "Mysql_codigo" => $stmt->errno
+            ];
+        }
+
+        $resultado = $stmt->get_result();
+
+        $resultados = [];
+
+        while ($fila = $resultado->fetch_assoc()) {
+            $resultados[] = $fila;
+        }
+
+        if (empty($resultados)) {
+            return ["Error" => "No hubo coincidencias"];
+        }
+
+        return $resultados[0];
     }
 
 

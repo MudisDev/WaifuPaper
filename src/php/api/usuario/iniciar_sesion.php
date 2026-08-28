@@ -23,8 +23,8 @@ if (isset($rol['Error'])) {
 
 session_start();
 session_regenerate_id(true);
-$_SESSION['id_usuario'] = $rol[0]["id_usuario"];
-$_SESSION['rol'] = $rol[0]["id_rol"];
+$_SESSION['id_usuario'] = $rol["id_usuario"];
+$_SESSION['rol'] = $rol["id_rol"];
 echo json_encode(["Success" => "Usuario autorizado"]);
 
 ?>

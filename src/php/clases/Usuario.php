@@ -62,7 +62,7 @@ class Usuario
         $conexion = new Conexion();
         $resultado = $conexion->Login("Usuario", ["*"], ["username = ?"], [$this->username, $this->password], 'ss');
         if (!isset($resultado['Error'])) {
-            $this->Set_Datos($resultado[0]);
+            $this->Set_Datos($resultado);
         }
         return $resultado;
     }
@@ -151,7 +151,7 @@ class Usuario
     public function Consultar_Rol()
     {
         $conexion = new Conexion();
-        $resultado = $conexion->Select("tiene_rol", ["*"], ["id_usuario = ?"], [$this->id_usuario], 'i');
+        $resultado = $conexion->SelectOne("tiene_rol", ["*"], ["id_usuario = ?"], [$this->id_usuario], 'i');
         return $resultado;
     }
 }
