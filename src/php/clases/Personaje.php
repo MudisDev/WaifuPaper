@@ -85,8 +85,10 @@ class Personaje
         try {
             $conexion->BeginTransaction();
             $resultado = $this->Registrar_Personaje($conexion);
-            if (isset($resultado['Success']))
-                $this->id_personaje = $resultado['id_generado'];
+
+            $this->CheckResultado($resultado);
+            $this->id_personaje = $resultado['id_generado'];
+
             $this->Actualizar_Personalidades($conexion, $ids_personalidades);
             $conexion->Commit();
             return true;
