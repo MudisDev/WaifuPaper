@@ -56,14 +56,14 @@ class Imagen
     public function Buscar_Imagen()
     {
         $conexion = new Conexion();
-        $resultado = $conexion->Select("Imagen", ["*"], ["id_imagen = ?"], [$this->id_imagen], 'i');
+        $resultado = $conexion->SelectOne("Imagen", ["*"], ["id_imagen = ?"], [$this->id_imagen], 'i');
         return $resultado;
     }
 
     public function Buscar_Imagen_Vista()
     {
         $conexion = new Conexion();
-        $resultado = $conexion->Select("vista_imagen_datos", ["*"], ["id_imagen = ?"], [$this->id_imagen], 'i');
+        $resultado = $conexion->SelectOne("vista_imagen_datos", ["*"], ["id_imagen = ?"], [$this->id_imagen], 'i');
         return $resultado;
     }
 

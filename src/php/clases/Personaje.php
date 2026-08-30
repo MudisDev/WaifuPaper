@@ -30,7 +30,7 @@ class Personaje
     public function Buscar_Personaje()
     {
         $conexion = new Conexion();
-        $resultado = $conexion->Select("Vista_Perfil_Personaje", ["*"], ["id_personaje = ?"], [$this->id_personaje], 'i');
+        $resultado = $conexion->SelectOne("Vista_Perfil_Personaje", ["*"], ["id_personaje = ?"], [$this->id_personaje], 'i');
         return $resultado;
     }
 
