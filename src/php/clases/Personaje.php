@@ -91,10 +91,13 @@ class Personaje
 
             $this->Actualizar_Personalidades($conexion, $ids_personalidades);
             $conexion->Commit();
-            return true;
+            //return true;
+            return ["Success" => "Transaccion Exitosa"];
         } catch (Throwable $th) {
             $conexion->Rollback();
-            return false;
+            //return false;
+            return ["Error" => $th->getMessage()];
+
         }
     }
 
@@ -106,10 +109,10 @@ class Personaje
             $this->Editar_Personaje($conexion);
             $this->Actualizar_Personalidades($conexion, $ids_personalidades);
             $conexion->Commit();
-            return true;
+            return ["Success" => "Transaccion exitosa"];
         } catch (Throwable $th) {
             $conexion->Rollback();
-            return false;
+            return ["Error" => $th->getMessage()];
         }
     }
 

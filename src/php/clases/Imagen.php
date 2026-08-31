@@ -110,9 +110,7 @@ class Imagen
 
         } catch (Throwable $th) {
             $conexion->Rollback();
-            return [
-                "Error" => $th->getMessage()
-            ];
+            return ["Error" => $th->getMessage()];
         }
     }
     private function CheckResultado($resultado)
