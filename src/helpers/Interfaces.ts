@@ -5,7 +5,7 @@ export interface ListWaifusData {
 }
 
 export interface ListImageData {
-    id_image: number;
+    id_imagen: number;
     //date_favorite: string;
     url: string
 }
