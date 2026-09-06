@@ -3,7 +3,7 @@ import React, { useState, useContext, useEffect } from 'react'
 import { View, Text } from 'react-native'
 import { stylesAppTheme } from '../theme/AppTheme'
 import { UserContext } from '../context/UserContext'
-import { consult_token, generate_token, login_path } from '../const/UrlConfig'
+import { /* consult_token, generate_token, */ login_path } from '../const/UrlConfig'
 import { useTheme } from '../hooks/UseTheme'
 import { TextInputComponent } from '../components/TextInputComponent'
 import { ButtonComponent } from '../components/ButtonComponent'
@@ -11,28 +11,47 @@ import { TextLinkComponent } from '../components/TextLinkComponent'
 import { ThemeContext } from '../context/ThemeContext'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { ShowAlert } from '../helpers/ShowAlert'
-import { InitialLoadingIndicator } from '../components/LoadingIndicator'
+//import { InitialLoadingIndicator } from '../components/LoadingIndicator'
+import { useFetch } from '../hooks/useFetch'
 
+interface RespuestaLogin {
+    username: string;
+    nombre: string;
+    telefono: string;
+    email: string;
+    foto_perfil: string;
+    //registerDate: user.fecha_registro,
+    id_usuario: number;
+    genero: string;
+}
+
+interface PeticionLogin {
+    username: string;
+    password: string;
+}
 
 export const LogIn = () => {
 
     const navigation = useNavigation();
-    const [username, setUsername] = useState<string | null>();
-    const [password, setPassword] = useState<string | null>();
+    const [username, setUsername] = useState("");
+    const [password, setPassword] = useState("");
 
 
     const { userData, setUserData } = useContext(UserContext) || { setUserData: () => { } }; // Maneja el caso de que el contexto no esté definido
 
     const { themeData, dynamicStyles } = useTheme();
 
-    const [localToken, setLocalToken] = useState<string | null>(null);
-    const [localIdUser, setLocalIdUser] = useState<string | null>(null);
+    /*    const [localToken, setLocalToken] = useState<string | null>(null);
+       const [localIdUser, setLocalIdUser] = useState<string | null>(null); */
 
     const context = useContext(ThemeContext); // Obtiene el contexto
     //const themeData = context?.themeData; // Obtiene themeData del contexto
     const setThemeData = context?.setThemeData;
 
-    const [isLoading, setIsLoading] = useState(true);
+    //const [isLoading, setIsLoading] = useState(true);
+
+
+    const { data: dataLogin, fetchData: fetchLogin, error: errorLogin } = useFetch<RespuestaLogin, PeticionLogin>({ endpoint: login_path, metodo: 'POST' });
 
 
     if (!themeData) {
@@ -55,143 +74,166 @@ export const LogIn = () => {
     }, []);
 
     const IniciarSesion = async () => {
-        try {
-            console.log("Path login -> ", login_path)
-            //const response = await fetch(`http://localhost/nekopaper/api/usuario/iniciar_sesion.php?username=${username}&password=${password}`);
-            //const response = await fetch(`http://192.168.18.5/nekopaper/api/usuario/iniciar_sesion.php?username=${username}&password=${password}`);
-            const response = await fetch(`${login_path}?username=${username}&password=${password}`);
-            const data = await response.json();
-            // Retorna los datos para ser usados en el componente
-            console.log(data);
+        console.log("1. Se presionó el botón");
+        console.log("1.5 -> login_path", login_path);
+        const datosLogin: PeticionLogin = {
+            username: username,
+            password: password,
+        }
+        console.log("2. Datos login:", datosLogin);
 
-            const user = data[0];
-            console.log(`user -> ${user}`);
-            console.log(`userIsArray -> ${Array.isArray(user)}`);
+        const response = await fetchLogin(datosLogin);
 
-            if (!data.Error) {
+        console.log("3. Respuesta de useFetch:", response);
 
-                const userDataResponse = {
-                    username: user.username,
-                    name: user.nombre,
-                    phoneNumber: user.telefono,
-                    email: user.email,
-                    profilePhoto: user.foto_perfil,
-                    //registerDate: user.fecha_registro,
-                    idUser: user.id_usuario,
-                    gender: user.genero
-                }
-
-                /* console.log(`userdata -> ${userDataResponse}`);
-                const array = JSON.stringify(userDataResponse);
-                console.log(Array.isArray(array)); */
-
-                setUserData(userDataResponse);
-
-                console.log(userData?.email);
-                console.log(`id_usuario que genera el token -> ${userDataResponse.idUser}`)
-                Generar_Token(userDataResponse.idUser);
-
-
-                navigation.navigate("BottomTabNavigator");
-            }
-            else
-                ShowAlert({ title: 'Error', text: 'Credenciales invalidas', buttonOk: 'Ok', onConfirm: () => void {} })
-
-
-        } catch (e) {
-            console.error(`error: ${e}`);
+        if (!response.Error) {
+            console.log("Credenciales validas");
+            setUserData(response);
+            //Generar_Token(response.id_usuario);
+            navigation.navigate("BottomTabNavigator");
+        }
+        else {
+            console.log("ERROR LOGIN validas");
+            ShowAlert({ title: 'Error', text: 'Credenciales invalidas', buttonOk: 'Ok', onConfirm: () => void {} })
         }
     }
+    /* try {
+        console.log("Path login -> ", login_path)
+        //const response = await fetch(`http://localhost/nekopaper/api/usuario/iniciar_sesion.php?username=${username}&password=${password}`);
+        //const response = await fetch(`http://192.168.18.5/nekopaper/api/usuario/iniciar_sesion.php?username=${username}&password=${password}`);
+        const response = await fetch(`${login_path}?username=${username}&password=${password}`);
+        const data = await response.json();
+        // Retorna los datos para ser usados en el componente
+        console.log(data);
+     
+        const user = data[0];
+        console.log(`user -> ${user}`);
+        console.log(`userIsArray -> ${Array.isArray(user)}`);
+     
+        if (!data.Error) {
+     
+            const userDataResponse = {
+                username: user.username,
+                name: user.nombre,
+                phoneNumber: user.telefono,
+                email: user.email,
+                profilePhoto: user.foto_perfil,
+                //registerDate: user.fecha_registro,
+                idUser: user.id_usuario,
+                gender: user.genero
+            }
+     
+            //  console.log(`userdata -> ${userDataResponse}`);
+            // const array = JSON.stringify(userDataResponse);
+            //console.log(Array.isArray(array));
+     
+            setUserData(userDataResponse);
+     
+            console.log(userData?.email);
+            console.log(`id_usuario que genera el token -> ${userDataResponse.idUser}`)
+            Generar_Token(userDataResponse.idUser);
+     
+     
+            navigation.navigate("BottomTabNavigator");
+        }
+        else
+            ShowAlert({ title: 'Error', text: 'Credenciales invalidas', buttonOk: 'Ok', onConfirm: () => void {} })
+     
+     
+    } catch (e) {
+        console.error(`error: ${e}`);
+    } */
+    //}
 
-    const Generar_Token = async (id_usuario) => {
-        try {
-            console.log("Entra al TRY de Generar_TOken");
-            const response = await fetch(`${generate_token}?id_usuario=${id_usuario}`);
-            const data = await response.json();
-            // Retorna los datos para ser usados en el componente
-            console.log(`data del token -> ${data}`);
-
-            const token = data;
-            /* console.log(`token -> ${token.token}`);
-            console.log(`id-usuario -> ${token.id_usuario}`)
-            console.log(`fecha token -> ${token.fecha_token}`)
-            console.log(`id token -> ${token.id_token}`)
-            console.log(`tokenIsArray -> ${Array.isArray(token)}`); */
-
-
-
-
+        /* const Generar_Token = async (id_usuario) => {
             try {
-                console.log("Entra al TRY de  storeData");
-                await AsyncStorage.setItem('localToken', token.token);
-                await AsyncStorage.setItem('localIdUser', token.id_usuario);
+                console.log("Entra al TRY de Generar_TOken");
+                const response = await fetch(`${generate_token}?id_usuario=${id_usuario}`);
+                const data = await response.json();
+                // Retorna los datos para ser usados en el componente
+                console.log(`data del token -> ${data}`);
+     
+                const token = data;
+                // console.log(`token -> ${token.token}`);
+                //console.log(`id-usuario -> ${token.id_usuario}`)
+                //console.log(`fecha token -> ${token.fecha_token}`)
+                //console.log(`id token -> ${token.id_token}`)
+                //console.log(`tokenIsArray -> ${Array.isArray(token)}`); 
+     
+     
+     
+     
+                try {
+                    console.log("Entra al TRY de  storeData");
+                    await AsyncStorage.setItem('localToken', token.token);
+                    await AsyncStorage.setItem('localIdUser', token.id_usuario);
+                } catch (e) {
+                    console.log("Error al intentar almacenar el token y usuario");
+     
+                    console.error(`error: ${e}`);
+                }
+     
+     
+                //  console.log(`userdata -> ${userDataResponse}`);
+                //  const array = JSON.stringify(userDataResponse);
+                // console.log(Array.isArray(array));
+     
+                //  setUserData(userDataResponse);
+     
+                //  console.log(userData?.email);
+     
+     
+     
+                //  navigation.navigate("BottomTabNavigator");
+     
+     
+     
             } catch (e) {
-                console.log("Error al intentar almacenar el token y usuario");
-
+                console.log("Error al intentar generar el token");
+     
                 console.error(`error: ${e}`);
             }
+        } */
+
+    /* const activeButton = (username && password) ? true : false; */
 
 
-            /* console.log(`userdata -> ${userDataResponse}`);
-            const array = JSON.stringify(userDataResponse);
-            console.log(Array.isArray(array)); */
-            /* 
-                        setUserData(userDataResponse);
-            
-                        console.log(userData?.email);
-            
-            
-            
-                        navigation.navigate("BottomTabNavigator");
-                     */
-
-
-        } catch (e) {
-            console.log("Error al intentar generar el token");
-
-            console.error(`error: ${e}`);
-        }
-    }
-
-    const activeButton = (username && password) ? true : false;
-
-
-    useEffect(() => {
+    /* useEffect(() => {
         const Leer_Datos = async () => {
-            /*  try { */
-            /* await AsyncStorage.setItem('localToken', token.token);
-            await AsyncStorage.setItem('localUsername', token.id_usuario); */
+            // try {
+            //await AsyncStorage.setItem('localToken', token.token);
+            //await AsyncStorage.setItem('localUsername', token.id_usuario);
             const token = await AsyncStorage.getItem('localToken');
             const id_usuario = await AsyncStorage.getItem('localIdUser');
-
-
-            /* } catch (e) {
-                console.log("Error al intentar leer el token almacenado");
-
-                console.error(`error: ${e}`);
-            } */
-
+     
+     
+            // } catch (e) {
+              //  console.log("Error al intentar leer el token almacenado");
+     
+              //  console.error(`error: ${e}`);
+            //}
+     
             if (token)
                 setLocalToken(token);
             if (id_usuario)
                 setLocalIdUser(id_usuario);
-
+     
             console.log(`Token leido -> ${token}`);
             console.log(`ID usuario leido -> ${id_usuario}`);
-
+     
             if (!token || !id_usuario)
                 setIsLoading(false);
-
+     
         }
-
+     
         Leer_Datos();
-    }, [])
+    }, []) */
 
-    useEffect(() => {
+    /* useEffect(() => {
         const Consultar_Token = async () => {
             const token = await AsyncStorage.getItem("localToken");
             const id_usuario = await AsyncStorage.getItem("localIdUser");
-
+     
             if (token != null && id_usuario != null) {
                 try {
                     const respuesta = await fetch(`${consult_token}?id_usuario=${id_usuario}&token=${token}`);
@@ -205,66 +247,67 @@ export const LogIn = () => {
                     }
                 } catch (e) {
                     setIsLoading(false);
-
+     
                     console.log(`Error al llamar a delete token -> ${e}`);
                 }
             }
         }
         Consultar_Token();
-    }, [localToken, localIdUser]);
+    }, [localToken, localIdUser]); */
 
 
-    const RecibirDatoPerfil = async (id_usuario) => {
-        try {
-            console.log("Path login -> ", login_path)
-            //const response = await fetch(`http://localhost/nekopaper/api/usuario/iniciar_sesion.php?username=${username}&password=${password}`);
-            //const response = await fetch(`http://192.168.18.5/nekopaper/api/usuario/iniciar_sesion.php?username=${username}&password=${password}`);
-            const response = await fetch(`${login_path}?id_usuario=${id_usuario}`);
-            const data = await response.json();
-            // Retorna los datos para ser usados en el componente
-            console.log(data);
-
-            const user = data[0];
-            console.log(`user -> ${user}`);
-            console.log(`userIsArray -> ${Array.isArray(user)}`);
-
-            if (!data.Error) {
-
-                const userDataResponse = {
-                    username: user.username,
-                    name: user.nombre,
-                    phoneNumber: user.telefono,
-                    email: user.email,
-                    profilePhoto: user.foto_perfil,
-                    //registerDate: user.fecha_registro,
-                    idUser: user.id_usuario,
-                    gender: user.genero
+    /*     const RecibirDatoPerfil = async (id_usuario) => {
+            try {
+                console.log("Path login -> ", login_path)
+                //const response = await fetch(`http://localhost/nekopaper/api/usuario/iniciar_sesion.php?username=${username}&password=${password}`);
+                //const response = await fetch(`http://192.168.18.5/nekopaper/api/usuario/iniciar_sesion.php?username=${username}&password=${password}`);
+                const response = await fetch(`${login_path}?id_usuario=${id_usuario}`);
+                const data = await response.json();
+                // Retorna los datos para ser usados en el componente
+                console.log(data);
+     
+                const user = data[0];
+                console.log(`user -> ${user}`);
+                console.log(`userIsArray -> ${Array.isArray(user)}`);
+     
+                if (!data.Error) {
+     
+                    const userDataResponse = {
+                        username: user.username,
+                        name: user.nombre,
+                        phoneNumber: user.telefono,
+                        email: user.email,
+                        profilePhoto: user.foto_perfil,
+                        //registerDate: user.fecha_registro,
+                        idUser: user.id_usuario,
+                        gender: user.genero
+                    }
+     
+                    //console.log(`userdata -> ${userDataResponse}`);
+                    //const array = JSON.stringify(userDataResponse);
+                    //console.log(Array.isArray(array));
+     
+                    setUserData(userDataResponse);
+     
+                    console.log(userData?.email);
+                    console.log(`id_usuario que genera el token -> ${userDataResponse.idUser}`)
+                    // Generar_Token(userDataResponse.idUser);
+     
+     
+                // navigation.navigate("BottomTabNavigator"); 
                 }
-
-                /* console.log(`userdata -> ${userDataResponse}`);
-                const array = JSON.stringify(userDataResponse);
-                console.log(Array.isArray(array)); */
-
-                setUserData(userDataResponse);
-
-                console.log(userData?.email);
-                console.log(`id_usuario que genera el token -> ${userDataResponse.idUser}`)
-                /* Generar_Token(userDataResponse.idUser);
-
-
-                navigation.navigate("BottomTabNavigator"); */
+     
+     
+            } catch (e) {
+                console.error(`error: ${e}`);
             }
+        } */
 
 
-        } catch (e) {
-            console.error(`error: ${e}`);
-        }
-    }
+    /* if (isLoading)
+        return <InitialLoadingIndicator /> */
 
-
-    if (isLoading)
-        return <InitialLoadingIndicator />
-
+    useEffect(() => { if (!errorLogin) return; console.log("Error LOg -> ", errorLogin) }, [errorLogin])
 
     return (
         <View style={[{ alignItems: 'center', flex: 1, paddingTop: 90 }, dynamicStyles.dynamicScrollViewStyle]}>
@@ -292,7 +335,7 @@ export const LogIn = () => {
             </TouchableOpacity>
             <Text></Text> */}
 
-            <ButtonComponent title='iniciar sesion' funcion={IniciarSesion} active={activeButton} />
+            <ButtonComponent title='iniciar sesion' funcion={IniciarSesion} active={username !== "" && password !== ""} />
             <Text></Text>
             <TextLinkComponent text='¿No tienes una cuenta? Registrate' screenNavigation='Register' />
             <TextLinkComponent text='¿Olvidaste tu contraseña?' screenNavigation='RecoverAccount' />

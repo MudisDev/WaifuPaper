@@ -42,3 +42,5 @@ src/php/vendor
 
 **/*.keystore
 keystore.properties
+
+url.ts

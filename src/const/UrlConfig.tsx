@@ -1,8 +1,11 @@
-import Config from 'react-native-config';
+//import Config from 'react-native-config';
 
-const apiUrl = Config.API_URL;
+import { API_URL } from "../../url";
 
-const aliasPhp = `${apiUrl}/waifupaper`;
+//const apiUrl = Config.API_URL;
+
+
+const aliasPhp = `${API_URL}/waifupaper`;
 //const aliasPhp = `${apiUrl}/waifupaper/src/php`;
 
 const api_path = `${aliasPhp}/api`;

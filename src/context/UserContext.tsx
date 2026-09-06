@@ -1,16 +1,14 @@
 import React, { createContext, useState, ReactNode } from 'react';
 
 interface UserData {
-  // Define aquí los campos que necesitas para tu usuario
-  username?: string; // Ejemplo de un campo que podrías tener
-  // Puedes agregar más propiedades según tus necesidades
-  name: string;
-  phoneNumber: string;
+  id_usuario: number;
+  nombre: string;
+  username: string;
   email: string;
-  profilePhoto: string;
-  //registerDate: string;
-  idUser: number;
-  gender: string;
+  telefono: string;
+  genero: string;
+  //registerDate: string; 
+  foto_perfil: string;
 }
 
 interface UserContextType {
