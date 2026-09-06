@@ -165,15 +165,6 @@ export const Settings = () => {
         <Text style={[stylesAppTheme.textButton, dynamicStyles.dynamicText]} >DevTool Bv</Text>
       </TouchableOpacity> */}
 
-      {(userData?.idUser == 1) ?
-        <ButtonComponent title='DevTool Bv' funcion={() => navigation.navigate("TopTabNavigator")} active={true} />
-        :
-        <ButtonComponent title='DevTool Bv' funcion={() => { }} active={false} />
-      }
-
-
-
-      <Text></Text>
       {/* <ButtonComponent title='Cerrar sesion' funcion={() => { Cerrar_Sesion(); setUserData(null); }} active={true} /> */}
       {/* <ButtonComponent title='Cerrar sesion' funcion={() => { Alert_Cerrar_Sesion(); }} active={true} /> */}
       <ButtonComponent title='Cerrar sesion' funcion={() => ShowAlert({ title: 'Cerrar Sesion', text: '¿Seguro que quieres cerrar sesion?', buttonOk: 'Ok', onConfirm: Cerrar_Sesion, buttonCancel: 'Cancelar', onCancel: () => void {} })} active={true} />
