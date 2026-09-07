@@ -6,11 +6,13 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import { add_favorite, consult_favorite, consult_tags, delete_favorite } from '../const/UrlConfig';
 import { useTheme } from '../hooks/UseTheme';
 import { TagData } from '../helpers/Interfaces';
+import { useFetch } from '../hooks/useFetch';
+import { Tag } from 'nekosapi/v3/types/Tag';
 
 export const Wallpaper = ({ route }) => {
     const [image, setImage] = useState<string | null>(null)
     const { width, height } = Dimensions.get('window');
-    const { url, id } = route.params;
+    const { url, id_imagen } = route.params;
     const { userData, } = useContext(UserContext) || { setUserData: () => { } }; // Maneja el caso de que el contexto no esté definido
     const { themeData, dynamicStyles } = useTheme();
     const [isFavorite, setIsFavorite] = useState<boolean>();
@@ -20,48 +22,45 @@ export const Wallpaper = ({ route }) => {
         setImage(url);
     }, [])
 
-    useFocusEffect(
-        useCallback(() => {
-            Consultar_Favorito();
-            Consultar_Etiquetas();
-        }, [])
-    )
+    /*    useFocusEffect(
+           useCallback(() => {
+               Consultar_Favorito();
+               Consultar_Etiquetas();
+           }, [])
+       ) */
+
+    /* useEffect(() => {
+        Consultar_Favorito();
+    }, [isFavorite]) */
+
+    const { data: listaEtiquetas, fetchData: consultarEtiquetas }
+        = useFetch<TagData[]>({ endpoint: consult_tags, metodo: 'GET', params: { id_imagen: id_imagen } })
+
+    const { data: favorito, fetchData: consultarFavorito }
+        = useFetch({ endpoint: consult_favorite, metodo: 'GET', params: { id_usuario: userData?.id_usuario, id_imagen: id_imagen } });
 
     useEffect(() => {
-        Consultar_Favorito();
-    }, [isFavorite])
+        consultarEtiquetas();
+    }, [])
 
-    const Consultar_Etiquetas = async () => {
-        try {
-            const url = `${consult_tags}?` + `id_imagen=${id}`;
+    useEffect(() => {
 
-            const response = await fetch(url);
-            const data = await response.json();
-            console.log("Data etiquetas ->", data);
+        const consultar = async () => {
 
-            console.log("Array Etiquetas -> ", Array.isArray(data));
+            const response = await consultarFavorito();
+            if (response.Error)
+                setIsFavorite(false);
+            else
+                setIsFavorite(true);
 
-            if (Array.isArray(data) && data.length > 0) {
-                const mappedData: TagData[] = data.map((item: any) => ({
-                    id_tag: item.id_etiqueta,
-                    name_tag: item.nombre_etiqueta,
-                }));
-
-                setTags(mappedData);
-            } else {
-                console.warn("No se encontraron imágenes en la respuesta.");
-            }
-
-
-        } catch (e) {
-            console.error(`Error al consultar etiquetas: ${e}`);
         }
-    }
+        consultar();
+    }, [])
 
-    const Consultar_Favorito = async () => {
+    /* const Consultar_Favorito = async () => {
         try {
             const url = `${consult_favorite}?` + `id_imagen=${id}` + `&id_usuario=${userData?.idUser}`;
-
+    
             const response = await fetch(url);
             const data = await response.json();
             console.log("Data favorito ->", data);
@@ -69,30 +68,38 @@ export const Wallpaper = ({ route }) => {
                 setIsFavorite(false);
             } else
                 setIsFavorite(true);
-
-
+    
+    
         } catch (e) {
             console.error(`Error al marcar como favorito: ${e}`);
         }
-    }
+    } */
 
-
+    const { fetchData: guardarFavorito } = useFetch({ endpoint: add_favorite, metodo: 'POST' });
+    const { fetchData: eliminarFavorito } = useFetch({ endpoint: delete_favorite, metodo: 'DELETE' });
 
     const Marcar_Favorito = async () => {
-        try {
+
+        await guardarFavorito({ id_usuario: userData?.id_usuario, id_imagen: id_imagen });
+        setIsFavorite(true);
+
+        /* try {
             const url = `${add_favorite}?` + `id_imagen=${id}` + `&id_usuario=${userData?.idUser}`;
             const response = await fetch(url);
             const data = await response.json();
             console.log("Data favorito ->", data);
             setIsFavorite(true); // <-- Actualiza aquí
-
+    
         } catch (e) {
             console.error(`Error al marcar como favorito: ${e}`);
-        }
+        } */
     }
 
     const Borrar_Favorito = async () => {
-        try {
+
+        await eliminarFavorito({ id_usuario: userData?.id_usuario, id_imagen: id_imagen });
+        setIsFavorite(false);
+        /* try {
             const url = `${delete_favorite}?` + `id_imagen=${id}` + `&id_usuario=${userData?.idUser}`;
             const response = await fetch(url);
             const data = await response.json();
@@ -100,7 +107,7 @@ export const Wallpaper = ({ route }) => {
             setIsFavorite(false); // <-- Actualiza aquí
         } catch (e) {
             console.error(`Error al marcar como favorito: ${e}`);
-        }
+        } */
     }
 
     return (
@@ -114,10 +121,10 @@ export const Wallpaper = ({ route }) => {
                 />
             )}
 
-            {tags && Array.isArray(tags) && (
+            {listaEtiquetas?.length !== 0 && (
                 <View style={styles.tagContainer}>
-                    {tags.map((tag: TagData, index: number) => (
-                        <Text key={tag.id_tag} style={[styles.tagText, dynamicStyles.dynamicText, dynamicStyles.dynamicViewContainer]}>#{tag.name_tag}</Text>
+                    {listaEtiquetas?.map((tag: TagData, index: number) => (
+                        <Text key={tag.id_etiqueta} style={[styles.tagText, dynamicStyles.dynamicText, dynamicStyles.dynamicViewContainer]}>#{tag.nombre_etiqueta}</Text>
                     ))}
                 </View>
             )}
@@ -135,18 +142,6 @@ export const Wallpaper = ({ route }) => {
                     </TouchableOpacity>)
                 }
 
-                {/* <TouchableOpacity style={[styles.button, dynamicStyles.dynamicViewContainer]} >
-                    <Ionicons name={"information"} size={25} color={themeData.texto} />
-                </TouchableOpacity>
-                <TouchableOpacity style={[styles.button, dynamicStyles.dynamicViewContainer]} >
-                    <Ionicons name={"download"} size={25} color={themeData.texto} />
-                </TouchableOpacity>
-                <TouchableOpacity style={[styles.button, dynamicStyles.dynamicViewContainer]} >
-                    <Ionicons name={"share-social"} size={25} color={themeData.texto} />
-                </TouchableOpacity> */}
-                {/* <TouchableOpacity style={styles.button}>
-                    <Ionicons name={"people"} size={25} color={"red"} />
-                </TouchableOpacity> */}
             </View>
 
         </ScrollView>

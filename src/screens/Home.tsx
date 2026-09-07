@@ -32,7 +32,7 @@ export const Home = () => {
 
     const renderItem = ({ item }: { item: ListImageData }) => (
         <TouchableOpacity
-            onPress={() => navigation.navigate("Wallpaper", { url: item?.url, id: item?.id_imagen })}
+            onPress={() => navigation.navigate("Wallpaper", { url: item?.url, id_imagen: item?.id_imagen })}
         >
             <Image
                 source={{ uri: item.url }}

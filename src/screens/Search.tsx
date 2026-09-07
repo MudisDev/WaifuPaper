@@ -7,13 +7,16 @@ import { show_images_for_tag, show_tags } from '../const/UrlConfig';
 import { useTheme } from '../hooks/UseTheme';
 import { ButtonComponent } from '../components/ButtonComponent';
 import { ShowAlert } from '../helpers/ShowAlert';
+import { useFetch } from '../hooks/useFetch';
+import { TagData2, NekoImageData } from '../helpers/Interfaces';
 
-interface TagsData {
+
+/* interface TagsData {
   id_tag: number;
   name_tag: string;
-}
+} */
 
-export interface NekoImageData {
+/* export interface NekoImageData {
   id: number;
   url: string;
   //rating: 'safe' | 'suggestive' | 'explicit' | 'xxx';
@@ -24,55 +27,66 @@ export interface NekoImageData {
   api_id: string;
   insertion_date: string;
   update_date: string;
-}
+} */
+
 
 export const Search = () => {
 
-  const [dataArray, setDataArray] = useState<TagsData[] | null>(null);
-  const [imageArray, setImageArray] = useState<NekoImageData[] | null>(null);
+  //const [dataArray, setDataArray] = useState<TagsData[] | null>(null);
+  //const [imageArray, setImageArray] = useState<NekoImageData[] | null>(null);
   const { dynamicStyles } = useTheme();
   const [showTags, setShowTags] = useState(false);
 
+  const { data: listaEtiquetas, fetchData: consultarEtiquetas }
+    = useFetch<TagData2[]>({ endpoint: show_tags, metodo: 'GET' });
 
+  const { data: listaWallpapers, fetchData: consultarWallpapers }
+    = useFetch<NekoImageData[]>({ endpoint: show_images_for_tag, metodo: 'GET' })
 
   useEffect(() => {
-    //fetch("http://192.168.18.5/nekopaper/api/lista/mostrar_etiquetas.php")
-    fetch(`${show_tags}`)
-      .then((res) => res.json())
-      .then((data) => {
-        //const items = data?.items;
-        //const items = data[0];
-
-        //setDataArray(data);
-
-        console.log("TRAYENDO RESULTADOS DE BD Bv");
-        console.log("Data Search -> ", data);
-        if (Array.isArray(data) && data.length > 0) {
-          const mappedData: TagsData[] = data.map((item: any) => ({
-            id_tag: parseInt(item.id_etiqueta),
-            name_tag: item.nombre
-            /* url: item.url,
-            rating: item.clasificacion,
-            artist_name: item.artista === "null" ? null : item.artista,
-            source_url: item.url_fuente === "null" ? null : item.url_fuente,
-            api_source: item.api_origen,
-            api_id: item.id_imagen_api,
-            insertion_date: item.fecha_insercion,
-            update_date: item.fecha_actualizacion, */
-          }));
-          console.log("mapeados - > ", mappedData);
-          setDataArray(mappedData);
-
-          console.log("ARRAY - > ", dataArray?.[0].id_tag);
-        } else {
-          console.warn("No se encontraron imágenes en la respuesta.");
-        }
-
-
-
-      })
-      .catch((err) => console.error("Error al traer imagen:", err));
+    consultarEtiquetas();
   }, []);
+
+
+
+  /*   useEffect(() => {
+      //fetch("http://192.168.18.5/nekopaper/api/lista/mostrar_etiquetas.php")
+      fetch(`${show_tags}`)
+        .then((res) => res.json())
+        .then((data) => {
+          //const items = data?.items;
+          //const items = data[0];
+  
+          //setDataArray(data);
+  
+          console.log("TRAYENDO RESULTADOS DE BD Bv");
+          console.log("Data Search -> ", data);
+          if (Array.isArray(data) && data.length > 0) {
+            const mappedData: TagsData[] = data.map((item: any) => ({
+              id_tag: parseInt(item.id_etiqueta),
+              name_tag: item.nombre
+              //url: item.url,
+              //rating: item.clasificacion,
+              //artist_name: item.artista === "null" ? null : item.artista,
+              //source_url: item.url_fuente === "null" ? null : item.url_fuente,
+              //api_source: item.api_origen,
+              //api_id: item.id_imagen_api,
+              //insertion_date: item.fecha_insercion,
+              //update_date: item.fecha_actualizacion, 
+            }));
+            console.log("mapeados - > ", mappedData);
+            setDataArray(mappedData);
+  
+            console.log("ARRAY - > ", dataArray?.[0].id_tag);
+          } else {
+            console.warn("No se encontraron imágenes en la respuesta.");
+          }
+  
+  
+  
+        })
+        .catch((err) => console.error("Error al traer imagen:", err));
+    }, []); */
 
 
   // const [imageUrl, setImageUrl] = useState<string | null>(null);
@@ -84,9 +98,12 @@ export const Search = () => {
   //useEffect(() => {
   /*  useFocusEffect(
      useCallback(() => { */
-  const Filtrar_Imagenes = (id_tag: number) => {
+  const Filtrar_Imagenes = async (id_tag/* : number */) => {
+
+    await consultarWallpapers({ id_etiqueta: id_tag });
+
     //fetch(`http://192.168.18.5/nekopaper/api/lista/mostrar_imagenes_por_etiqueta.php?id_etiqueta=${id_tag}`)
-    fetch(`${show_images_for_tag}?id_etiqueta=${id_tag}`)
+    /* fetch(`${show_images_for_tag}?id_etiqueta=${id_tag}`)
       .then((res) => res.json())
       .then((data) => {
 
@@ -118,14 +135,14 @@ export const Search = () => {
         }
 
       })
-      .catch((err) => console.error("Error al traer imagen:", err));
+      .catch((err) => console.error("Error al traer imagen:", err)); */
   }
   // }, []);
 
   const renderItem = ({ item }: { item: NekoImageData }) => (
     <TouchableOpacity
       //style={stylesAppTheme.animeCell}
-      onPress={() => navigation.navigate("Wallpaper", { url: item?.url, /* tags: item?.tags, */ artist_name: item?.artist_name, id: item?.id })}
+      onPress={() => navigation.navigate("Wallpaper", { url: item?.url, /* tags: item?.tags, */ /* artist_name: item?.artist_name, */ id_imagen: item?.id_imagen })}
     >
       <Image
         source={{ uri: item.url }}
@@ -141,8 +158,8 @@ export const Search = () => {
 
     <View style={[stylesAppTheme.container, dynamicStyles.dynamicScrollViewStyle,]}>
       <FlatList
-        data={imageArray}
-        keyExtractor={(item) => item.id.toString()}
+        data={listaWallpapers ?? []}
+        keyExtractor={(item) => item.id_imagen.toString()}
         renderItem={renderItem}
         numColumns={2}
 
@@ -167,9 +184,9 @@ export const Search = () => {
                       <ButtonComponent title='ocultar etiquetas' active={true} funcion={() => { setShowTags(false) }} />
                       <Text></Text>
                       <View style={[styles.tagContainer, /* dynamicStyles.dynamicMainContainer */]}>
-                        {dataArray?.map((tag) => (
-                          <TouchableOpacity key={tag.id_tag} onPress={() => Filtrar_Imagenes(tag.id_tag)}>
-                            <Text style={[styles.tagText, dynamicStyles.dynamicViewContainer, dynamicStyles.dynamicText]}>{tag.name_tag}</Text>
+                        {listaEtiquetas?.map((tag) => (
+                          <TouchableOpacity key={tag.id_etiqueta} onPress={() => Filtrar_Imagenes(tag.id_etiqueta)}>
+                            <Text style={[styles.tagText, dynamicStyles.dynamicViewContainer, dynamicStyles.dynamicText]}>{tag.nombre}</Text>
                           </TouchableOpacity>
                         ))}
                       </View>

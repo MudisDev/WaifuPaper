@@ -84,7 +84,7 @@ class Usuario
     public function Favorito_Existe($id_imagen)
     {
         $conexion = new Conexion();
-        $resultado = $conexion->Select("Favorito", ["*"], ["id_usuario = ?", "id_imagen = ?"], [$this->id_usuario, $id_imagen], 'ii', ["AND"]);
+        $resultado = $conexion->SelectOne("Favorito", ["*"], ["id_usuario = ?", "id_imagen = ?"], [$this->id_usuario, $id_imagen], 'ii', ["AND"]);
         return $resultado;
     }
 

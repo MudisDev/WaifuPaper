@@ -1,4 +1,4 @@
-import React, { useContext, useCallback, useState } from 'react'
+import React, { useContext, useCallback, useState, useEffect } from 'react'
 import { View, Text, TouchableOpacity, Image } from 'react-native'
 import { FlatList, } from 'react-native-gesture-handler';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
@@ -7,67 +7,48 @@ import { UserContext } from '../context/UserContext';
 import { show_favorites_images } from '../const/UrlConfig';
 import { useTheme } from '../hooks/UseTheme';
 import { ListImageData } from '../helpers/Interfaces';
+import { useFetch } from '../hooks/useFetch';
+//import { Wallpaper } from './Wallpaper';
+import { adaptarUrlImagen } from '../helpers/helpers';
 
 export const Favorites = () => {
-  //const [imageUrl, setImageUrl] = useState<string | null>(null);
 
-  const [dataArray, setDataArray] = useState<ListImageData[] | null>(null);
+  const [listaWallpapers, setListaWallpapers] = useState<ListImageData[] | null>(null);
   const { userData } = useContext(UserContext) || { setUserData: () => { } }; // Maneja el caso de que el contexto no esté definido
   const { dynamicStyles } = useTheme();
-  const [noFavorites, setNoFavorites] = useState<boolean>(false);
   const navigation = useNavigation();
 
-  //useEffect(() => {
-  useFocusEffect(
-    useCallback(() => {
-      fetch(`${show_favorites_images}?id_usuario=${userData?.idUser}`)
-        .then((res) => res.json())
-        .then((data) => {
+  const { fetchData: consultarFavoritos }
+    = useFetch<ListImageData[]>({ endpoint: show_favorites_images, metodo: 'GET', params: { id_usuario: userData?.id_usuario } });
 
-          console.log("TRAYENDO RESULTADOS DE BD Bv");
-          console.log("Imagenes -> ", data);
-          if (Array.isArray(data) && data.length > 0) {
-            const mappedData: ListImageData[] = data.map((item: any) => ({
-              id_image: parseInt(item.id_imagen),
-              url: item.url,
-              //date_favorite: item.fecha_favorito,
-            }));
-            data.forEach(element => {
-              console.log(`Data mapeada -> ${element['id_imagen']}`);
-              console.log(`Data mapeada -> ${element['url']}`);
-              console.log(`Data mapeada fecha favorito -> ${element['date_favorite']}`);
+  useEffect(() => {
+    const listarWallpapers = async () => {
 
-            });
-            setDataArray(mappedData);
-            setNoFavorites(false);
-          } else {
-            console.warn("No se encontraron imágenes en la respuesta.");
-            setNoFavorites(true);
-          }
-
-        })
-        .catch((err) => console.error("Error al traer imagen:", err));
-    }, []));
+      const response = await consultarFavoritos();
+      if (!response.Error) {
+        const wallpapersAdaptados = response.map(wallpaper => ({
+          ...wallpaper,
+          url: adaptarUrlImagen(wallpaper.url)
+        }))
+        setListaWallpapers(wallpapersAdaptados);
+      }
+    }
+    listarWallpapers();
+  }, []);
 
   const renderItem = ({ item }: { item: ListImageData }) => (
     <TouchableOpacity
-      //style={stylesAppTheme.animeCell}
-      onPress={() => navigation.navigate("Wallpaper", { url: item?.url, /* tags: item?.tags, */ /* artist_name: item?.artist_name, */ id: item?.id_image })}
+      onPress={() => navigation.navigate("Wallpaper", { url: item?.url, /* tags: item?.tags, */ /* artist_name: item?.artist_name, */ id_imagen: item?.id_imagen })}
     >
-      <Image
-        source={{ uri: item.url }}
-        style={{ width: 170, height: 170 }}
-
-      />
-
+      <Image source={{ uri: item.url }} style={{ width: 170, height: 170 }} />
     </TouchableOpacity>
   );
 
   return (
     <View style={[stylesAppTheme.container, dynamicStyles.dynamicScrollViewStyle]}>
       <FlatList
-        data={dataArray}
-        keyExtractor={(item) => item.id_image.toString()}
+        data={listaWallpapers}
+        keyExtractor={(item) => item.id_imagen.toString()}
         renderItem={renderItem}
         numColumns={2}
 
@@ -75,7 +56,7 @@ export const Favorites = () => {
         //columnWrapperStyle={[dynamicStyles.dynamicViewContainer, /* stylesAppTheme.viewContainer */]} // Estilo para englobar las columnas
         ListHeaderComponent={() => (
           <>
-            {noFavorites &&
+            {listaWallpapers?.length === 0 &&
               <View style={{ justifyContent: 'center' }}>
                 <Text style={dynamicStyles.dynamicText}>No hay Wallpapers favoritos Bv</Text>
               </View>}
