@@ -21,8 +21,8 @@ class Usuario
         "email",
         "password",
         "genero",
-        "telefono",
-        "foto_perfil"
+        /* "telefono",
+        "foto_perfil" */
     ];
 
 
@@ -43,16 +43,17 @@ class Usuario
         $email_existe = $this->Email_Existe();
         if (!isset($email_existe['Error']))
             return ["Error" => "Email ya existe."];
-        $telefono_existe = $this->Telefono_Existe();
+        /* $telefono_existe = $this->Telefono_Existe();
         if (!isset($telefono_existe['Error']))
-            return ["Error" => "Telefono ya existe."];
+            return ["Error" => "Telefono ya existe."]; */
 
         $conexion = new Conexion();
         $resultado = $conexion->RegistrarCuenta(
             "Usuario",
             $this->array_insert,
-            [$this->nombre, $this->username, $this->email, $this->password, $this->genero, $this->telefono, $this->foto_perfil],
-            "sssssss"
+            [$this->nombre, $this->username, $this->email, $this->password, $this->genero/* , $this->telefono, $this->foto_perfil */],
+            /* "sssssss" */
+            "sssss"
         );
         return $resultado;
     }

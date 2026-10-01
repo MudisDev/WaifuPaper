@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
-import { View, Text, TextInput, TouchableOpacity } from 'react-native'
+import { View, Text } from 'react-native'
 import { stylesAppTheme } from '../theme/AppTheme'
-import { useNavigation } from '@react-navigation/native'
 import { register_user } from '../const/UrlConfig'
 import { useTheme } from '../hooks/UseTheme'
 import { TextLinkComponent } from '../components/TextLinkComponent'
@@ -9,88 +8,80 @@ import { TextInputComponent } from '../components/TextInputComponent'
 import { RegexFormValidator } from '../utils/RegexFormValidator'
 import { ButtonComponent } from '../components/ButtonComponent'
 import { ShowAlert } from '../helpers/ShowAlert'
+import { useFetch } from '../hooks/useFetch'
 
+interface interfaceRegistro {
+  nombre: string,
+  username: string,
+  password: string,
+  email: string,
+  genero: string,
+}
 
 export const Register = () => {
 
-  const navigation = useNavigation();
-  const { themeData, dynamicStyles } = useTheme();
+  const { dynamicStyles } = useTheme();
 
-  const [name, setName] = useState('');
+  const [nombre, setNombre] = useState('');
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
-  const [phone, setPhone] = useState('');
+  //const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
-  const [gender, setGender] = useState('');
-  const [profilePhoto, setProfilePhoto] = useState('');
+  const [genero, setGenero] = useState('');
+  //const [profilePhoto, setProfilePhoto] = useState('');
 
   const [NameIcon, setNameIcon] = useState(false);
   const [UsernameIcon, setUsernameIcon] = useState(false);
   const [PasswordIcon, setPasswordIcon] = useState(false);
   const [EmailIcon, setEmailIcon] = useState(false);
-  const [PhoneIcon, setPhoneIcon] = useState(false);
+  //const [PhoneIcon, setPhoneIcon] = useState(false);
+
+  const { fetchData: fetchRegistrarCuenta } = useFetch<interfaceRegistro>({ endpoint: register_user, metodo: 'POST' });
 
   useEffect(() => {
-    setNameIcon(RegexFormValidator(name, 'verifyName'));
+    setNameIcon(RegexFormValidator(nombre, 'verifyName'));
     setUsernameIcon(RegexFormValidator(username, 'verifyUsername'));
     setPasswordIcon(RegexFormValidator(password, 'verifyPassword'));
     setEmailIcon(RegexFormValidator(email, 'verifyEmail'));
-    setPhoneIcon(RegexFormValidator(phone, 'verifyPhone'));
-  }, [name, username, password, email, phone]);
+    //setPhoneIcon(RegexFormValidator(phone, 'verifyPhone'));
+  }, [nombre, username, password, email, /* phone */]);
 
   const activeButton = (NameIcon && PasswordIcon && UsernameIcon && EmailIcon /* && PhoneIcon */) ? true : false;
 
 
-  const Registrar = async () => {
+  const registrarCuenta = async () => {
+
     try {
-      const response = await fetch(`${register_user}?
-                username=${username}&password=${password}&nombre=${name}&email=${email}&telefono=${phone}&genero=${gender}`);
-
-      const data = await response.json();
-      // Retorna los datos para ser usados en el componente
-      console.log(data);
-      const respuesta = JSON.stringify(data);
-      if (data.Error) {
-        console.log("respuesta -> ", respuesta);
-        console.log("Error de registro Bv");
-        ShowAlert({ title: 'Error', text: 'Ocurrio un error al intentar hacer el registro', buttonOk: 'Ok', onConfirm: () => void {} })
-
+      const datosRegistro: interfaceRegistro = {
+        nombre: nombre,
+        username: username,
+        password: password,
+        email: email,
+        genero: genero,
       }
-      else if (data.Success) {
-        console.log("Registro exitoso");
+
+      const respuesta = await fetchRegistrarCuenta(datosRegistro);
+
+      if (respuesta.Success) {
         ShowAlert({ title: 'Registro exitoso', text: 'El usuario fue registrado', buttonOk: 'Ok', onConfirm: () => void {} })
+      }
+      else if (respuesta.Warning) {
+        ShowAlert({ title: 'Warning', text: 'La operacion SQL se realizó, pero no se registró el usuario', buttonOk: 'Ok', onConfirm: () => void {} })
+
+      } else if (respuesta.Error) {
+        ShowAlert({ title: 'Error', text: 'Ocurrió un error al intentar registrar el usuario', buttonOk: 'Ok', onConfirm: () => void {} })
 
       }
-      const user = data[0];
-      console.log(`user -> ${user}`);
-      console.log(`userIsArray -> ${Array.isArray(user)}`);
-
     } catch (e) {
-      console.error(`error: ${e}`);
+      console.log("Error al registrar cuenta ->", e);
     }
   }
 
   return (
     <View style={[{ alignItems: 'center', flex: 1, paddingTop: 40 }, dynamicStyles.dynamicScrollViewStyle]}>
 
-      <Text style={[stylesAppTheme.title, dynamicStyles.dynamicText]}>WaifuPaper</Text>
-
-      {/* <TextInput value={name ?? ''} onChangeText={setName} style={[stylesAppTheme.textinput, dynamicStyles.dynamicViewContainer, dynamicStyles.dynamicText]} placeholderTextColor={themeData.texto} placeholder='Nombre' />
-      <Text></Text>
-      <TextInput value={username ?? ''} onChangeText={setUsername} style={[stylesAppTheme.textinput, dynamicStyles.dynamicViewContainer, dynamicStyles.dynamicText]} placeholderTextColor={themeData.texto} placeholder='Username' />
-      <Text></Text>
-      <TextInput value={password ?? ''} onChangeText={setPassword} style={[stylesAppTheme.textinput, dynamicStyles.dynamicViewContainer, dynamicStyles.dynamicText]} placeholderTextColor={themeData.texto} placeholder='Password' />
-      <Text></Text>
-      <TextInput value={email ?? ''} onChangeText={setEmail} style={[stylesAppTheme.textinput, dynamicStyles.dynamicViewContainer, dynamicStyles.dynamicText]} placeholderTextColor={themeData.texto} placeholder='Email' />
-      <Text></Text>
-      <TextInput value={gender ?? ''} onChangeText={setGender} style={[stylesAppTheme.textinput, dynamicStyles.dynamicViewContainer, dynamicStyles.dynamicText]} placeholderTextColor={themeData.texto} placeholder='Genero' />
-      <Text></Text>
-      <TextInput value={phone ?? ''} onChangeText={setPhone} style={[stylesAppTheme.textinput, dynamicStyles.dynamicViewContainer, dynamicStyles.dynamicText]} placeholderTextColor={themeData.texto} placeholder='Telefono' />
-      <Text></Text>
-      <TextInput value={profilePhoto ?? ''} onChangeText={setProfilePhoto} style={[stylesAppTheme.textinput, dynamicStyles.dynamicViewContainer, dynamicStyles.dynamicText]} placeholderTextColor={themeData.texto} placeholder='Foto Perfil' />
-      <Text></Text> */}
-
-      <TextInputComponent value={name} action={setName} placeholderText='Name' verified={NameIcon} isPassword={false} />
+      <Text style={[stylesAppTheme.title, dynamicStyles.dynamicText]}>Registrar Cuenta</Text>
+      <TextInputComponent value={nombre} action={setNombre} placeholderText='Nombre' verified={NameIcon} isPassword={false} />
       <Text></Text>
       <TextInputComponent value={username} action={setUsername} placeholderText='Username' verified={UsernameIcon} isPassword={false} />
       <Text></Text>
@@ -98,17 +89,10 @@ export const Register = () => {
       <Text></Text>
       <TextInputComponent value={email} action={setEmail} placeholderText='Email' verified={EmailIcon} isPassword={false} />
       <Text></Text>
-      <TextInputComponent value={gender} action={setGender} placeholderText='Gender' verified={false} isPassword={false} />
+      <TextInputComponent value={genero} action={setGenero} placeholderText='Genero' verified={false} isPassword={false} />
       <Text></Text>
-      {/* <TextInputComponent value={phone} action={setPhone} placeholderText='Phone' verified={PhoneIcon} isPassword={false} />
-      <Text></Text> */}
 
-      {/* <TouchableOpacity style={stylesAppTheme.button} onPress={() => navigation.navigate('BottomTabNavigator')}><Text style={stylesAppTheme.textButton}>Home</Text></TouchableOpacity> */}
-      {/* <TouchableOpacity style={[stylesAppTheme.button, dynamicStyles.dynamicViewContainer]} onPress={Registrar}  >
-        <Text style={[stylesAppTheme.textButton, dynamicStyles.dynamicText]}>registrar</Text>
-      </TouchableOpacity> */}
-
-      <ButtonComponent title='registrar' funcion={Registrar} active={activeButton} />
+      <ButtonComponent title='Registrar' funcion={registrarCuenta} active={activeButton} />
       <Text></Text>
       <TextLinkComponent text='¿Tienes una cuenta? Inicia sesion' screenNavigation='LogIn' />
 
