@@ -3,7 +3,9 @@ require_once __DIR__ . '/../../utils/debug.php';
 require_once __DIR__ . '/../../utils/headers.php';
 require_once __DIR__ . '/../../clases/Token.php';
 
-$id_usuario = $_GET['id_usuario'];
+$data = json_decode(file_get_contents("php://input"), true);
+
+$id_usuario = $data['id_usuario'];
 
 $token = new Token();
 $token->Generar_Token();

@@ -3,7 +3,7 @@ import { View, Text, Image, TouchableOpacity } from 'react-native'
 import { FlatList, } from 'react-native-gesture-handler';
 import { useNavigation } from '@react-navigation/native';
 import { stylesAppTheme } from '../theme/AppTheme';
-import { show_images } from '../const/UrlConfig';
+import { show_images, show_images_for_character } from '../const/UrlConfig';
 import { useTheme } from '../hooks/UseTheme';
 import { ListImageData } from '../helpers/Interfaces';
 import { useFetch } from '../hooks/useFetch';
@@ -14,7 +14,7 @@ export const Home = () => {
     const { dynamicStyles } = useTheme();
     const navigation = useNavigation();
     const { fetchData: consultarWallpapers }
-        = useFetch<ListImageData[]>({ endpoint: show_images, metodo: 'GET' });
+        = useFetch<ListImageData[]>({ endpoint: show_images_for_character, metodo: 'GET' });
 
     useEffect(() => {
         const listarWallpapers = async () => {

@@ -155,5 +155,12 @@ class Usuario
         $resultado = $conexion->SelectOne("tiene_rol", ["*"], ["id_usuario = ?"], [$this->id_usuario], 'i');
         return $resultado;
     }
+
+    public function Consultar_Perfil()
+    {
+        $conexion = new Conexion();
+        $resultado = $conexion->SelectOne("usuario", ["*"], ["id_usuario = ?"], [$this->id_usuario], 'i');
+        return $resultado;
+    }
 }
 ?>

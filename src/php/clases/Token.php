@@ -29,8 +29,9 @@ class Token
     public function Consultar_Token($id_usuario, $token)
     {
         $conexion = new Conexion();
-        $resultado = $conexion->Select("Sesion_Iniciada", ["*"], ["id_usuario = ?", "token = ?"], [$id_usuario, $token], 'is', ["AND"]);
-        $this->Set_Token($resultado[0]);
+        $resultado = $conexion->SelectOne("Sesion_Iniciada", ["*"], ["id_usuario = ?", "token = ?"], [$id_usuario, $token], 'is', ["AND"]);
+        $this->Set_Token($resultado);
+        //return $resultado;
     }
 
     public function Set_Token(array $datos)
